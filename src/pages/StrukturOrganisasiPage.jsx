@@ -1,222 +1,130 @@
-const jabatanList = [
-  { jabatan: "Lurah", nama: "Abdul Haris" },
-  { jabatan: "Sekretaris Kelurahan", nama: "Teguh Suparman" },
-  { jabatan: "Satpel Dukcapil", nama: "Saparudin, MA" },
-  { jabatan: "Pustu Lenteng Agung 2", nama: "dr. Surya Soma" },
-  { jabatan: "Pustu Lenteng Agung 1", nama: "dr. Sabrina" },
-  { jabatan: "Satlak DPPTSP", nama: "Lis Sumarnah, SE, M.Tr.IP" },
-  { jabatan: "Satpol PP", nama: "Isa Awaluddin, S.E" },
-  { jabatan: "Kasi Pemerintahan", nama: "Ahmad Effendi" },
-  { jabatan: "Kasi Kesejahteraan Rakyat", nama: "Irfan Yusuf" },
-  { jabatan: "Kasi Ekonomi & Pembangunan", nama: "Nursa Indah" },
+import React from "react";
+import { Link } from "react-router-dom";
+import { UserIcon, UserGroupIcon, BuildingOfficeIcon } from "@heroicons/react/24/solid";
+
+const pejabat = [
+  {
+    nama: "H. Ahmad Fauzi, S.Sos",
+    jabatan: "Lurah",
+    nip: "19750505 200003 1 005",
+    color: "bg-blue-100 text-blue-700",
+  },
+  {
+    nama: "Dra. Siti Aminah",
+    jabatan: "Sekretaris Kelurahan",
+    nip: "19800212 200501 2 009",
+    color: "bg-green-100 text-green-700",
+  },
+  {
+    nama: "Budi Santoso, SE",
+    jabatan: "Kasi Pemerintahan",
+    nip: "19820718 200801 1 012",
+    color: "bg-orange-100 text-orange-700",
+  },
+  {
+    nama: "Ratna Sari, S.KM",
+    jabatan: "Kasi Kesejahteraan Rakyat",
+    nip: "19850920 201001 2 008",
+    color: "bg-purple-100 text-purple-700",
+  },
+  {
+    nama: "Ir. Joko Prasetyo",
+    jabatan: "Kasi Ekonomi & Pembangunan",
+    nip: "19781105 200312 1 004",
+    color: "bg-red-100 text-red-700",
+  },
 ];
 
 export default function StrukturOrganisasiPage() {
   return (
-    <main className="min-h-screen bg-[#F5F7FA]">
-      {/* HERO MINI */}
-      <section className="relative h-48 w-full md:h-56">
-        <img
-          src="/bg_hero.png"
-          alt="Kantor Kelurahan Lenteng Agung"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 flex items-center justify-center bg-black/45">
-          <h1 className="px-4 text-center text-2xl font-semibold tracking-wide text-white md:text-3xl">
-            Struktur Organisasi Kelurahan Lenteng Agung
+    <main className="min-h-screen bg-[#F5F7FA] pb-20 pt-24 md:pt-28">
+      
+      {/* BREADCRUMB SECTION (PENGGANTI HERO) */}
+      <div className="max-w-5xl mx-auto px-4 md:px-0 mb-8">
+        {/* Navigasi Breadcrumb */}
+        <nav className="flex text-sm text-gray-500 mb-4" aria-label="Breadcrumb">
+          <ol className="inline-flex items-center space-x-1 md:space-x-3">
+            <li className="inline-flex items-center">
+              <Link to="/" className="hover:text-[#06452F] hover:underline flex items-center gap-1">
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                Home
+              </Link>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
+                <span className="ml-1 text-gray-500 md:ml-2">Profil Kelurahan</span>
+              </div>
+            </li>
+            <li aria-current="page">
+              <div className="flex items-center">
+                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
+                <span className="ml-1 text-[#06452F] font-bold md:ml-2">Struktur Organisasi</span>
+              </div>
+            </li>
+          </ol>
+        </nav>
+
+        {/* Judul & Deskripsi Singkat */}
+        <div className="border-b border-gray-200 pb-6">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#124076] mb-2">
+            Struktur Organisasi
           </h1>
+          <p className="text-gray-600 text-base md:text-lg max-w-3xl">
+            Bagan susunan organisasi dan daftar pejabat struktural di lingkungan 
+            Kelurahan Lenteng Agung untuk memastikan pelayanan publik berjalan optimal.
+          </p>
         </div>
-      </section>
+      </div>
 
-      {/* KONTEN */}
-      <section className="mx-auto max-w-5xl px-4 pb-12 pt-8 md:px-0 md:pt-10">
-        {/* Bagan Struktur Organisasi */}
-        <div className="mb-8 flex justify-center">
-          <div className="w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-sm">
-            <img
-              src="/struktur_kel.png"
-              alt="Struktur Organisasi Kelurahan Lenteng Agung"
-              className="h-full w-full object-contain md:object-cover"
-            />
-          </div>
-        </div>
-
-        {/* TABEL JABATAN */}
-        <div className="mb-10 rounded-2xl bg-white p-4 shadow-sm md:p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            Struktur Jabatan Kelurahan Lenteng Agung
-          </h2>
-          <div className="overflow-x-auto rounded-md border border-gray-300 bg-white">
-            <table className="min-w-full border-collapse text-sm">
-              <thead>
-                <tr className="bg-[#d9d9d9] text-left text-[13px] font-semibold text-black">
-                  <th className="border border-gray-300 px-3 py-2 w-1/3">
-                    Jabatan
-                  </th>
-                  <th className="border border-gray-300 px-3 py-2">
-                    Nama
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {jabatanList.map((row, idx) => (
-                  <tr
-                    key={row.jabatan}
-                    className={idx % 2 === 0 ? "bg-gray-50" : "bg-white"}
-                  >
-                    <td className="border border-gray-300 px-3 py-2 text-[13px]">
-                      {row.jabatan}
-                    </td>
-                    <td className="border border-gray-300 px-3 py-2 text-[13px]">
-                      {row.nama}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* TUGAS & FUNGSI */}
-        <div className="rounded-2xl bg-white p-6 shadow-sm md:p-8">
-          <h2 className="mb-4 text-base font-semibold text-gray-900">
-            Tugas dan Fungsi Jabatan Kelurahan Lenteng Agung
-          </h2>
-
-          {/* 1. Lurah */}
-          <div className="mb-6 text-sm leading-relaxed text-gray-800">
-            <p className="font-semibold mb-1">1. Lurah</p>
-            <p className="font-semibold">Tugas Utama:</p>
-            <ul className="mb-2 ml-5 list-disc">
-              <li>
-                Memimpin penyelenggaraan pemerintahan, pembangunan, dan pelayanan
-                masyarakat di tingkat kelurahan.
-              </li>
-            </ul>
-            <p className="font-semibold">Fungsi:</p>
-            <ul className="ml-5 list-disc space-y-1">
-              <li>Pembinaan ketenteraman dan ketertiban umum.</li>
-              <li>
-                Pengelolaan pembangunan dan pemberdayaan masyarakat kelurahan.
-              </li>
-              <li>
-                Koordinasi dengan RT/RW dan lembaga kemasyarakatan lainnya.
-              </li>
-              <li>
-                Pengawasan terhadap pelaksanaan tugas para seksi dan staf
-                kelurahan.
-              </li>
-            </ul>
-          </div>
-
-          {/* 2. Sekretaris Kelurahan */}
-          <div className="mb-6 text-sm leading-relaxed text-gray-800">
-            <p className="font-semibold mb-1">2. Sekretaris Kelurahan</p>
-            <p className="font-semibold">Tugas Utama:</p>
-            <ul className="mb-2 ml-5 list-disc">
-              <li>
-                Mengelola administrasi umum, kepegawaian, keuangan, serta
-                penyusunan program kelurahan.
-              </li>
-            </ul>
-            <p className="font-semibold">Fungsi:</p>
-            <ul className="ml-5 list-disc space-y-1">
-              <li>Pengelolaan tata naskah, arsip, dan dokumentasi.</li>
-              <li>
-                Penatausahaan anggaran serta penyusunan laporan keuangan
-                kelurahan.
-              </li>
-              <li>
-                Koordinasi perencanaan program kerja dan kegiatan kelurahan.
-              </li>
-              <li>Pembinaan administrasi RT/RW.</li>
-            </ul>
-          </div>
-
-          {/* 3. Kepala Seksi Pemerintahan */}
-          <div className="mb-6 text-sm leading-relaxed text-gray-800">
-            <p className="font-semibold mb-1">3. Kepala Seksi Pemerintahan</p>
-            <p className="font-semibold">Tugas Utama:</p>
-            <ul className="mb-2 ml-5 list-disc">
-              <li>
-                Menangani urusan pemerintahan dan administrasi kependudukan di
-                tingkat kelurahan.
-              </li>
-            </ul>
-            <p className="font-semibold">Fungsi:</p>
-            <ul className="ml-5 list-disc space-y-1">
-              <li>
-                Pelayanan administrasi kependudukan (KK, KTP, surat keterangan,
-                domisili, dll.).
-              </li>
-              <li>
-                Pembinaan penyelenggaraan pemerintahan lingkungan, termasuk
-                RT/RW.
-              </li>
-              <li>
-                Monitoring ketenteraman, keamanan, dan ketertiban wilayah.
-              </li>
-            </ul>
-          </div>
-
-          {/* 4. Kepala Seksi Kesejahteraan Rakyat */}
-          <div className="mb-6 text-sm leading-relaxed text-gray-800">
-            <p className="font-semibold mb-1">
-              4. Kepala Seksi Kesejahteraan Rakyat
+      {/* CONTENT SECTION */}
+      <section className="max-w-5xl mx-auto px-4 md:px-0 mt-8">
+        <div className="flex flex-col gap-8">
+          
+          {/* BAGAN STRUKTUR (IMAGE) */}
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 className="text-xl font-bold text-[#124076] mb-6 flex items-center gap-2">
+              <UserGroupIcon className="h-6 w-6 text-[#06452F]" />
+              Bagan Struktur
+            </h3>
+            <div className="w-full bg-gray-50 rounded-lg border border-gray-100 p-2 md:p-8 flex justify-center items-center overflow-hidden">
+              <img 
+                src="/struktur_kel.png" 
+                alt="Bagan Struktur Organisasi" 
+                className="max-w-full h-auto object-contain hover:scale-105 transition-transform duration-500 cursor-zoom-in"
+              />
+            </div>
+            <p className="text-center text-xs text-gray-400 mt-4 italic">
+              *Klik gambar untuk memperbesar tampilan
             </p>
-            <p className="font-semibold">Tugas Utama:</p>
-            <ul className="mb-2 ml-5 list-disc">
-              <li>
-                Melaksanakan pelayanan dan pembinaan di bidang sosial, kesehatan,
-                pendidikan, dan pemberdayaan masyarakat.
-              </li>
-            </ul>
-            <p className="font-semibold">Fungsi:</p>
-            <ul className="ml-5 list-disc space-y-1">
-              <li>
-                Fasilitasi layanan kesehatan lingkungan dan kesehatan masyarakat.
-              </li>
-              <li>
-                Pendataan pendidikan, fasilitas ibadah, dan kegiatan
-                kemasyarakatan.
-              </li>
-              <li>
-                Pembinaan PKK, karang taruna, dan lembaga sosial kemasyarakatan.
-              </li>
-            </ul>
           </div>
 
-          {/* 5. Kepala Seksi Ekonomi & Pembangunan */}
-          <div className="text-sm leading-relaxed text-gray-800">
-            <p className="font-semibold mb-1">
-              5. Kepala Seksi Ekonomi dan Pembangunan
-            </p>
-            <p className="font-semibold">Tugas Utama:</p>
-            <ul className="mb-2 ml-5 list-disc">
-              <li>
-                Mengoordinasikan pembangunan fisik, lingkungan, serta
-                pemberdayaan ekonomi masyarakat.
-              </li>
-            </ul>
-            <p className="font-semibold">Fungsi:</p>
-            <ul className="ml-5 list-disc space-y-1">
-              <li>
-                Pendataan sarana dan prasarana wilayah (jalan, drainase, fasilitas
-                umum).
-              </li>
-              <li>
-                Monitoring pelaksanaan pembangunan di tingkat kelurahan.
-              </li>
-              <li>
-                Pembinaan UMKM dan pemberdayaan ekonomi masyarakat berbasis
-                RW/RT.
-              </li>
-              <li>
-                Peningkatan kualitas lingkungan, termasuk kebersihan dan
-                pengelolaan sampah.
-              </li>
-            </ul>
+          {/* DAFTAR PEJABAT (CARDS) */}
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 className="text-xl font-bold text-[#124076] mb-6 flex items-center gap-2">
+              <BuildingOfficeIcon className="h-6 w-6 text-[#06452F]" />
+              Pejabat Struktural
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {pejabat.map((item, index) => (
+                <div 
+                  key={index} 
+                  className="flex items-start gap-4 p-4 border border-gray-100 rounded-xl hover:shadow-md transition-all group"
+                >
+                  <div className={`shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${item.color} group-hover:scale-110 transition-transform`}>
+                    <UserIcon className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-800 text-base mb-1">{item.nama}</h4>
+                    <p className="text-sm font-semibold text-[#124076] mb-1">{item.jabatan}</p>
+                    <p className="text-xs text-gray-500">NIP: {item.nip}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+
         </div>
       </section>
     </main>

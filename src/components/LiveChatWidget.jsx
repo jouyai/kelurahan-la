@@ -32,7 +32,7 @@ const getTimeBasedGreeting = () => {
   return "Selamat Malam";
 };
 
-// --- COMPONENT: TYPEWRITER EFFECT (FIXED SLICING) ---
+// --- COMPONENT: TYPEWRITER EFFECT ---
 const Typewriter = ({ text, speed = 15, onComplete }) => {
   const [index, setIndex] = useState(0);
 
@@ -58,8 +58,13 @@ const Typewriter = ({ text, speed = 15, onComplete }) => {
   );
 };
 
-export default function LiveChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+export default function LiveChatWidget({ 
+  isOpen, 
+  setIsOpen, 
+  startHumanMode = false, 
+  onResetHumanMode,
+  chatTopic = "" // Menerima topik dari App
+}) {
   const [sessionId, setSessionId] = useState(null);
 
   // State Form Identitas
@@ -75,18 +80,34 @@ export default function LiveChatWidget() {
 
   const messagesEndRef = useRef(null);
 
+  // LOGIC AUTO CONNECT STAFF
+  useEffect(() => {
+    const connectStaff = async () => {
+      if (isOpen && startHumanMode) {
+        setIsHumanMode(true);
+        // Jika sudah ada sesi aktif, update statusnya di database
+        if (sessionId) {
+          await supabase
+            .from("chat_sessions")
+            .update({ status: "live", last_message_at: new Date() })
+            .eq("id", sessionId);
+        }
+        if (onResetHumanMode) onResetHumanMode();
+      }
+    };
+    connectStaff();
+  }, [isOpen, startHumanMode, sessionId, onResetHumanMode]);
+
   // 1. Cek Sesi Saat Load
   useEffect(() => {
     setGreeting(getTimeBasedGreeting());
     const checkSession = async () => {
       const storedSession = localStorage.getItem("chat_session_id");
       if (storedSession) {
-        // Jika sudah ada sesi lama, langsung masuk chat (skip form)
         setSessionId(storedSession);
         setShowIdentityForm(false);
         fetchHistory(storedSession);
 
-        // Cek status mode
         const { data } = await supabase
           .from("chat_sessions")
           .select("status")
@@ -107,13 +128,12 @@ export default function LiveChatWidget() {
     if (data) setMessages(data);
   };
 
-  // 2. Realtime Listener (PESAN & STATUS SESI)
+  // 2. Realtime Listener
   useEffect(() => {
     if (!sessionId) return;
 
     const channel = supabase
       .channel(`room:${sessionId}`)
-      // A. Dengar Pesan Baru
       .on(
         "postgres_changes",
         {
@@ -130,7 +150,6 @@ export default function LiveChatWidget() {
           if (payload.new.sender === "system") setIsTyping(false);
         },
       )
-      // B. Dengar Perubahan Status Sesi (INI YANG KURANG)
       .on(
         "postgres_changes",
         {
@@ -140,14 +159,12 @@ export default function LiveChatWidget() {
           filter: `id=eq.${sessionId}`,
         },
         (payload) => {
-          // Jika status diubah jadi 'bot' atau 'resolved', matikan mode human
           if (
             payload.new.status === "bot" ||
             payload.new.status === "resolved"
           ) {
             setIsHumanMode(false);
           }
-          // Jika status diubah jadi 'live', nyalakan mode human
           else if (payload.new.status === "live") {
             setIsHumanMode(true);
           }
@@ -160,26 +177,27 @@ export default function LiveChatWidget() {
     };
   }, [sessionId]);
 
-  // Auto Scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isOpen, isTyping, showIdentityForm]);
 
-  // 3. HANDLER: SUBMIT FORM IDENTITAS
+  // 3. HANDLER: SUBMIT FORM IDENTITAS (MODIFIED)
   const handleStartChat = async (e) => {
     e.preventDefault();
     if (!userIdentity.name.trim() || !userIdentity.contact.trim()) return;
 
     setIsRegistering(true);
 
-    // Buat Sesi Baru di Database dengan data user
+    // Tentukan status awal
+    const initialStatus = (isHumanMode || startHumanMode) ? "live" : "bot";
+
     const { data, error } = await supabase
       .from("chat_sessions")
       .insert([
         {
           user_name: userIdentity.name,
           contact: userIdentity.contact,
-          status: "bot",
+          status: initialStatus,
         },
       ])
       .select()
@@ -188,7 +206,34 @@ export default function LiveChatWidget() {
     if (data) {
       localStorage.setItem("chat_session_id", data.id);
       setSessionId(data.id);
-      setShowIdentityForm(false); // Sembunyikan form, tampilkan chat
+      setShowIdentityForm(false);
+      
+      // JIKA MODE STAFF: Kirim pesan sistem & pesan otomatis user berisi topik
+      if (initialStatus === "live") {
+        // 1. Pesan Sambutan Sistem
+        await supabase
+          .from("chat_messages")
+          .insert([
+            { 
+              session_id: data.id, 
+              sender: "system", 
+              message: "Anda terhubung dengan layanan Staff. Silakan sampaikan keperluan Anda." 
+            },
+          ]);
+
+        // 2. Pesan Otomatis dari User sesuai Topik Halaman
+        if (chatTopic) {
+          await supabase
+            .from("chat_messages")
+            .insert([
+              { 
+                session_id: data.id, 
+                sender: "user", 
+                message: `Halo, saya ingin bertanya mengenai ${chatTopic}.` 
+              },
+            ]);
+        }
+      }
     } else {
       console.error("Gagal membuat sesi:", error);
     }
@@ -356,9 +401,8 @@ export default function LiveChatWidget() {
                   </button>
                 </div>
 
-                {/* LOGIC TAMPILAN: FORM IDENTITAS vs CHAT ROOM */}
+                {/* VIEW 1: FORM IDENTITAS */}
                 {showIdentityForm ? (
-                  // --- VIEW 1: FORM IDENTITAS (DIPERKECIL) ---
                   <div className="flex-1 p-5 flex flex-col justify-center bg-[#F5F7FA]">
                     <div className="text-center mb-5">
                       <div className="w-14 h-14 bg-[#124076] rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
@@ -433,10 +477,9 @@ export default function LiveChatWidget() {
                     </form>
                   </div>
                 ) : (
-                  // --- VIEW 2: CHAT ROOM ---
+                  // VIEW 2: CHAT ROOM
                   <>
                     <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#F5F7FA]">
-                      {/* Welcome Message */}
                       <div className="flex gap-2">
                         <div className="shrink-0 w-7 h-7 rounded-full bg-[#124076] flex items-center justify-center border border-white shadow-sm">
                           <SparklesIcon className="h-3.5 w-3.5 text-yellow-300" />

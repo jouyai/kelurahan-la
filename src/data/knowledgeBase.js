@@ -298,6 +298,74 @@ export const DATA_LAYANAN = [
       "Surat Pernyataan Status Janda/Duda (Bermaterai)",
     ],
   },
+
+  // =========================================
+  // 7. KATEGORI: LAYANAN KTP & KK (BARU)
+  // =========================================
+  {
+    id: "ktp-1",
+    kategori: "KTP & Kartu Keluarga",
+    layanan: "Perekaman KTP Elektronik (e-KTP) Baru / Pemula",
+    syarat: [
+      "Berusia minimal 17 tahun",
+      "Surat Pengantar RT/RW",
+      "Fotokopi Kartu Keluarga (KK)",
+      "Fotokopi Akta Kelahiran atau Ijazah Terakhir",
+      "Datang langsung untuk foto dan sidik jari (tidak bisa diwakilkan)",
+      "Berpakaian sopan (kemeja/berkerah)",
+    ],
+  },
+  {
+    id: "ktp-2",
+    kategori: "KTP & Kartu Keluarga",
+    layanan: "Pengurusan KTP Hilang atau Rusak",
+    syarat: [
+      "Surat Pengantar RT/RW",
+      "Surat Keterangan Kehilangan dari Kepolisian (Asli) - Jika Hilang",
+      "Fisik KTP yang rusak - Jika Rusak",
+      "Fotokopi Kartu Keluarga (KK)",
+      "Pas foto 3x4 (opsional, tergantung kebijakan Dukcapil setempat)",
+    ],
+  },
+  {
+    id: "ktp-3",
+    kategori: "KTP & Kartu Keluarga",
+    layanan: "Pembuatan / Perubahan Kartu Keluarga (KK)",
+    syarat: [
+      "Surat Pengantar RT/RW",
+      "Kartu Keluarga (KK) Asli yang lama",
+      "Buku Nikah / Akta Perkawinan (jika baru menikah)",
+      "Surat Keterangan Pindah (SKPWNI) dari daerah asal (jika pendatang)",
+      "Akta Kelahiran Anak (jika penambahan anggota keluarga)",
+      "Surat Kematian (jika pengurangan anggota karena meninggal)",
+    ],
+  },
+
+  // =========================================
+  // 8. KATEGORI: PENGADUAN & KELUHAN WARGA (BARU)
+  // =========================================
+  {
+    id: "aduan-1",
+    kategori: "Pengaduan Masyarakat",
+    layanan: "Pelaporan Gangguan Fasilitas Publik (Jalan Rusak/Sampah/Lampu Mati)",
+    syarat: [
+      "Foto bukti kondisi / kerusakan",
+      "Alamat lengkap lokasi kejadian (RT/RW)",
+      "Identitas / KTP Pelapor",
+      "Sebaiknya sudah melapor ke RT/RW terlebih dahulu untuk diketahui",
+      "Mengisi formulir pengaduan di kantor kelurahan (jika lapor manual)",
+    ],
+  },
+  {
+    id: "aduan-2",
+    kategori: "Pengaduan Masyarakat",
+    layanan: "Laporan Gangguan Ketertiban Umum (Kebisingan/Keributan)",
+    syarat: [
+      "Lapor terlebih dahulu ke Ketua RT dan RW setempat (Wajib)",
+      "Bukti foto/video gangguan (jika ada)",
+      "Jika tidak selesai di tingkat RT/RW, lapor ke Kelurahan dengan membawa surat pengantar RT/RW",
+    ],
+  },
 ];
 
 // ============================================================================

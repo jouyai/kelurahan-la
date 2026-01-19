@@ -18,28 +18,28 @@ export default function Navbar() {
       {({ open }) => (
         <>
           {/* TOP BAR */}
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 lg:px-0">
+          <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-3 lg:px-6">
             {/* LEFT: LOGO + TITLE */}
-            <Link to="/" className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-sm overflow-hidden">
+            <Link to="/" className="flex items-center gap-3 shrink-0">
+              <div className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-sm overflow-hidden">
                 <img
                   src="/logo_kel.png"
                   alt="Logo DKI Jakarta"
-                  className="h-11 w-11 object-contain"
+                  className="h-full w-full object-contain"
                 />
               </div>
-              <div className="leading-tight">
-                <p className="text-lg font-semibold">
+              <div className="leading-tight hidden sm:block">
+                <p className="text-base md:text-lg font-semibold">
                   Kelurahan Lenteng Agung
                 </p>
-                <p className="text-xs text-gray-200">
+                <p className="text-[10px] md:text-xs text-gray-200">
                   Kota Administrasi Jakarta Selatan
                 </p>
               </div>
             </Link>
 
-            {/* DESKTOP MENU */}
-            <div className="hidden items-center gap-8 text-sm font-medium lg:flex">
+            {/* DESKTOP MENU (REORGANIZED) */}
+            <div className="hidden items-center gap-4 text-xs lg:text-sm font-medium xl:flex">
               <Link
                 to="/"
                 className="hover:text-gray-200 transition-colors"
@@ -47,8 +47,9 @@ export default function Navbar() {
                 Home
               </Link>
 
-              {/* Profil Kelurahan */}
-              <DesktopDropdown label="Profil Kelurahan">
+              {/* 1. Profil & Lembaga (Gabungan) */}
+              <DesktopDropdown label="Profil & Lembaga">
+                <DropdownHeader>Profil Kelurahan</DropdownHeader>
                 <DropdownLink to="/sejarah">Sejarah</DropdownLink>
                 <DropdownLink to="/visi-misi">Visi &amp; Misi</DropdownLink>
                 <DropdownLink to="/geografis">Geografis</DropdownLink>
@@ -58,10 +59,23 @@ export default function Navbar() {
                 <DropdownLink to="/data-penduduk">
                   Data Penduduk
                 </DropdownLink>
+                
+                <div className="my-1 border-t border-gray-100" />
+                
+                <DropdownHeader>Kelembagaan</DropdownHeader>
+                <DropdownLink to="/pemerintahan/rt-rw">
+                  RT &amp; RW
+                </DropdownLink>
+                <DropdownLink to="/pemerintahan/lmk">
+                  LMK
+                </DropdownLink>
+                <DropdownLink to="/pemerintahan/fkdm">
+                  FKDM
+                </DropdownLink>
               </DesktopDropdown>
 
-              {/* Layanan Publik */}
-              <DesktopDropdown label="Layanan Publik">
+              {/* 2. Layanan Publik */}
+              <DesktopDropdown label="Layanan">
                 <DropdownLink to="/layanan/administrasi">
                   Pelayanan Administrasi
                 </DropdownLink>
@@ -73,7 +87,34 @@ export default function Navbar() {
                 </DropdownLink>
               </DesktopDropdown>
 
-              {/* Informasi */}
+              {/* 3. Program Kerja (Gabungan Kesra & Ekbang) */}
+              <DesktopDropdown label="Program Kerja">
+                <DropdownHeader>Kesejahteraan (Kesra)</DropdownHeader>
+                <DropdownLink to="/kesejahteraan/kegiatan-kesra">
+                  Kegiatan Kesra
+                </DropdownLink>
+                <DropdownLink to="/kesejahteraan/pangan-murah">
+                  Program Pangan Murah
+                </DropdownLink>
+                <DropdownLink to="/kesejahteraan/dasawisma">
+                  Kegiatan Dasawisma
+                </DropdownLink>
+
+                <div className="my-1 border-t border-gray-100" />
+
+                <DropdownHeader>Ekonomi &amp; Pembangunan</DropdownHeader>
+                <DropdownLink to="/ekonomi-pembangunan/kegiatan-ekbang">
+                  Kegiatan Ekbang
+                </DropdownLink>
+                <DropdownLink to="/ekonomi-pembangunan/pelatihan">
+                  Pelatihan Masyarakat
+                </DropdownLink>
+                <DropdownLink to="/ekonomi-pembangunan/penataan-kawasan">
+                  Penataan Kawasan
+                </DropdownLink>
+              </DesktopDropdown>
+
+              {/* 4. Informasi */}
               <DesktopDropdown label="Informasi">
                 <DropdownLink to="/berita">Berita Kelurahan</DropdownLink>
                 <DropdownLink to="/berita/kesehatan">
@@ -86,22 +127,13 @@ export default function Navbar() {
                   Pendidikan
                 </DropdownLink>
                 <DropdownLink to="/informasi/organisasi">
-                  Organisasi
+                  Organisasi Kemasyarakatan
                 </DropdownLink>
                 <DropdownLink to="/informasi/jumantik">
                   Jumantik
                 </DropdownLink>
                 <DropdownLink to="/informasi/data-bencana">
                   Data Bencana
-                </DropdownLink>
-                <DropdownLink to="/informasi/pemerintahan">
-                  Pemerintahan
-                </DropdownLink>
-                <DropdownLink to="/informasi/kesejahteraan-masyarakat">
-                  Kesejahteraan Masyarakat
-                </DropdownLink>
-                <DropdownLink to="/informasi/ekonomi-pembangunan">
-                  Ekonomi &amp; Pembangunan
                 </DropdownLink>
               </DesktopDropdown>
 
@@ -114,7 +146,7 @@ export default function Navbar() {
             </div>
 
             {/* MOBILE: SEARCH + HAMBURGER */}
-            <div className="flex items-center gap-2 lg:hidden">
+            <div className="flex items-center gap-2 xl:hidden">
               <button
                 type="button"
                 className="rounded-full p-1.5 hover:bg-white/10 transition-colors"
@@ -132,13 +164,13 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* MOBILE PANEL */}
-          <Disclosure.Panel className="border-t border-white/10 lg:hidden">
+          {/* MOBILE PANEL (REORGANIZED) */}
+          <Disclosure.Panel className="border-t border-white/10 xl:hidden">
             <div className="space-y-1 px-4 pb-4 pt-3 text-sm font-medium">
               <MobileLink to="/">Home</MobileLink>
 
-              {/* Profil Kelurahan */}
-              <MobileGroup label="Profil Kelurahan">
+              {/* 1. Profil & Lembaga */}
+              <MobileGroup label="Profil & Lembaga">
                 <MobileSubLink to="/sejarah">Sejarah</MobileSubLink>
                 <MobileSubLink to="/visi-misi">Visi &amp; Misi</MobileSubLink>
                 <MobileSubLink to="/geografis">Geografis</MobileSubLink>
@@ -148,9 +180,18 @@ export default function Navbar() {
                 <MobileSubLink to="/data-penduduk">
                   Data Penduduk
                 </MobileSubLink>
+                <MobileSubLink to="/pemerintahan/rt-rw">
+                  Kelembagaan: RT &amp; RW
+                </MobileSubLink>
+                <MobileSubLink to="/pemerintahan/lmk">
+                  Kelembagaan: LMK
+                </MobileSubLink>
+                <MobileSubLink to="/pemerintahan/fkdm">
+                  Kelembagaan: FKDM
+                </MobileSubLink>
               </MobileGroup>
 
-              {/* Layanan Publik */}
+              {/* 2. Layanan Publik */}
               <MobileGroup label="Layanan Publik">
                 <MobileSubLink to="/layanan/administrasi">
                   Pelayanan Administrasi
@@ -158,12 +199,36 @@ export default function Navbar() {
                 <MobileSubLink to="/layanan/kependudukan">
                   Pelayanan Kependudukan
                 </MobileSubLink>
-                <MobileSubLink to="/layanan/umum">
+                <MobileSubLink to="/layanan/pelayanan-umum">
                   Pelayanan Umum
                 </MobileSubLink>
               </MobileGroup>
 
-              {/* Informasi */}
+              {/* 3. Program Kerja */}
+              <MobileGroup label="Program Kerja">
+                {/* Kesra */}
+                <MobileSubLink to="/kesejahteraan/kegiatan-kesra">
+                  Kesra: Kegiatan Rutin
+                </MobileSubLink>
+                <MobileSubLink to="/kesejahteraan/pangan-murah">
+                  Kesra: Pangan Murah
+                </MobileSubLink>
+                <MobileSubLink to="/kesejahteraan/dasawisma">
+                  Kesra: Dasawisma
+                </MobileSubLink>
+                {/* Ekbang */}
+                <MobileSubLink to="/ekonomi-pembangunan/kegiatan-ekbang">
+                  Ekbang: Kegiatan Fisik
+                </MobileSubLink>
+                <MobileSubLink to="/ekonomi-pembangunan/pelatihan">
+                  Ekbang: Pelatihan
+                </MobileSubLink>
+                <MobileSubLink to="/ekonomi-pembangunan/penataan-kawasan">
+                  Ekbang: Penataan Kawasan
+                </MobileSubLink>
+              </MobileGroup>
+
+              {/* 4. Informasi */}
               <MobileGroup label="Informasi">
                 <MobileSubLink to="/berita">
                   Berita Kelurahan
@@ -186,15 +251,6 @@ export default function Navbar() {
                 <MobileSubLink to="/informasi/data-bencana">
                   Data Bencana
                 </MobileSubLink>
-                <MobileSubLink to="/informasi/pemerintahan">
-                  Pemerintahan
-                </MobileSubLink>
-                <MobileSubLink to="/informasi/kesejahteraan-masyarakat">
-                  Kesejahteraan Masyarakat
-                </MobileSubLink>
-                <MobileSubLink to="/informasi/ekonomi-pembangunan">
-                  Ekonomi &amp; Pembangunan
-                </MobileSubLink>
               </MobileGroup>
             </div>
           </Disclosure.Panel>
@@ -205,7 +261,7 @@ export default function Navbar() {
 }
 
 /* =========================
-   DESKTOP DROPDOWN
+   DESKTOP DROPDOWN COMPONENTS
    ========================= */
 
 function DesktopDropdown({ label, children }) {
@@ -225,11 +281,19 @@ function DesktopDropdown({ label, children }) {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 z-20 mt-2 w-56 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none">
+        <Menu.Items className="absolute right-0 z-50 mt-2 w-64 origin-top-right rounded-lg bg-white py-2 shadow-xl ring-1 ring-black/5 focus:outline-none max-h-[80vh] overflow-y-auto">
           {children}
         </Menu.Items>
       </Transition>
     </Menu>
+  );
+}
+
+function DropdownHeader({ children }) {
+  return (
+    <div className="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50">
+      {children}
+    </div>
   );
 }
 
@@ -240,8 +304,8 @@ function DropdownLink({ to, children }) {
         <Link
           to={to}
           className={classNames(
-            active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-            "block w-full px-4 py-2 text-left text-sm"
+            active ? "bg-gray-50 text-[#06452F]" : "text-gray-700",
+            "block w-full px-4 py-2 text-left text-sm transition-colors"
           )}
         >
           {children}
@@ -251,26 +315,8 @@ function DropdownLink({ to, children }) {
   );
 }
 
-function DropdownButton({ children }) {
-  return (
-    <Menu.Item>
-      {({ active }) => (
-        <button
-          type="button"
-          className={classNames(
-            active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-            "block w-full px-4 py-2 text-left text-sm"
-          )}
-        >
-          {children}
-        </button>
-      )}
-    </Menu.Item>
-  );
-}
-
 /* =========================
-   MOBILE HELPERS
+   MOBILE COMPONENTS
    ========================= */
 
 function MobileLink({ to, children }) {
@@ -281,13 +327,11 @@ function MobileLink({ to, children }) {
       </div>
     );
   }
-
-  // Auto-close saat diklik
   return (
     <Disclosure.Button
       as={Link}
       to={to}
-      className="block rounded-md px-3 py-2 text-white/90 hover:bg-white/10"
+      className="block rounded-md px-3 py-2 text-white/90 hover:bg-white/10 transition-colors"
     >
       {children}
     </Disclosure.Button>
@@ -296,11 +340,11 @@ function MobileLink({ to, children }) {
 
 function MobileGroup({ label, children }) {
   return (
-    <div className="mt-2">
-      <p className="px-3 text-[13px] font-semibold uppercase tracking-wide text-white/80">
+    <div className="mt-4 first:mt-2">
+      <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-[#8FC1B5] mb-1">
         {label}
       </p>
-      <div className="mt-1 space-y-1">{children}</div>
+      <div className="space-y-0.5">{children}</div>
     </div>
   );
 }
@@ -308,18 +352,16 @@ function MobileGroup({ label, children }) {
 function MobileSubLink({ to, children }) {
   if (!to) {
     return (
-      <div className="rounded-md px-5 py-1.5 text-sm text-white/90 hover:bg-white/10">
+      <div className="rounded-md px-5 py-2 text-sm text-white/90 hover:bg-white/10">
         {children}
       </div>
     );
   }
-
-  // Auto-close juga
   return (
     <Disclosure.Button
       as={Link}
       to={to}
-      className="block rounded-md px-5 py-1.5 text-sm text-white/90 hover:bg-white/10"
+      className="block rounded-md px-5 py-2 text-sm text-white/90 hover:bg-white/10 transition-colors border-l-2 border-transparent hover:border-white/30"
     >
       {children}
     </Disclosure.Button>

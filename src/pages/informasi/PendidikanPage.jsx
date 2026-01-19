@@ -1,188 +1,176 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { 
+  AcademicCapIcon, 
+  MapPinIcon, 
+  BuildingLibraryIcon, 
+  FunnelIcon,
+  StarIcon,
+  ChatBubbleLeftRightIcon,
+  BookOpenIcon
+} from "@heroicons/react/24/solid";
 
-export default function PendidikanPage() {
-  // --- DATA DUMMY STATISTIK ---
-  const statsData = [
-    { label: "PAUD", count: 8, color: "#9CA3AF" }, // Abu-abu
-    { label: "TK / RA", count: 11, color: "#4ADE80" }, // Hijau Muda
-    { label: "SD", count: 17, color: "#60A5FA" }, // Biru
-    { label: "SMP", count: 7, color: "#FACC15" }, // Kuning
-    { label: "SMA", count: 5, color: "#F87171" }, // Merah
-    { label: "Perguruan Tinggi", count: 3, color: "#FB923C" }, // Orange
-  ];
+// Dummy Data Sekolah
+const schools = [
+  { id: 1, name: "SDN Lenteng Agung 01 Pagi", level: "SD", address: "Jl. Agung Raya No. 1", akreditasi: "A", status: "Negeri" },
+  { id: 2, name: "SDN Lenteng Agung 03 Pagi", level: "SD", address: "Jl. Camat Gabun I", akreditasi: "A", status: "Negeri" },
+  { id: 3, name: "SMP Negeri 98 Jakarta", level: "SMP", address: "Jl. Raya Lenteng Agung", akreditasi: "A", status: "Negeri" },
+  { id: 4, name: "SMA Negeri 38 Jakarta", level: "SMA", address: "Jl. Raya Lenteng Agung", akreditasi: "A", status: "Negeri" },
+  { id: 5, name: "PAUD Melati RW 02", level: "PAUD", address: "Balai Warga RW 02", akreditasi: "B", status: "Swasta" },
+  { id: 6, name: "TK Islam Al-Ikhlas", level: "TK", address: "Jl. Kebagusan Kecil", akreditasi: "A", status: "Swasta" },
+  { id: 7, name: "SMK Perguruan Cikini", level: "SMA", address: "Jl. Srengseng Sawah", akreditasi: "A", status: "Swasta" },
+  { id: 8, name: "PKBM Negeri 15 (Paket A/B/C)", level: "Non-Formal", address: "Jl. Joe", akreditasi: "B", status: "Negeri" },
+];
 
-  // Total Data untuk hitung persentase chart
-  const totalSchools = statsData.reduce((acc, curr) => acc + curr.count, 0);
+export default function PendidikanPage({ onConnectStaff }) {
+  const [filter, setFilter] = useState("Semua");
 
-  // --- DATA DUMMY TABEL ---
-  const schoolList = [
-    { no: 1, name: "PAUD Bintang Kecil", address: "Jl. Lenteng Agung Raya No. 10", level: "PAUD", phone: "-", head: "Siti Aminah" },
-    { no: 2, name: "TK Islam Al-Azhar", address: "Jl. Agung Raya 1", level: "TK/RA", phone: "021-787xxxx", head: "Budi Santoso" },
-    { no: 3, name: "SDN Lenteng Agung 01", address: "Jl. Camat Gabun I", level: "SD", phone: "021-786xxxx", head: "Drs. H. Suwandi" },
-    { no: 4, name: "SDN Lenteng Agung 03 Pagi", address: "Jl. Lenteng Agung Timur", level: "SD", phone: "021-788xxxx", head: "Hj. Nurhayati, S.Pd" },
-    { no: 5, name: "SMP Negeri 98 Jakarta", address: "Jl. Raya Lenteng Agung", level: "SMP", phone: "021-727xxxx", head: "Dra. Yulia" },
-    { no: 6, name: "SMA Negeri 38 Jakarta", address: "Jl. Raya Lenteng Agung", level: "SMA", phone: "021-789xxxx", head: "Drs. M. Taufik" },
-    { no: 7, name: "Institut Ilmu Sosial dan Politik (IISIP)", address: "Jl. Raya Lenteng Agung No. 32", level: "Perguruan Tinggi", phone: "021-780xxxx", head: "Dr. Ir. Ilham" },
-    { no: 8, name: "Universitas Pancasila", address: "Jl. Srengseng Sawah", level: "Perguruan Tinggi", phone: "021-786xxxx", head: "Prof. Dr. Edie" },
-  ];
+  const filteredSchools = filter === "Semua" 
+    ? schools 
+    : schools.filter(s => s.level === filter || (filter === "SMA" && s.level === "SMK"));
 
   return (
-    <main className="min-h-screen bg-[#F5F7FA] pb-20">
+    <main className="min-h-screen bg-[#F5F7FA] pb-20 pt-24 md:pt-28">
       
-      {/* HERO SECTION */}
-      <section className="relative h-48 md:h-64 w-full">
-        <img
-          src="/bg_hero.png" // Ganti dengan path gambar kantor kelurahan/sekolah
-          alt="Data Sekolah Lenteng Agung"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center px-4">
-          <h1 className="text-2xl md:text-3xl font-semibold text-white mb-2">
-            Data Sekolah di Kelurahan Lenteng Agung
+      {/* BREADCRUMB */}
+      <div className="max-w-6xl mx-auto px-4 md:px-0 mb-8">
+        <nav className="flex text-sm text-gray-500 mb-4" aria-label="Breadcrumb">
+          <ol className="inline-flex items-center space-x-1 md:space-x-3">
+            <li className="inline-flex items-center">
+              <Link to="/" className="hover:text-[#06452F] hover:underline flex items-center gap-1">
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                Home
+              </Link>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
+                <span className="ml-1 text-gray-500 md:ml-2">Informasi</span>
+              </div>
+            </li>
+            <li aria-current="page">
+              <div className="flex items-center">
+                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
+                <span className="ml-1 text-[#06452F] font-bold md:ml-2">Pendidikan</span>
+              </div>
+            </li>
+          </ol>
+        </nav>
+
+        <div className="border-b border-gray-200 pb-6">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#124076] mb-2">
+            Sarana Pendidikan
           </h1>
-          <p className="text-white/80 text-sm md:text-base">
-            Jakarta Selatan
+          <p className="text-gray-600 text-base md:text-lg max-w-3xl">
+            Data sekolah dan lembaga pendidikan formal maupun non-formal yang tersebar 
+            di wilayah Kelurahan Lenteng Agung.
           </p>
         </div>
-      </section>
+      </div>
 
-      {/* CONTENT WRAPPER */}
-      <div className="max-w-6xl mx-auto px-4 md:px-0 mt-10 space-y-10">
+      {/* CONTENT */}
+      <section className="max-w-6xl mx-auto px-4 md:px-0 mt-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          
+          {/* LEFT: SCHOOL LIST */}
+          <div className="w-full lg:w-2/3">
+            
+            {/* Filter Tabs */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {["Semua", "PAUD", "SD", "SMP", "SMA"].map((level) => (
+                <button
+                  key={level}
+                  onClick={() => setFilter(level)}
+                  className={`px-4 py-2 rounded-full text-xs font-bold transition-all border ${
+                    filter === level 
+                    ? "bg-[#06452F] text-white border-[#06452F]" 
+                    : "bg-white text-gray-600 border-gray-200 hover:border-[#06452F]"
+                  }`}
+                >
+                  {level}
+                </button>
+              ))}
+            </div>
 
-        {/* SECTION 1: STATISTIK & CHART */}
-        <section className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100">
-          <h2 className="text-xl md:text-2xl font-bold text-[#124076] mb-4">
-            Sebaran Jumlah Sekolah Berdasarkan Tingkat Pendidikan
-          </h2>
-          <p className="text-gray-600 text-sm md:text-base mb-8 leading-relaxed">
-            Grafik ini menampilkan jumlah sarana pendidikan di wilayah Kelurahan Lenteng Agung
-            berdasarkan jenjangnya, mulai dari PAUD hingga perguruan tinggi. Data ini memberikan
-            gambaran mengenai ketersediaan lembaga pendidikan di setiap tingkat, serta menjadi acuan
-            dalam perencanaan pengembangan fasilitas pendidikan di wilayah kelurahan.
-          </p>
+            <div className="space-y-4">
+              {filteredSchools.map((item) => (
+                <div 
+                  key={item.id} 
+                  className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-md transition-all flex flex-col sm:flex-row gap-5 items-start"
+                >
+                  <div className="shrink-0 w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-blue-700 font-bold text-lg border border-blue-100">
+                    {item.level}
+                  </div>
+                  
+                  <div className="flex-1 w-full">
+                    <div className="flex flex-wrap justify-between items-start mb-1">
+                      <h3 className="font-bold text-gray-800 text-lg">{item.name}</h3>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                        item.status === 'Negeri' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-orange-50 text-orange-700 border-orange-100'
+                      }`}>
+                        {item.status}
+                      </span>
+                    </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20">
-            {/* SVG DONUT CHART */}
-            <div className="relative w-64 h-64">
-              <DonutChart data={statsData} total={totalSchools} />
-              {/* Center Text */}
-              <div className="absolute inset-0 flex items-center justify-center flex-col">
-                <span className="text-3xl font-bold text-[#124076]">{totalSchools}</span>
-                <span className="text-xs text-gray-500 uppercase tracking-wide">Total Sekolah</span>
+                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                      <MapPinIcon className="h-4 w-4 text-gray-400" />
+                      {item.address}
+                    </div>
+
+                    <div className="flex gap-3 text-xs">
+                      <div className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded">
+                        <StarIcon className="h-3 w-3 text-yellow-500" />
+                        Akreditasi: <span className="font-bold text-gray-800">{item.akreditasi}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* RIGHT: SIDEBAR INFO */}
+          <div className="w-full lg:w-1/3 space-y-6">
+            
+            {/* Info KJP & PPDB */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 sticky top-24">
+              <h4 className="font-bold text-[#124076] mb-4 flex items-center gap-2">
+                <BookOpenIcon className="h-5 w-5" />
+                Informasi Penting
+              </h4>
+              
+              <div className="space-y-4">
+                <div className="bg-orange-50 p-4 rounded-lg border border-orange-100">
+                  <h5 className="font-bold text-orange-800 text-sm mb-1">KJP Plus</h5>
+                  <p className="text-xs text-orange-700 leading-relaxed">
+                    Pusat Pelayanan Pendanaan Personal dan Operasional Pendidikan (P4OP) bagi warga tidak mampu.
+                  </p>
+                </div>
+
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                  <h5 className="font-bold text-blue-800 text-sm mb-1">PPDB Online</h5>
+                  <p className="text-xs text-blue-700 leading-relaxed">
+                    Pendaftaran Peserta Didik Baru (PPDB) DKI Jakarta biasanya dibuka bulan Mei-Juni.
+                  </p>
+                </div>
+              </div>
+
+              {/* Chat Button */}
+              <div className="mt-6 pt-6 border-t border-gray-50">
+                <button
+                  onClick={() => onConnectStaff && onConnectStaff("Tanya Info KJP/PPDB")}
+                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#06452F] py-2.5 text-sm font-bold text-white hover:bg-[#053724] transition-colors shadow-sm"
+                >
+                  <ChatBubbleLeftRightIcon className="h-4 w-4" />
+                  Tanya Petugas
+                </button>
               </div>
             </div>
 
-            {/* LEGEND / TABLE MINI */}
-            <div className="w-full md:w-auto">
-              <table className="w-full text-sm text-left">
-                <thead className="border-b border-gray-200">
-                  <tr>
-                    <th className="py-2 pr-10 font-semibold text-gray-700">Data Sekolah</th>
-                    <th className="py-2 font-semibold text-gray-700 text-right">Jumlah</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {statsData.map((item, index) => (
-                    <tr key={index}>
-                      <td className="py-3 flex items-center gap-3 text-gray-600">
-                        <span 
-                          className="w-3 h-3 rounded-full" 
-                          style={{ backgroundColor: item.color }}
-                        ></span>
-                        {item.label}
-                      </td>
-                      <td className="py-3 text-right font-medium text-gray-900">
-                        {item.count}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
           </div>
-        </section>
 
-        {/* SECTION 2: TABEL DAFTAR SEKOLAH */}
-        <section className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 overflow-hidden">
-          <h2 className="text-xl md:text-2xl font-bold text-[#124076] mb-6">
-            Daftar Sekolah di Wilayah Kelurahan Lenteng Agung
-          </h2>
-          
-          <div className="overflow-x-auto rounded-lg border border-gray-200">
-            <table className="w-full text-sm text-left text-gray-600 min-w-[800px]">
-              <thead className="bg-[#124076] text-white text-xs uppercase font-semibold">
-                <tr>
-                  <th className="px-4 py-4 w-12 text-center">No</th>
-                  <th className="px-4 py-4">Nama Sekolah</th>
-                  <th className="px-4 py-4">Alamat</th>
-                  <th className="px-4 py-4">Jenjang</th>
-                  <th className="px-4 py-4">No. Telepon</th>
-                  <th className="px-4 py-4">Kepala Sekolah / Rektor</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
-                {schoolList.map((school, index) => (
-                  <tr key={index} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 text-center font-medium">{school.no}</td>
-                    <td className="px-4 py-3 font-medium text-gray-900">{school.name}</td>
-                    <td className="px-4 py-3">{school.address}</td>
-                    <td className="px-4 py-3">
-                      <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-xs font-semibold border border-blue-100">
-                        {school.level}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-gray-500">{school.phone}</td>
-                    <td className="px-4 py-3 text-gray-900">{school.head}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          
-          {/* Pagination Dummy */}
-          <div className="mt-6 flex justify-end gap-2 text-sm">
-            <button className="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50">Prev</button>
-            <button className="px-3 py-1 border rounded bg-[#124076] text-white">1</button>
-            <button className="px-3 py-1 border rounded hover:bg-gray-50">2</button>
-            <button className="px-3 py-1 border rounded hover:bg-gray-50">Next</button>
-          </div>
-        </section>
-
-      </div>
+        </div>
+      </section>
     </main>
-  );
-}
-
-// --- KOMPONEN SVG DONUT CHART ---
-function DonutChart({ data, total }) {
-  let cumulativePercent = 0;
-
-  return (
-    <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
-      {data.map((item, index) => {
-        const percent = item.count / total;
-        const circumference = 2 * Math.PI * 40; // r=40
-        const strokeDasharray = `${percent * circumference} ${circumference}`;
-        const strokeDashoffset = -cumulativePercent * circumference;
-        
-        cumulativePercent += percent;
-
-        return (
-          <circle
-            key={index}
-            cx="50"
-            cy="50"
-            r="40"
-            fill="transparent"
-            stroke={item.color}
-            strokeWidth="12" // Ketebalan donut
-            strokeDasharray={strokeDasharray}
-            strokeDashoffset={strokeDashoffset}
-            className="transition-all duration-500 hover:opacity-80"
-          />
-        );
-      })}
-    </svg>
   );
 }

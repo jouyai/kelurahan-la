@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -9,7 +10,7 @@ import SejarahPage from "./pages/SejarahPage";
 import VisiMisiPage from "./pages/VisiMisiPage";
 import GeografisPage from "./pages/GeografisPage";
 import DataPendudukPage from "./pages/DataPendudukPage";
-import BeritaPage from "./pages/BeritaPage";
+import BeritaPage from "./pages/informasi/BeritaPage";
 import BeritaDetailPage from "./pages/public/BeritaDetailPage";
 import BeritaKesehatanPage from "./pages/berita/BeritaKesehatanPage";
 import StrukturOrganisasiPage from "./pages/StrukturOrganisasiPage";
@@ -23,6 +24,15 @@ import PernyataanHukumWarisanPage from "./pages/administrasi/PernyataanHukumWari
 import WargaNegaraAsingPage from "./pages/administrasi/WargaNegaraAsingPage";
 import DomisiliWargaLembagaPage from "./pages/kependudukan/DomisiliWargaLembagaPage";
 import PelayananUmumPage from "./pages/PelayananUmumPage";
+import RtRwPage from "./pages/pemerintahan/RtRwPage";
+import LmkPage from "./pages/pemerintahan/LmkPage";
+import FkdmPage from "./pages/pemerintahan/FkdmPage";
+import KegiatanKesraPage from "./pages/kesejahteraan/KegiatanKesraPage";
+import PanganMurahPage from "./pages/kesejahteraan/PanganMurahPage";
+import DasawismaPage from "./pages/kesejahteraan/DasawismaPage";
+import KegiatanEkbangPage from "./pages/ekbang/KegiatanEkbangPage";
+import PelatihanPage from "./pages/ekbang/PelatihanPage";
+import PenataanKawasanPage from "./pages/ekbang/PenataanKawasanPage";
 import PekerjaanUsahaPage from "./pages/layanan/umum/PekerjaanUsahaPage";
 import FasilitasPage from "./pages/informasi/FasilitasPage";
 import PendidikanPage from "./pages/informasi/PendidikanPage";
@@ -31,6 +41,16 @@ import JumantikPage from "./pages/informasi/JumantikPage";
 import DataBencanaPage from "./pages/informasi/DataBencanaPage";
 
 function App() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [startHumanMode, setStartHumanMode] = useState(false);
+  const [chatTopic, setChatTopic] = useState("");
+
+  const handleOpenChatStaff = (topic = "Layanan Umum") => {
+    setIsChatOpen(true);
+    setStartHumanMode(true);
+    setChatTopic(topic);
+  };
+
   return (
     <div className="min-h-screen bg-[#F5F7FA] font-sans">
       <Navbar />
@@ -54,15 +74,23 @@ function App() {
           path="/struktur-organisasi"
           element={<StrukturOrganisasiPage />}
         />
+
         <Route
           path="/layanan/administrasi"
-          element={<PelayananAdministrasiPage />}
+          element={
+            <PelayananAdministrasiPage onConnectStaff={handleOpenChatStaff} />
+          }
         />
+
         <Route path="/layanan/administrasi/tanah" element={<TanahPage />} />
+
         <Route
           path="/layanan/kependudukan"
-          element={<PelayananKependudukanPage />}
+          element={
+            <PelayananKependudukanPage onConnectStaff={handleOpenChatStaff} />
+          }
         />
+
         <Route
           path="/layanan/kependudukan/keterangan"
           element={<KeteranganKependudukanPage />}
@@ -87,11 +115,48 @@ function App() {
           path="/layanan/kependudukan/domisili"
           element={<DomisiliWargaLembagaPage />}
         />
-        <Route path="/layanan/pelayanan-umum" element={<PelayananUmumPage />} />
+
+        <Route
+          path="/layanan/pelayanan-umum"
+          element={<PelayananUmumPage onConnectStaff={handleOpenChatStaff} />}
+        />
+
         <Route
           path="/layanan/umum/pekerjaan-usaha"
           element={<PekerjaanUsahaPage />}
         />
+
+        <Route
+          path="/pemerintahan/rt-rw"
+          element={<RtRwPage onConnectStaff={handleOpenChatStaff} />}
+        />
+
+        <Route
+          path="/kesejahteraan/kegiatan-kesra"
+          element={<KegiatanKesraPage onConnectStaff={handleOpenChatStaff} />}
+        />
+
+        <Route
+          path="/ekonomi-pembangunan/kegiatan-ekbang"
+          element={<KegiatanEkbangPage onConnectStaff={handleOpenChatStaff} />}
+        />
+
+        <Route
+          path="/ekonomi-pembangunan/pelatihan"
+          element={<PelatihanPage />}
+        />
+        <Route
+          path="/ekonomi-pembangunan/penataan-kawasan"
+          element={<PenataanKawasanPage />}
+        />
+
+        <Route
+          path="/kesejahteraan/pangan-murah"
+          element={<PanganMurahPage />}
+        />
+        <Route path="/kesejahteraan/dasawisma" element={<DasawismaPage />} />
+        <Route path="/pemerintahan/lmk" element={<LmkPage />} />
+        <Route path="/pemerintahan/fkdm" element={<FkdmPage />} />
         <Route path="/berita/kesehatan" element={<BeritaKesehatanPage />} />
         <Route path="/berita" element={<BeritaPage />} />
         <Route path="/berita/detail/:id" element={<BeritaDetailPage />} />
@@ -103,7 +168,14 @@ function App() {
       </Routes>
 
       <Footer />
-      <LiveChatWidget />
+
+      <LiveChatWidget
+        isOpen={isChatOpen}
+        setIsOpen={setIsChatOpen}
+        startHumanMode={startHumanMode}
+        onResetHumanMode={() => setStartHumanMode(false)}
+        chatTopic={chatTopic}
+      />
     </div>
   );
 }
