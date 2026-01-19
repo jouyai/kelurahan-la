@@ -107,11 +107,13 @@ export default function LiveChatWidget() {
     if (data) setMessages(data);
   };
 
-  // 2. Realtime Listener
+  // 2. Realtime Listener (PESAN & STATUS SESI)
   useEffect(() => {
     if (!sessionId) return;
+
     const channel = supabase
       .channel(`room:${sessionId}`)
+      // A. Dengar Pesan Baru
       .on(
         "postgres_changes",
         {
@@ -128,7 +130,31 @@ export default function LiveChatWidget() {
           if (payload.new.sender === "system") setIsTyping(false);
         },
       )
+      // B. Dengar Perubahan Status Sesi (INI YANG KURANG)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "chat_sessions",
+          filter: `id=eq.${sessionId}`,
+        },
+        (payload) => {
+          // Jika status diubah jadi 'bot' atau 'resolved', matikan mode human
+          if (
+            payload.new.status === "bot" ||
+            payload.new.status === "resolved"
+          ) {
+            setIsHumanMode(false);
+          }
+          // Jika status diubah jadi 'live', nyalakan mode human
+          else if (payload.new.status === "live") {
+            setIsHumanMode(true);
+          }
+        },
+      )
       .subscribe();
+
     return () => {
       supabase.removeChannel(channel);
     };
@@ -232,15 +258,13 @@ export default function LiveChatWidget() {
     } catch (error) {
       console.error("AI Error:", error);
       setIsHumanMode(true);
-      await supabase
-        .from("chat_messages")
-        .insert([
-          {
-            session_id: sessionId,
-            sender: "system",
-            message: "Maaf, sistem sedang sibuk. Menghubungkan ke admin...",
-          },
-        ]);
+      await supabase.from("chat_messages").insert([
+        {
+          session_id: sessionId,
+          sender: "system",
+          message: "Maaf, sistem sedang sibuk. Menghubungkan ke admin...",
+        },
+      ]);
       await supabase
         .from("chat_sessions")
         .update({ status: "live", last_message_at: new Date() })
