@@ -2,9 +2,7 @@
 // DATA PUSAT (SINGLE SOURCE OF TRUTH)
 // ============================================================================
 // File ini berisi seluruh data persyaratan layanan Kelurahan Lenteng Agung.
-// Digunakan oleh:
-// 1. Halaman Website (Tanah, Pajak, Kependudukan, WNA, Warisan, Nikah).
-// 2. AI Chatbot (Gemini) agar pintar menjawab pertanyaan warga.
+// Digunakan oleh AI Chatbot (Gemini) untuk menjawab pertanyaan warga.
 // ============================================================================
 
 export const INFO_KELURAHAN = {
@@ -174,8 +172,7 @@ export const DATA_LAYANAN = [
   {
     id: "penduduk-2",
     kategori: "Kependudukan",
-    layanan:
-      "Pencatatan Register Surat Keterangan Bersih Diri untuk Sekolah Kedinasan",
+    layanan: "Pencatatan Register Surat Keterangan Bersih Diri untuk Sekolah Kedinasan",
     syarat: [
       "Surat permohonan kepada Lurah yang ditandatangani pemohon",
       "Surat pengantar RT/RW",
@@ -217,7 +214,7 @@ export const DATA_LAYANAN = [
   },
 
   // =========================================
-  // 5. KATEGORI: PERNYATAAN HUKUM & WARISAN (BARU)
+  // 5. KATEGORI: PERNYATAAN HUKUM & WARISAN
   // =========================================
   {
     id: "hukum-1",
@@ -260,7 +257,7 @@ export const DATA_LAYANAN = [
   },
 
   // =========================================
-  // 6. KATEGORI: STATUS PERKAWINAN (BARU)
+  // 6. KATEGORI: STATUS PERKAWINAN
   // =========================================
   {
     id: "nikah-1",
@@ -304,45 +301,75 @@ export const DATA_LAYANAN = [
 ];
 
 // ============================================================================
-// HELPER FUNCTION UNTUK AI
+// HELPER FUNCTION UNTUK AI (OPTIMIZED)
 // ============================================================================
-// Fungsi ini mengubah data object di atas menjadi Teks String panjang
-// agar bisa dibaca oleh Google Gemini sebagai "Context".
+// Fungsi ini menghasilkan System Prompt yang kuat agar AI patuh pada data.
 export const generateAIContext = () => {
   const today = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-  let context = `
-  =================================================================
-  SYSTEM PROMPT & KNOWLEDGE BASE
-  =================================================================
-  
-  TANGGAL HARI INI: ${today}
-
-  IDENTITAS INSTANSI:
-  - Nama: ${INFO_KELURAHAN.nama}
-  - Alamat: ${INFO_KELURAHAN.alamat}
-  - Jam Operasional: ${INFO_KELURAHAN.jamKerja}
-  - Kontak: ${INFO_KELURAHAN.kontak}
-
-  BERIKUT ADALAH DATABASE PERSYARATAN LAYANAN RESMI:
-  (Gunakan data di bawah ini sebagai satu-satunya sumber kebenaran saat menjawab pertanyaan warga)
-  `;
-
-  // Loop semua data dan susun jadi teks rapi
+  // Kita susun data layanan agar mudah dibaca AI berdasarkan kategori
+  let knowledgeText = "";
   DATA_LAYANAN.forEach((item, index) => {
-    context += `\n${index + 1}. LAYANAN: ${item.layanan} (Kategori: ${item.kategori})\n`;
-    context += `   PERSYARATAN DOKUMEN:\n`;
+    knowledgeText += `\n[${index + 1}] LAYANAN: ${item.layanan} (Kategori: ${item.kategori})\n`;
+    knowledgeText += `    SYARAT:\n`;
     item.syarat.forEach((s) => {
-      context += `   - ${s}\n`;
+      knowledgeText += `    - ${s}\n`;
     });
   });
 
-  context += `
-  \nINSTRUKSI KHUSUS UNTUK AI:
-  1. Jika user bertanya tentang suatu layanan, sebutkan persyaratan dokumennya dalam format poin-poin (bullet points) agar mudah dibaca.
-  2. Jika user bertanya hal di luar data di atas (misal: curhat, politik, atau layanan yang tidak ada di list), jawab dengan kode: HANDOVER_TO_HUMAN.
-  3. Bersikaplah ramah, formal, dan membantu selayaknya Customer Service pemerintahan.
-  `;
+  const systemPrompt = `
+=================================================================
+IDENTITAS & KONTEKS SISTEM
+=================================================================
+WAKTU SERVER: ${today}
 
-  return context;
+PERAN ANDA:
+Anda adalah Asisten Virtual (Customer Service) Resmi untuk ${INFO_KELURAHAN.nama}.
+Alamat: ${INFO_KELURAHAN.alamat}.
+Jam Kerja: ${INFO_KELURAHAN.jamKerja}.
+
+TUGAS UTAMA:
+Memberikan informasi persyaratan layanan kelurahan kepada warga dengan ramah, akurat, dan formal.
+
+=================================================================
+DATABASE PENGETAHUAN (SINGLE SOURCE OF TRUTH)
+=================================================================
+Gunakan data di bawah ini sebagai SATU-SATUNYA acuan jawaban Anda. 
+JANGAN MENGARANG ATAU MENAMBAH SYARAT SENDIRI.
+
+${knowledgeText}
+
+=================================================================
+ATURAN MENJAWAB (PENTING!)
+=================================================================
+1. GAYA BAHASA: 
+   Gunakan Bahasa Indonesia yang baik, sopan, namun tetap luwes (tidak kaku seperti robot). Panggil user dengan sebutan "Kak" atau "Bapak/Ibu".
+
+2. FORMAT JAWABAN:
+   Jika user bertanya syarat layanan, sebutkan dalam bentuk DAFTAR (Bullet Points) agar mudah dibaca di layar HP.
+
+3. UNKNOWN KNOWLEDGE:
+   Jika user bertanya layanan yang TIDAK ADA di database di atas, katakan:
+   "Mohon maaf, informasi mengenai layanan tersebut belum tersedia di sistem saya."
+   Lalu picu handover.
+
+4. HANDOVER PROTOCOL (PENGALIHAN KE MANUSIA):
+   Keluarkan output teks persis: "HANDOVER_TO_HUMAN" (tanpa tanda kutip, hanya teks itu saja atau disisipkan di akhir kalimat) jika:
+   - User marah-marah atau komplain.
+   - User meminta berbicara dengan "orang", "admin", "staf", "manusia", "petugas".
+   - User bertanya hal sensitif di luar layanan umum.
+   - User ingin melakukan pendaftaran online yang butuh verifikasi manual.
+
+5. BATASAN:
+   Anda tidak bisa memproses dokumen, anda hanya memberikan INFORMASI persyaratan.
+
+CONTOH INTERAKSI:
+User: "Syarat nikah apa aja?"
+Bot: "Untuk pengurusan Surat Pengantar Nikah, berikut persyaratannya ya Kak:
+- Surat Pengantar RT/RW
+- Fotokopi KTP & KK Calon Suami dan Istri
+- (dan seterusnya sesuai data)..."
+`;
+
+  return systemPrompt;
 };

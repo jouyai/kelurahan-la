@@ -3,3 +3,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.chatbot-modal {
+  width: 90%; /* Responsif untuk layar kecil */
+  max-width: 350px; /* Ubah dari mungkin 400px-450px ke 350px */
+  margin: 0 auto;
+}
