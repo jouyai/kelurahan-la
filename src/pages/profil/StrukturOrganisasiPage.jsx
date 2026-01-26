@@ -9,18 +9,28 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  Users, 
-  Network, 
-  UserCircle2, 
+import {
   Briefcase,
-  ChevronRight 
+  ChevronRight,
+  Loader2
 } from 'lucide-react';
+import { usePageContent, useData } from '../../hooks/useContent';
 
 const StrukturOrganisasiPage = () => {
-  // Data Dummy Pejabat (Silakan diganti dengan data asli)
-  const officials = [
+  const { content: pageContent, loading: contentLoading } = usePageContent('struktur-organisasi');
+  const { data: staffList, loading: staffLoading } = useData('staff');
+
+  const isLoading = contentLoading || staffLoading;
+
+  // Data Dummy Pejabat Fallback
+  const officials = staffList.length > 0 ? staffList.map(s => ({
+    role: s.position,
+    name: s.name,
+    nip: s.nip || "NIP Belum Tersedia",
+    desc: s.description || "",
+    color: s.color || "bg-slate-600",
+    image: s.image_url
+  })) : [
     {
       role: "Lurah",
       name: "H. Ahmad Syafi'i, S.Sos",
@@ -58,25 +68,33 @@ const StrukturOrganisasiPage = () => {
     }
   ];
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
-      
+
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10" 
-             style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
+        <div className="absolute inset-0 opacity-10"
+          style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Profil Kelurahan
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Struktur Organisasi
+            {pageContent.hero_title || "Struktur Organisasi"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Mengenal jajaran pimpinan dan staf yang berdedikasi melayani masyarakat Kelurahan Lenteng Agung.
+            {pageContent.hero_description || "Mengenal jajaran pimpinan dan staf yang berdedikasi melayani masyarakat Kelurahan Lenteng Agung."}
           </p>
         </div>
       </div>
@@ -92,19 +110,19 @@ const StrukturOrganisasiPage = () => {
 
       {/* --- MAIN CONTENT --- */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        
+
         {/* BAGAN VISUAL */}
         <section className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
           <div className="inline-flex items-center justify-center p-3 bg-[#0B3D2E]/10 rounded-full mb-4">
             <Network className="w-8 h-8 text-[#0B3D2E]" />
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-6">Bagan Struktur Organisasi</h2>
-          
+
           <div className="relative overflow-hidden rounded-xl border-2 border-slate-100 bg-slate-50">
             {/* Ganti src dengan gambar struktur_kel.png yang ada di folder public */}
-            <img 
-              src="/struktur_kel.png" 
-              alt="Bagan Struktur Organisasi" 
+            <img
+              src={pageContent.bagan_image_url || "/struktur_kel.png"}
+              alt="Bagan Struktur Organisasi"
               className="w-full h-auto object-contain mx-auto hover:scale-105 transition-transform duration-500 cursor-zoom-in"
               onError={(e) => {
                 e.target.style.display = 'none'; // Sembunyikan jika error
@@ -125,8 +143,8 @@ const StrukturOrganisasiPage = () => {
         {/* DAFTAR PEJABAT */}
         <section>
           <div className="flex items-center gap-3 mb-8">
-             <div className="h-8 w-1 bg-amber-500 rounded-full"></div>
-             <h2 className="text-2xl font-bold text-slate-900">Pejabat Struktural</h2>
+            <div className="h-8 w-1 bg-amber-500 rounded-full"></div>
+            <h2 className="text-2xl font-bold text-slate-900">Pejabat Struktural</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -135,7 +153,7 @@ const StrukturOrganisasiPage = () => {
                 <div className={`h-2 w-full ${official.color}`}></div>
                 <CardHeader className="flex flex-row items-center gap-4 pb-2">
                   <Avatar className="h-14 w-14 border-2 border-white shadow-sm bg-slate-100">
-                    <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${official.name}`} />
+                    <AvatarImage src={official.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${official.name}`} />
                     <AvatarFallback className="bg-[#0B3D2E] text-white">
                       {official.name.charAt(0)}
                     </AvatarFallback>
@@ -175,25 +193,25 @@ const StrukturOrganisasiPage = () => {
                 </Link>
               </Button>
             </div>
-            
+
             <div className="grid gap-4">
               <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10 flex gap-4 items-start">
                 <Briefcase className="w-6 h-6 text-amber-400 shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-bold text-lg mb-1">Pelaksanaan Pemerintahan</h4>
-                  <p className="text-sm text-slate-300">Melaksanakan putusan tingkat kecamatan dan kota serta pelayanan administrasi.</p>
+                  <h4 className="font-bold text-lg mb-1">{pageContent.tugas_title_1 || "Pelaksanaan Pemerintahan"}</h4>
+                  <p className="text-sm text-slate-300">{pageContent.tugas_desc_1 || "Melaksanakan putusan tingkat kecamatan and kota serta pelayanan administrasi."}</p>
                 </div>
               </div>
               <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10 flex gap-4 items-start">
                 <Users className="w-6 h-6 text-amber-400 shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-bold text-lg mb-1">Pemberdayaan Masyarakat</h4>
-                  <p className="text-sm text-slate-300">Mendorong partisipasi warga dalam pembangunan fisik dan sosial.</p>
+                  <h4 className="font-bold text-lg mb-1">{pageContent.tugas_title_2 || "Pemberdayaan Masyarakat"}</h4>
+                  <p className="text-sm text-slate-300">{pageContent.tugas_desc_2 || "Mendorong partisipasi warga dalam pembangunan fisik and sosial."}</p>
                 </div>
               </div>
             </div>
           </div>
-          
+
           {/* Decorative Circle */}
           <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-amber-500 rounded-full opacity-10 blur-3xl"></div>
         </section>

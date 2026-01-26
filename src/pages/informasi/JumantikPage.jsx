@@ -17,17 +17,34 @@ import {
 // --- ICONS ---
 import {
   ArrowLeft,
-  ShieldCheck,
-  Trash2,
-  Home,
-  ClipboardCheck,
-  AlertTriangle,
-  MessageSquare,
-  CheckCircle2,
   CalendarDays,
+  CheckCircle2,
+  ClipboardCheck,
+  ShieldCheck,
+  Home,
+  Trash2,
   Activity,
+  AlertTriangle,
+  Heart,
+  Sparkles,
+  Users,
+  Building2,
+  Hand,
   FileText,
+  Loader2
 } from "lucide-react";
+import { usePageContent, useData } from "../../hooks/useContent";
+
+const getIconComponent = (iconName) => {
+  switch (iconName) {
+    case 'Home': return <Home className="h-8 w-8 text-blue-600" />;
+    case 'ShieldCheck': return <ShieldCheck className="h-8 w-8 text-green-600" />;
+    case 'Trash2': return <Trash2 className="h-8 w-8 text-orange-600" />;
+    case 'Activity': return <Activity className="h-5 w-5 text-orange-500" />;
+    case 'AlertTriangle': return <AlertTriangle className="h-4 w-4 mr-2" />;
+    default: return <CheckCircle2 className="h-4 w-4 text-[#0B3D2E]" />;
+  }
+};
 
 // Data Edukasi 3M Plus
 const steps3M = [

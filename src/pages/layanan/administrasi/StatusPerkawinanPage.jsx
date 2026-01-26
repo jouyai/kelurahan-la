@@ -10,41 +10,55 @@ import { Separator } from "@/components/ui/separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  Heart, 
-  HeartHandshake, 
-  FileCheck, 
-  CheckCircle2, 
-  AlertCircle,
+import {
   FileText,
-  Info
+  Info,
+  Loader2
 } from 'lucide-react';
+import { usePageContent, useData } from "../../../hooks/useContent";
 
 export default function StatusPerkawinanPage() {
-  // Filter Data: Ambil hanya kategori "Status Perkawinan"
-  // Pastikan DATA_LAYANAN memiliki item dengan kategori ini
-  const layananNikah = DATA_LAYANAN.filter(item => item.kategori === "Status Perkawinan");
+  const { content: pageContent, loading: contentLoading } = usePageContent('layanan-nikah');
+  const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
+
+  const isLoading = contentLoading || layananLoading;
+
+  // Filter Data: Ambil hanya kategori "Pernikahan"
+  const layananNikah = dbLayanan.length > 0
+    ? dbLayanan.filter(item => item.data?.kategori === "Pernikahan").map(item => ({
+      id: item.id.toString(),
+      layanan: item.title,
+      syarat: item.data?.syarat || []
+    }))
+    : [];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pt-24 pb-12">
-      
+
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         {/* Pattern Heart */}
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <Heart className="w-64 h-64 text-white" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-pink-400 text-pink-300 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Administrasi Sipil
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Layanan Status Perkawinan
+            {pageContent.hero_title || "Layanan Status Perkawinan"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Informasi lengkap persyaratan pengurusan surat pengantar nikah (N1-N4) dan dokumen status sipil lainnya.
+            {pageContent.hero_description || "Informasi lengkap persyaratan pengurusan surat pengantar nikah (N1-N4) and dokumen status sipil lainnya."}
           </p>
         </div>
       </div>
@@ -61,10 +75,10 @@ export default function StatusPerkawinanPage() {
       {/* --- MAIN CONTENT --- */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          
+
           {/* LEFT COLUMN: DAFTAR LAYANAN */}
           <div className="lg:col-span-2 space-y-8">
-            
+
             {/* Alert Info Penting */}
             <Alert className="bg-pink-50 border-pink-200 text-pink-900">
               <AlertCircle className="h-4 w-4 text-pink-600" />
@@ -75,10 +89,10 @@ export default function StatusPerkawinanPage() {
             </Alert>
 
             <div className="flex items-center gap-3 mb-2">
-               <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
-                 <FileText className="h-6 w-6 text-[#0B3D2E]" />
-               </div>
-               <h2 className="text-2xl font-bold text-slate-900">Persyaratan Dokumen</h2>
+              <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
+                <FileText className="h-6 w-6 text-[#0B3D2E]" />
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900">Persyaratan Dokumen</h2>
             </div>
 
             {layananNikah.length > 0 ? (
@@ -131,7 +145,7 @@ export default function StatusPerkawinanPage() {
 
           {/* RIGHT COLUMN: SIDEBAR INFO */}
           <div className="space-y-6">
-            
+
             {/* Widget Catin */}
             <Card className="bg-sky-50 border-sky-200">
               <CardHeader className="pb-3">

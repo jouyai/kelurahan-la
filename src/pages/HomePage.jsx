@@ -9,11 +9,14 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // --- ICONS ---
-import { ArrowRight, Building2, MapPin, Newspaper, Phone, ChevronRight, Activity, HardHat, Gavel } from 'lucide-react';
+import { ArrowRight, Building2, MapPin, Newspaper, Phone, ChevronRight, Activity, HardHat, Gavel, Loader2 } from 'lucide-react';
+import { usePageContent } from '../hooks/useContent';
 
 const HomePage = () => {
   const [beritaTerkini, setBeritaTerkini] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingNews, setLoadingNews] = useState(true);
+
+  const { content: pageContent, loading: contentLoading } = usePageContent('home');
 
   // Warna Brand Utama (Bisa dipakai sebagai variabel jika mau)
   const BRAND_COLOR = "bg-[#0B3D2E]";
@@ -25,7 +28,7 @@ const HomePage = () => {
 
   const fetchBeritaHome = async () => {
     try {
-      setLoading(true);
+      setLoadingNews(true);
       const { data: kesehatan } = await supabase.from('berita').select('*').ilike('kategori', '%kesehatan%').limit(1).order('created_at', { ascending: false });
       const { data: pembangunan } = await supabase.from('berita').select('*').ilike('kategori', '%kesra%').limit(1).order('created_at', { ascending: false });
       const { data: pemerintahan } = await supabase.from('berita').select('*').ilike('kategori', '%ekbang%').limit(1).order('created_at', { ascending: false });
@@ -35,7 +38,7 @@ const HomePage = () => {
     } catch (error) {
       console.error("Error fetching news:", error);
     } finally {
-      setLoading(false);
+      setLoadingNews(false);
     }
   };
 
@@ -52,16 +55,16 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
-      
+
       {/* --- HERO SECTION --- */}
       <section className="relative h-[650px] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/bg_hero.png" 
-            alt="Kantor Kelurahan" 
+          <img
+            src="/bg_hero.png"
+            alt="Kantor Kelurahan"
             className="w-full h-full object-cover"
-            onError={(e) => e.target.src = 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070&auto=format&fit=crop'} 
+            onError={(e) => e.target.src = 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070&auto=format&fit=crop'}
           />
           {/* Overlay Gradient menggunakan warna #0B3D2E */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#0B3D2E]/95 via-[#0B3D2E]/70 to-[#0B3D2E]/40"></div>
@@ -72,15 +75,15 @@ const HomePage = () => {
           {/* <Badge variant="outline" className="border-amber-400 text-amber-400 px-4 py-1.5 text-sm mb-4 bg-[#0B3D2E]/50 backdrop-blur-sm tracking-wide uppercase">
             Portal Resmi Pemerintahan
           </Badge> */}
-          
+
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight drop-shadow-lg">
-            Kelurahan <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500">Lenteng Agung</span>
+            {pageContent.hero_title_part1 || "Kelurahan"} <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500">{pageContent.hero_title_accent || "Lenteng Agung"}</span>
           </h1>
-          
+
           <p className="text-lg md:text-xl text-slate-100 max-w-2xl mx-auto leading-relaxed drop-shadow-md font-light">
-            Mewujudkan tata kelola pemerintahan yang <span className="font-semibold text-amber-300">Hijau, Maju, dan Berintegritas</span> untuk kesejahteraan masyarakat.
+            {pageContent.hero_description || "Mewujudkan tata kelola pemerintahan yang Hijau, Maju, dan Berintegritas untuk kesejahteraan masyarakat."}
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
             <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-[#0B3D2E] font-bold text-md h-12 px-8 shadow-xl border border-amber-400" asChild>
               <Link to="/layanan/pelayanan-umum">
@@ -95,7 +98,7 @@ const HomePage = () => {
             </Button>
           </div>
         </div>
-        
+
         {/* Hiasan Bawah Hero */}
         <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-slate-50 to-transparent"></div>
       </section>
@@ -104,7 +107,7 @@ const HomePage = () => {
       <section className="py-20 px-4 relative overflow-hidden">
         {/* Background Pattern Halus */}
         <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-           <img src="/logo_kel.png" className="w-96 h-96 grayscale" alt="pattern" />
+          <img src="/logo_kel.png" className="w-96 h-96 grayscale" alt="pattern" />
         </div>
 
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
@@ -115,14 +118,13 @@ const HomePage = () => {
                 Profil Wilayah
               </div>
               <h2 className="text-4xl font-bold text-slate-900 leading-tight">
-                Membangun Lingkungan <br/>
-                yang <span className={`underline decoration-amber-500 decoration-4 underline-offset-4 ${TEXT_BRAND}`}>Asri & Harmonis</span>
+                {pageContent.about_title || "Membangun Lingkungan yang Asri & Harmonis"}
               </h2>
               <p className="text-muted-foreground text-lg leading-relaxed text-justify">
-                Kelurahan Lenteng Agung terus berinovasi dalam menghadirkan pelayanan publik yang prima. Dengan semangat gotong royong, kami mengintegrasikan teknologi dan kearifan lokal untuk menciptakan lingkungan yang nyaman bagi seluruh warga.
+                {pageContent.about_text || "Kelurahan Lenteng Agung terus berinovasi dalam menghadirkan pelayanan publik yang prima. Dengan semangat gotong royong, kami mengintegrasikan teknologi dan kearifan lokal untuk menciptakan lingkungan yang nyaman bagi seluruh warga."}
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <Card className="border-l-4 border-l-[#0B3D2E] shadow-sm hover:shadow-md transition-shadow">
                 <CardHeader className="pb-2">
@@ -144,12 +146,12 @@ const HomePage = () => {
               </Card>
             </div>
           </div>
-          
+
           <div className="order-1 lg:order-2">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border-8 border-white">
-              <img 
-                src="/about_kel.png" 
-                alt="Tentang Kelurahan" 
+              <img
+                src="/about_kel.png"
+                alt="Tentang Kelurahan"
                 className="w-full h-full object-cover scale-100 hover:scale-105 transition-transform duration-700"
                 onError={(e) => e.target.src = 'https://images.unsplash.com/photo-1577412647305-991150c7d163?q=80&w=2070'}
               />
@@ -176,7 +178,7 @@ const HomePage = () => {
             </Button>
           </div>
 
-          {loading ? (
+          {loadingNews || contentLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[1, 2, 3].map((n) => (
                 <Card key={n} className="border-none shadow-sm bg-white">
@@ -195,8 +197,8 @@ const HomePage = () => {
                 <Card key={item.id} className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 flex flex-col bg-white">
                   {/* Image */}
                   <div className="h-60 overflow-hidden relative bg-slate-200">
-                    <img 
-                      src={item.gambar_url} 
+                    <img
+                      src={item.gambar_url}
                       alt={item.judul}
                       className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                       onError={(e) => e.target.src = 'https://via.placeholder.com/600x400?text=No+Image'}
@@ -221,19 +223,19 @@ const HomePage = () => {
                       </Link>
                     </CardTitle>
                   </CardHeader>
-                  
+
                   <CardContent className="pb-4 flex-1">
                     <p className="text-muted-foreground text-sm line-clamp-3">
-                       {item.isi?.replace(/<[^>]*>?/gm, '').substring(0, 100)}...
+                      {item.isi?.replace(/<[^>]*>?/gm, '').substring(0, 100)}...
                     </p>
                   </CardContent>
 
                   <CardFooter className="pt-4 border-t border-slate-100 p-6 bg-slate-50 group-hover:bg-[#0B3D2E]/5 transition-colors">
-                    <Link 
-                      to={`/berita/${item.id}`} 
+                    <Link
+                      to={`/berita/${item.id}`}
                       className={`text-sm font-bold ${TEXT_BRAND} flex items-center group/link`}
                     >
-                      Baca Selengkapnya 
+                      Baca Selengkapnya
                       <ArrowRight className="ml-2 w-4 h-4 transform group-hover/link:translate-x-1 transition-transform text-amber-500" />
                     </Link>
                   </CardFooter>

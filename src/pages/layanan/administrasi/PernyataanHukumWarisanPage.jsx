@@ -10,40 +10,54 @@ import { Separator } from "@/components/ui/separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  Scale, 
-  FileText, 
-  CheckCircle2, 
-  AlertTriangle,
-  Users,
-  Info,
-  ShieldCheck
+import {
+  ShieldCheck,
+  Loader2
 } from 'lucide-react';
+import { usePageContent, useData } from "../../../hooks/useContent";
 
 export default function PernyataanHukumWarisanPage() {
-  // Filter Data: Ambil hanya kategori "Hukum & Warisan"
-  const layananHukum = DATA_LAYANAN.filter(item => item.kategori === "Hukum & Warisan");
+  const { content: pageContent, loading: contentLoading } = usePageContent('layanan-waris');
+  const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
+
+  const isLoading = contentLoading || layananLoading;
+
+  // Filter Data: Ambil hanya kategori "Pertanahan & Waris"
+  const layananHukum = dbLayanan.length > 0
+    ? dbLayanan.filter(item => item.data?.kategori === "Pertanahan & Waris").map(item => ({
+      id: item.id.toString(),
+      layanan: item.title,
+      syarat: item.data?.syarat || []
+    }))
+    : [];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pt-24 pb-12">
-      
+
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         {/* Pattern Scale/Law */}
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <Scale className="w-64 h-64 text-white" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Legalisasi & Hukum
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Pernyataan Hukum & Warisan
+            {pageContent.hero_title || "Pernyataan Hukum & Warisan"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Panduan persyaratan administrasi untuk Surat Keterangan Waris, Pernyataan Gaib, dan dokumen hukum lainnya.
+            {pageContent.hero_description || "Panduan persyaratan administrasi untuk Surat Keterangan Waris, Pernyataan Gaib, and dokumen hukum lainnya."}
           </p>
         </div>
       </div>
@@ -60,10 +74,10 @@ export default function PernyataanHukumWarisanPage() {
       {/* --- MAIN CONTENT --- */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          
+
           {/* LEFT COLUMN: DAFTAR LAYANAN */}
           <div className="lg:col-span-2 space-y-8">
-            
+
             {/* Alert Info Penting Waris */}
             <Alert className="bg-amber-50 border-amber-200 text-amber-900">
               <AlertTriangle className="h-4 w-4 text-amber-600" />
@@ -74,10 +88,10 @@ export default function PernyataanHukumWarisanPage() {
             </Alert>
 
             <div className="flex items-center gap-3 mb-2">
-               <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
-                 <FileText className="h-6 w-6 text-[#0B3D2E]" />
-               </div>
-               <h2 className="text-2xl font-bold text-slate-900">Daftar Persyaratan</h2>
+              <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
+                <FileText className="h-6 w-6 text-[#0B3D2E]" />
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900">Daftar Persyaratan</h2>
             </div>
 
             {layananHukum.length > 0 ? (
@@ -130,7 +144,7 @@ export default function PernyataanHukumWarisanPage() {
 
           {/* RIGHT COLUMN: SIDEBAR INFO */}
           <div className="space-y-6">
-            
+
             {/* Widget Info SKCK */}
             <Card className="bg-blue-50 border-blue-200">
               <CardHeader className="pb-3">
@@ -140,7 +154,7 @@ export default function PernyataanHukumWarisanPage() {
               </CardHeader>
               <CardContent className="text-sm text-blue-900/80 space-y-3">
                 <p>
-                  Kelurahan hanya menerbitkan <strong>Surat Pengantar</strong>. 
+                  Kelurahan hanya menerbitkan <strong>Surat Pengantar</strong>.
                 </p>
                 <p>
                   Proses penerbitan SKCK selanjutnya dilakukan di <strong>Polsek</strong> (untuk keperluan swasta/umum) atau <strong>Polres</strong> (untuk CPNS/BUMN/TNI-Polri).

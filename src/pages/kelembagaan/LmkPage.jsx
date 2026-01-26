@@ -8,45 +8,64 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  Users, 
-  Megaphone, 
-  MapPin, 
-  MessageSquare 
+import {
+  ArrowLeft,
+  Users,
+  Megaphone,
+  MapPin,
+  MessageSquare,
+  Loader2
 } from 'lucide-react';
+import { usePageContent, useData } from "../../hooks/useContent";
 
 // Dummy Data Anggota LMK
-const listLMK = [
-  { id: 1, name: "Bapak Sutrisno", jabatan: "Ketua LMK", wilayah: "Kelurahan Lenteng Agung", color: "bg-blue-100 text-blue-700" },
-  { id: 2, name: "Ibu Nurhayati", jabatan: "Wakil Ketua", wilayah: "Kelurahan Lenteng Agung", color: "bg-purple-100 text-purple-700" },
-  { id: 3, name: "Bapak Hartono", jabatan: "Anggota", wilayah: "Perwakilan RW 01", color: "bg-gray-100 text-gray-700" },
-  { id: 4, name: "Bapak Syamsudin", jabatan: "Anggota", wilayah: "Perwakilan RW 02", color: "bg-gray-100 text-gray-700" },
-  { id: 5, name: "Ibu Dewi Kartika", jabatan: "Anggota", wilayah: "Perwakilan RW 03", color: "bg-gray-100 text-gray-700" },
-  { id: 6, name: "Bapak Rahmad", jabatan: "Anggota", wilayah: "Perwakilan RW 04", color: "bg-gray-100 text-gray-700" },
-  { id: 7, name: "Bapak Taufik", jabatan: "Anggota", wilayah: "Perwakilan RW 05", color: "bg-gray-100 text-gray-700" },
-];
-
 export default function LmkPage() {
+  const { content: pageContent, loading: contentLoading } = usePageContent('lmk');
+  const { data: dbLMK, loading: lmkLoading } = useData('items', { type: 'lmk' });
+
+  const isLoading = contentLoading || lmkLoading;
+
+  const listLMK = dbLMK.length > 0 ? dbLMK.map(l => ({
+    id: l.id,
+    name: l.title,
+    jabatan: l.data?.jabatan || "Anggota",
+    wilayah: l.description || "",
+  })) : [
+    { id: 1, name: "Bapak Sutrisno", jabatan: "Ketua LMK", wilayah: "Kelurahan Lenteng Agung", color: "bg-blue-100 text-blue-700" },
+    { id: 2, name: "Ibu Nurhayati", jabatan: "Wakil Ketua", wilayah: "Kelurahan Lenteng Agung", color: "bg-purple-100 text-purple-700" },
+    { id: 3, name: "Bapak Hartono", jabatan: "Anggota", wilayah: "Perwakilan RW 01", color: "bg-gray-100 text-gray-700" },
+    { id: 4, name: "Bapak Syamsudin", jabatan: "Anggota", wilayah: "Perwakilan RW 02", color: "bg-gray-100 text-gray-700" },
+    { id: 5, name: "Ibu Dewi Kartika", jabatan: "Anggota", wilayah: "Perwakilan RW 03", color: "bg-gray-100 text-gray-700" },
+    { id: 6, name: "Bapak Rahmad", jabatan: "Anggota", wilayah: "Perwakilan RW 04", color: "bg-gray-100 text-gray-700" },
+    { id: 7, name: "Bapak Taufik", jabatan: "Anggota", wilayah: "Perwakilan RW 05", color: "bg-gray-100 text-gray-700" },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
-      
+
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         {/* Pattern Megaphone/Voice */}
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <Megaphone className="w-64 h-64 text-white" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Lembaga Kemasyarakatan
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Lembaga Musyawarah Kelurahan
+            {pageContent.hero_title || "Lembaga Musyawarah Kelurahan"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Mitra strategis Lurah dalam menampung dan menyalurkan aspirasi masyarakat serta meningkatkan partisipasi pembangunan.
+            {pageContent.hero_description || "Mitra strategis Lurah dalam menampung and menyalurkan aspirasi masyarakat serta meningkatkan partisipasi pembangunan."}
           </p>
         </div>
       </div>
@@ -63,14 +82,14 @@ export default function LmkPage() {
       {/* --- MAIN CONTENT --- */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          
+
           {/* LEFT COLUMN: LIST ANGGOTA */}
           <div className="lg:col-span-2 space-y-8">
             <div className="flex items-center gap-3 mb-2">
-               <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
-                 <Users className="h-6 w-6 text-[#0B3D2E]" />
-               </div>
-               <h2 className="text-2xl font-bold text-slate-900">Daftar Anggota LMK</h2>
+              <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
+                <Users className="h-6 w-6 text-[#0B3D2E]" />
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900">Daftar Anggota LMK</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -83,14 +102,14 @@ export default function LmkPage() {
                         {member.name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    
+
                     <h3 className="font-bold text-slate-800 text-lg mb-1 group-hover:text-[#0B3D2E] transition-colors">
                       {member.name}
                     </h3>
                     <Badge variant="secondary" className="mb-3 bg-slate-100 text-slate-600 font-normal">
                       {member.jabatan}
                     </Badge>
-                    
+
                     <div className="flex items-center gap-1 text-xs text-slate-400 mt-auto">
                       <MapPin className="h-3 w-3" />
                       <span>{member.wilayah}</span>
@@ -103,7 +122,7 @@ export default function LmkPage() {
 
           {/* RIGHT COLUMN: SIDEBAR INFO */}
           <div className="space-y-6">
-            
+
             {/* Widget Fungsi LMK */}
             <Card className="bg-white border-slate-200 shadow-sm sticky top-24">
               <CardHeader className="pb-3">
@@ -115,7 +134,7 @@ export default function LmkPage() {
                 <p className="text-sm text-slate-600 leading-relaxed text-justify">
                   LMK bertugas menampung aspirasi masyarakat, memberikan masukan kepada Lurah, dan menggali potensi swadaya masyarakat dalam pembangunan wilayah.
                 </p>
-                
+
                 <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
                   <h5 className="font-bold text-blue-800 text-xs uppercase mb-2">Tugas Utama</h5>
                   <ul className="list-disc ml-4 text-xs text-blue-700 space-y-1">

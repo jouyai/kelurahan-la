@@ -8,46 +8,64 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  ShieldAlert, 
-  Eye, 
-  AlertTriangle,
+import {
   Siren,
-  MapPin
+  MapPin,
+  Loader2,
+  ShieldAlert,
+  Eye,
+  AlertTriangle
 } from 'lucide-react';
+import { usePageContent, useData } from "../../hooks/useContent";
 
 // Dummy Data Anggota FKDM
-const listFKDM = [
-  { id: 1, name: "Bapak H. Zamroni", jabatan: "Ketua FKDM", wilayah: "Kelurahan Lenteng Agung", color: "bg-red-100 text-red-700" },
-  { id: 2, name: "Bapak Dedi Suryadi", jabatan: "Wakil Ketua", wilayah: "Kelurahan Lenteng Agung", color: "bg-orange-100 text-orange-700" },
-  { id: 3, name: "Ibu Siti Aminah", jabatan: "Sekretaris", wilayah: "Kelurahan Lenteng Agung", color: "bg-blue-100 text-blue-700" },
-  { id: 4, name: "Bapak Rahmat Hidayat", jabatan: "Anggota", wilayah: "Bidang Pemerintahan", color: "bg-gray-100 text-gray-700" },
-  { id: 5, name: "Bapak Joko Susilo", jabatan: "Anggota", wilayah: "Bidang Keamanan", color: "bg-gray-100 text-gray-700" },
-  { id: 6, name: "Ibu Wahyuni", jabatan: "Anggota", wilayah: "Bidang Kesejahteraan", color: "bg-gray-100 text-gray-700" },
-  { id: 7, name: "Bapak Anton", jabatan: "Anggota", wilayah: "Bidang Pembangunan", color: "bg-gray-100 text-gray-700" },
-];
-
 export default function FkdmPage() {
+  const { content: pageContent, loading: contentLoading } = usePageContent('fkdm');
+  const { data: dbFKDM, loading: fkdmLoading } = useData('items', { type: 'fkdm' });
+
+  const isLoading = contentLoading || fkdmLoading;
+
+  const listFKDM = dbFKDM.length > 0 ? dbFKDM.map(f => ({
+    id: f.id,
+    name: f.title,
+    jabatan: f.data?.jabatan || "Anggota",
+    wilayah: f.description || "",
+  })) : [
+    { id: 1, name: "Bapak H. Zamroni", jabatan: "Ketua FKDM", wilayah: "Kelurahan Lenteng Agung", color: "bg-red-100 text-red-700" },
+    { id: 2, name: "Bapak Dedi Suryadi", jabatan: "Wakil Ketua", wilayah: "Kelurahan Lenteng Agung", color: "bg-orange-100 text-orange-700" },
+    { id: 3, name: "Ibu Siti Aminah", jabatan: "Sekretaris", wilayah: "Kelurahan Lenteng Agung", color: "bg-blue-100 text-blue-700" },
+    { id: 4, name: "Bapak Rahmat Hidayat", jabatan: "Anggota", wilayah: "Bidang Pemerintahan", color: "bg-gray-100 text-gray-700" },
+    { id: 5, name: "Bapak Joko Susilo", jabatan: "Anggota", wilayah: "Bidang Keamanan", color: "bg-gray-100 text-gray-700" },
+    { id: 6, name: "Ibu Wahyuni", jabatan: "Anggota", wilayah: "Bidang Kesejahteraan", color: "bg-gray-100 text-gray-700" },
+    { id: 7, name: "Bapak Anton", jabatan: "Anggota", wilayah: "Bidang Pembangunan", color: "bg-gray-100 text-gray-700" },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
-      
+
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         {/* Pattern Shield */}
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <ShieldAlert className="w-64 h-64 text-white" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-red-400 text-red-300 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Keamanan & Ketertiban
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Forum Kewaspadaan Dini Masyarakat
+            {pageContent.hero_title || "Forum Kewaspadaan Dini Masyarakat"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Mendeteksi potensi ancaman, tantangan, hambatan, dan gangguan di lingkungan masyarakat sejak dini.
+            {pageContent.hero_description || "Mendeteksi potensi ancaman, tantangan, hambatan, and gangguan di lingkungan masyarakat sejak dini."}
           </p>
         </div>
       </div>
@@ -64,14 +82,14 @@ export default function FkdmPage() {
       {/* --- MAIN CONTENT --- */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          
+
           {/* LEFT COLUMN: LIST ANGGOTA */}
           <div className="lg:col-span-2 space-y-8">
             <div className="flex items-center gap-3 mb-2">
-               <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
-                 <ShieldAlert className="h-6 w-6 text-[#0B3D2E]" />
-               </div>
-               <h2 className="text-2xl font-bold text-slate-900">Anggota FKDM</h2>
+              <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
+                <ShieldAlert className="h-6 w-6 text-[#0B3D2E]" />
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900">Anggota FKDM</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -84,14 +102,14 @@ export default function FkdmPage() {
                         {member.name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    
+
                     <h3 className="font-bold text-slate-800 text-lg mb-1 group-hover:text-red-600 transition-colors">
                       {member.name}
                     </h3>
                     <Badge variant="outline" className="mb-3 border-slate-200 text-slate-600 font-normal">
                       {member.jabatan}
                     </Badge>
-                    
+
                     <div className="flex items-center gap-1 text-xs text-slate-400 mt-auto">
                       <MapPin className="h-3 w-3" />
                       <span>{member.wilayah}</span>
@@ -104,7 +122,7 @@ export default function FkdmPage() {
 
           {/* RIGHT COLUMN: SIDEBAR INFO */}
           <div className="space-y-6">
-            
+
             {/* Widget Deteksi Dini */}
             <Card className="bg-white border-slate-200 shadow-sm sticky top-24">
               <CardHeader className="pb-3">
@@ -116,7 +134,7 @@ export default function FkdmPage() {
                 <p className="text-sm text-slate-600 leading-relaxed text-justify">
                   FKDM membantu pemerintah dalam deteksi dini potensi bencana alam, gesekan sosial, dan gangguan keamanan agar dapat dicegah sebelum meluas.
                 </p>
-                
+
                 <div className="bg-red-50 p-4 rounded-lg border border-red-100">
                   <h5 className="font-bold text-red-800 text-xs uppercase mb-2 flex items-center gap-2">
                     <AlertTriangle className="h-3 w-3" /> Fokus Pengawasan

@@ -9,42 +9,53 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  Globe2, 
-  CheckCircle2, 
-  AlertCircle, 
-  Plane, 
-  FileBadge, 
-  Info,
-  CreditCard // Ganti Passport dengan CreditCard (representasi ID/KITAS)
+import {
+  CreditCard,
+  Loader2
 } from 'lucide-react';
+import { usePageContent, useData } from "../../../hooks/useContent";
 
 export default function WargaNegaraAsingPage() {
+  const { content: pageContent, loading: contentLoading } = usePageContent('layanan-wna');
+  const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
+
+  const isLoading = contentLoading || layananLoading;
+
   // Filter Data: Ambil hanya kategori "Warga Negara Asing"
-  const layananWNA = DATA_LAYANAN.filter(item => 
-    item.kategori === "Warga Negara Asing" || item.kategori === "WNA"
-  );
+  const layananWNA = dbLayanan.length > 0
+    ? dbLayanan.filter(item => item.data?.kategori === "Warga Negara Asing" || item.data?.kategori === "WNA").map(item => ({
+      layanan: item.title,
+      syarat: item.data?.syarat || []
+    }))
+    : [];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pt-24 pb-12">
-      
+
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         {/* Pattern Globe */}
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <Globe2 className="w-64 h-64 text-white" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-purple-400 text-purple-300 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Layanan Internasional
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Layanan Warga Negara Asing
+            {pageContent.hero_title || "Layanan Warga Negara Asing"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Informasi persyaratan administrasi kependudukan bagi WNA (SKTT, SKSKPS, dll) di wilayah Kelurahan Lenteng Agung.
+            {pageContent.hero_description || "Informasi persyaratan administrasi kependudukan bagi WNA (SKTT, SKSKPS, dll) di wilayah Kelurahan Lenteng Agung."}
           </p>
         </div>
       </div>
@@ -61,10 +72,10 @@ export default function WargaNegaraAsingPage() {
       {/* --- MAIN CONTENT --- */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          
+
           {/* LEFT COLUMN: DAFTAR LAYANAN */}
           <div className="lg:col-span-2 space-y-8">
-            
+
             {/* Alert Info Penting */}
             <Alert className="bg-purple-50 border-purple-200 text-purple-900">
               <AlertCircle className="h-4 w-4 text-purple-600" />
@@ -75,10 +86,10 @@ export default function WargaNegaraAsingPage() {
             </Alert>
 
             <div className="flex items-center gap-3 mb-2">
-               <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
-                 <FileBadge className="h-6 w-6 text-[#0B3D2E]" />
-               </div>
-               <h2 className="text-2xl font-bold text-slate-900">Daftar Layanan</h2>
+              <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
+                <FileBadge className="h-6 w-6 text-[#0B3D2E]" />
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900">Daftar Layanan</h2>
             </div>
 
             {layananWNA.length > 0 ? (
@@ -126,7 +137,7 @@ export default function WargaNegaraAsingPage() {
 
           {/* RIGHT COLUMN: SIDEBAR INFO */}
           <div className="space-y-6">
-            
+
             {/* Widget Kantor Imigrasi */}
             <Card className="bg-white border-slate-200 shadow-sm sticky top-24">
               <CardHeader className="pb-3 border-b border-slate-100">
@@ -156,11 +167,11 @@ export default function WargaNegaraAsingPage() {
             <Card className="bg-[#0B3D2E] text-white border-none shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-3">
-                   <div className="p-2 bg-white/10 rounded-full">
-                     {/* Diganti dengan CreditCard sebagai simbol ID/KITAS */}
-                     <CreditCard className="h-6 w-6 text-purple-300" />
-                   </div>
-                   <h3 className="font-bold text-lg">Foreigner Help Desk</h3>
+                  <div className="p-2 bg-white/10 rounded-full">
+                    {/* Diganti dengan CreditCard sebagai simbol ID/KITAS */}
+                    <CreditCard className="h-6 w-6 text-purple-300" />
+                  </div>
+                  <h3 className="font-bold text-lg">Foreigner Help Desk</h3>
                 </div>
                 <p className="text-slate-300 text-sm mb-4 leading-relaxed">
                   For assistance regarding residency documents (SKTT/KTP-OA) in Lenteng Agung, please contact our staff.

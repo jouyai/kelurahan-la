@@ -8,79 +8,102 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  ShoppingBag, 
-  Ticket, 
-  Truck, 
-  Store, 
-  CalendarDays, 
-  MapPin, 
+import {
+  ArrowLeft,
+  ShoppingBag,
+  Ticket,
+  Truck,
+  Store,
+  CalendarDays,
+  MapPin,
   Tags,
   MessageSquare,
   Info
 } from 'lucide-react';
 
 // Dummy Data Pangan Murah
-const programPangan = [
-  {
-    id: 1,
-    title: "Pangan Bersubsidi (KJP Plus)",
-    desc: "Program khusus bagi pemegang Kartu Jakarta Pintar (KJP), Kartu Lansia (KLJ), dan Disabilitas (KPDJ).",
-    jadwal: "Tanggal 5 - 15 (Bulanan)",
-    lokasi: "RPTRA Lenteng Agung",
-    items: "Daging, Telur, Ikan, Beras, Susu",
-    status: "Antrean Online",
-    statusColor: "bg-blue-100 text-blue-700",
-    icon: <Ticket className="h-6 w-6 text-blue-600" />,
-    bgColor: "bg-blue-50"
-  },
-  {
-    id: 2,
-    title: "Pasar Murah Keliling",
-    desc: "Mobil pangan murah keliling ke setiap RW menyediakan paket sembako harga terjangkau untuk umum.",
-    jadwal: "Senin & Kamis (09:00 - 12:00)",
-    lokasi: "Bergilir di Kantor RW 01 - RW 10",
-    items: "Beras 5kg, Minyak, Gula",
-    status: "Walk-in / Langsung",
-    statusColor: "bg-green-100 text-green-700",
-    icon: <Truck className="h-6 w-6 text-green-600" />,
-    bgColor: "bg-green-50"
-  },
-  {
-    id: 3,
-    title: "Bazar Pangan Rakyat",
-    desc: "Kerja sama dengan Bulog dan UMKM lokal. Menyediakan sembako, sayuran segar, dan produk olahan.",
-    jadwal: "Akhir Bulan (Sabtu-Minggu)",
-    lokasi: "Halaman Kantor Kelurahan",
-    items: "Sembako, Sayur, Frozen Food",
-    status: "Terbuka Umum",
-    statusColor: "bg-orange-100 text-orange-700",
-    icon: <Store className="h-6 w-6 text-orange-600" />,
-    bgColor: "bg-orange-50"
-  },
-];
-
 export default function PanganMurahPage() {
+  const { content: pageContent, loading: contentLoading } = usePageContent('pangan-murah');
+  const { data: dbProgram, loading: programLoading } = useData('items', { type: 'pangan_murah' });
+
+  const isLoading = contentLoading || programLoading;
+
+  const programList = dbProgram.length > 0 ? dbProgram.map(p => ({
+    id: p.id,
+    title: p.title,
+    desc: p.description,
+    jadwal: p.data?.jadwal || "",
+    lokasi: p.data?.lokasi || "",
+    items: p.data?.items || "",
+    status: p.data?.status || "Tersedia",
+    statusColor: p.data?.statusColor || "bg-green-100 text-green-700",
+    icon: getIconComponent(p.data?.icon),
+    bgColor: p.data?.bgColor || "bg-slate-50"
+  })) : [
+    {
+      id: 1,
+      title: "Pangan Bersubsidi (KJP Plus)",
+      desc: "Program khusus bagi pemegang Kartu Jakarta Pintar (KJP), Kartu Lansia (KLJ), and Disabilitas (KPDJ).",
+      jadwal: "Tanggal 5 - 15 (Bulanan)",
+      lokasi: "RPTRA Lenteng Agung",
+      items: "Daging, Telur, Ikan, Beras, Susu",
+      status: "Antrean Online",
+      statusColor: "bg-blue-100 text-blue-700",
+      icon: <Ticket className="h-6 w-6 text-blue-600" />,
+      bgColor: "bg-blue-50"
+    },
+    {
+      id: 2,
+      title: "Pasar Murah Keliling",
+      desc: "Mobil pangan murah keliling ke setiap RW menyediakan paket sembako harga terjangkau untuk umum.",
+      jadwal: "Senin & Kamis (09:00 - 12:00)",
+      lokasi: "Bergilir di Kantor RW 01 - RW 10",
+      items: "Beras 5kg, Minyak, Gula",
+      status: "Walk-in / Langsung",
+      statusColor: "bg-green-100 text-green-700",
+      icon: <Truck className="h-6 w-6 text-green-600" />,
+      bgColor: "bg-green-50"
+    },
+    {
+      id: 3,
+      title: "Bazar Pangan Rakyat",
+      desc: "Kerja sama dengan Bulog and UMKM lokal. Menyediakan sembako, sayuran segar, and produk olahan.",
+      jadwal: "Akhir Bulan (Sabtu-Minggu)",
+      lokasi: "Halaman Kantor Kelurahan",
+      items: "Sembako, Sayur, Frozen Food",
+      status: "Terbuka Umum",
+      statusColor: "bg-orange-100 text-orange-700",
+      icon: <Store className="h-6 w-6 text-orange-600" />,
+      bgColor: "bg-orange-50"
+    },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
-      
+
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         {/* Pattern Shopping Bag */}
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <ShoppingBag className="w-64 h-64 text-white" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Ketahanan Pangan
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Program Pangan Murah
+            {pageContent.hero_title || "Program Pangan Murah"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Menjaga stabilitas harga dan ketersediaan kebutuhan pokok warga Kelurahan Lenteng Agung.
+            {pageContent.hero_description || "Menjaga stabilitas harga and ketersediaan kebutuhan pokok warga Kelurahan Lenteng Agung."}
           </p>
         </div>
       </div>
@@ -97,18 +120,18 @@ export default function PanganMurahPage() {
       {/* --- MAIN CONTENT --- */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          
+
           {/* LEFT COLUMN: LIST PROGRAM */}
           <div className="lg:col-span-2 space-y-8">
             <div className="flex items-center gap-3 mb-2">
-               <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
-                 <ShoppingBag className="h-6 w-6 text-[#0B3D2E]" />
-               </div>
-               <h2 className="text-2xl font-bold text-slate-900">Jadwal & Lokasi</h2>
+              <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
+                <ShoppingBag className="h-6 w-6 text-[#0B3D2E]" />
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900">Jadwal & Lokasi</h2>
             </div>
 
             <div className="space-y-6">
-              {programPangan.map((item) => (
+              {programList.map((item) => (
                 <Card key={item.id} className="border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 group overflow-hidden">
                   <div className="flex flex-col md:flex-row">
                     {/* Icon Column */}
@@ -117,7 +140,7 @@ export default function PanganMurahPage() {
                         {item.icon}
                       </div>
                     </div>
-                    
+
                     {/* Content Column */}
                     <div className="p-6 flex-1">
                       <div className="flex flex-wrap justify-between items-start mb-2 gap-2">
@@ -128,11 +151,11 @@ export default function PanganMurahPage() {
                           {item.status}
                         </Badge>
                       </div>
-                      
+
                       <p className="text-sm text-slate-600 mb-4 leading-relaxed">
                         {item.desc}
                       </p>
-                      
+
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-500 bg-slate-50 p-3 rounded-lg border border-slate-100">
                         <div className="flex items-center gap-2">
                           <CalendarDays className="h-4 w-4 text-slate-400" />
@@ -156,7 +179,7 @@ export default function PanganMurahPage() {
 
           {/* RIGHT COLUMN: SIDEBAR INFO */}
           <div className="space-y-6">
-            
+
             {/* Widget Syarat Pengambilan */}
             <Card className="bg-white border-slate-200 shadow-sm sticky top-24">
               <CardHeader className="pb-3">

@@ -7,53 +7,73 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  GraduationCap, 
-  MapPin, 
-  BookOpen, 
+import {
+  ArrowLeft,
+  GraduationCap,
+  MapPin,
+  BookOpen,
   Star,
   School,
-  MessageSquare
+  MessageSquare,
+  Loader2
 } from 'lucide-react';
-
-// Dummy Data Sekolah
-const schools = [
-  { id: 1, name: "SDN Lenteng Agung 01 Pagi", level: "SD", address: "Jl. Agung Raya No. 1", akreditasi: "A", status: "Negeri" },
-  { id: 2, name: "SDN Lenteng Agung 03 Pagi", level: "SD", address: "Jl. Camat Gabun I", akreditasi: "A", status: "Negeri" },
-  { id: 3, name: "SMP Negeri 98 Jakarta", level: "SMP", address: "Jl. Raya Lenteng Agung", akreditasi: "A", status: "Negeri" },
-  { id: 4, name: "SMA Negeri 38 Jakarta", level: "SMA", address: "Jl. Raya Lenteng Agung", akreditasi: "A", status: "Negeri" },
-  { id: 5, name: "PAUD Melati RW 02", level: "PAUD", address: "Balai Warga RW 02", akreditasi: "B", status: "Swasta" },
-  { id: 6, name: "TK Islam Al-Ikhlas", level: "TK", address: "Jl. Kebagusan Kecil", akreditasi: "A", status: "Swasta" },
-  { id: 7, name: "SMK Perguruan Cikini", level: "SMA", address: "Jl. Srengseng Sawah", akreditasi: "A", status: "Swasta" },
-  { id: 8, name: "PKBM Negeri 15 (Paket A/B/C)", level: "Non-Formal", address: "Jl. Joe", akreditasi: "B", status: "Negeri" },
-];
+import { usePageContent, useData } from "../../hooks/useContent";
 
 export default function PendidikanPage() {
+  const { content: pageContent, loading: contentLoading } = usePageContent('pendidikan');
+  const { data: dbSchools, loading: schoolsLoading } = useData('items', { type: 'pendidikan' });
   const [filter, setFilter] = useState("Semua");
 
-  const filteredSchools = filter === "Semua" 
-    ? schools 
-    : schools.filter(s => s.level === filter || (filter === "SMA" && s.level === "SMK"));
+  const isLoading = contentLoading || schoolsLoading;
+
+  const schoolsList = dbSchools.length > 0 ? dbSchools.map(s => ({
+    id: s.id,
+    name: s.title,
+    level: s.data?.level || "SD",
+    address: s.description,
+    akreditasi: s.data?.akreditasi || "A",
+    status: s.data?.status || "Negeri"
+  })) : [
+    { id: 1, name: "SDN Lenteng Agung 01 Pagi", level: "SD", address: "Jl. Agung Raya No. 1", akreditasi: "A", status: "Negeri" },
+    { id: 2, name: "SDN Lenteng Agung 03 Pagi", level: "SD", address: "Jl. Camat Gabun I", akreditasi: "A", status: "Negeri" },
+    { id: 3, name: "SMP Negeri 98 Jakarta", level: "SMP", address: "Jl. Raya Lenteng Agung", akreditasi: "A", status: "Negeri" },
+    { id: 4, name: "SMA Negeri 38 Jakarta", level: "SMA", address: "Jl. Raya Lenteng Agung", akreditasi: "A", status: "Negeri" },
+    { id: 5, name: "PAUD Melati RW 02", level: "PAUD", address: "Balai Warga RW 02", akreditasi: "B", status: "Swasta" },
+    { id: 6, name: "TK Islam Al-Ikhlas", level: "TK", address: "Jl. Kebagusan Kecil", akreditasi: "A", status: "Swasta" },
+    { id: 7, name: "SMK Perguruan Cikini", level: "SMA", address: "Jl. Srengseng Sawah", akreditasi: "A", status: "Swasta" },
+    { id: 8, name: "PKBM Negeri 15 (Paket A/B/C)", level: "Non-Formal", address: "Jl. Joe", akreditasi: "B", status: "Negeri" },
+  ];
+
+  const filteredSchools = filter === "Semua"
+    ? schoolsList
+    : schoolsList.filter(s => s.level === filter || (filter === "SMA" && s.level === "SMK"));
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
-      
+
       {/* === HERO SECTION === */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <GraduationCap className="w-64 h-64 text-white" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Informasi Publik
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Sarana Pendidikan
+            {pageContent.hero_title || "Sarana Pendidikan"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Data sekolah dan lembaga pendidikan formal maupun non-formal yang tersebar di wilayah Kelurahan Lenteng Agung.
+            {pageContent.hero_description || "Data sekolah and lembaga pendidikan formal maupun non-formal yang tersebar di wilayah Kelurahan Lenteng Agung."}
           </p>
         </div>
       </div>
@@ -70,10 +90,10 @@ export default function PendidikanPage() {
       {/* === CONTENT SECTION === */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          
+
           {/* LEFT: SCHOOL LIST */}
           <div className="lg:col-span-2 space-y-6">
-            
+
             {/* Filter Tabs */}
             <div className="flex flex-wrap gap-2 mb-2">
               {["Semua", "PAUD", "SD", "SMP", "SMA"].map((level) => (
@@ -81,11 +101,10 @@ export default function PendidikanPage() {
                   key={level}
                   variant={filter === level ? "default" : "outline"}
                   onClick={() => setFilter(level)}
-                  className={`rounded-full px-5 h-9 text-xs font-bold ${
-                    filter === level 
-                    ? "bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 text-white border-transparent" 
+                  className={`rounded-full px-5 h-9 text-xs font-bold ${filter === level
+                    ? "bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 text-white border-transparent"
                     : "bg-white text-slate-600 border-slate-300 hover:border-[#0B3D2E] hover:text-[#0B3D2E]"
-                  }`}
+                    }`}
                 >
                   {level}
                 </Button>
@@ -99,15 +118,14 @@ export default function PendidikanPage() {
                     <div className="shrink-0 w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-blue-700 border border-blue-100 group-hover:scale-110 transition-transform">
                       {item.level === "Non-Formal" ? <BookOpen className="w-6 h-6" /> : <School className="w-6 h-6" />}
                     </div>
-                    
+
                     <div className="flex-1 w-full">
                       <div className="flex flex-wrap justify-between items-start mb-1 gap-2">
                         <h3 className="font-bold text-slate-800 text-lg group-hover:text-[#0B3D2E] transition-colors leading-tight">
                           {item.name}
                         </h3>
-                        <Badge variant="secondary" className={`border ${
-                          item.status === 'Negeri' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-orange-50 text-orange-700 border-orange-100'
-                        }`}>
+                        <Badge variant="secondary" className={`border ${item.status === 'Negeri' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-orange-50 text-orange-700 border-orange-100'
+                          }`}>
                           {item.status}
                         </Badge>
                       </div>
@@ -132,7 +150,7 @@ export default function PendidikanPage() {
 
           {/* RIGHT: SIDEBAR INFO */}
           <div className="space-y-6">
-            
+
             {/* Info KJP & PPDB */}
             <Card className="bg-white border-slate-200 shadow-sm sticky top-24">
               <CardHeader className="pb-3 border-b border-slate-100">

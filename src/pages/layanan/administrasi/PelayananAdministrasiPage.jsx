@@ -3,84 +3,130 @@ import { Link } from 'react-router-dom';
 
 // --- SHADCN UI IMPORTS ---
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  FileText, 
-  Home, 
-  Heart, 
-  Scale, 
-  Wallet, 
-  Globe2, 
-  Clock, 
+import {
+  ArrowLeft,
+  FileText,
+  Home,
+  Heart,
+  Scale,
+  Wallet,
+  Globe2,
+  Clock,
   MessageSquare,
   ChevronRight,
-  Info
+  Info,
+  Loader2,
+  Settings,
+  Shield,
+  HelpCircle
 } from 'lucide-react';
+import { useData } from '../../../hooks/useContent';
 
-const services = [
-  {
-    id: 1,
-    title: "Layanan Pertanahan",
-    desc: "Pengurusan surat keterangan tanah, PM1, dan administrasi pertanahan lainnya.",
-    link: "/layanan/administrasi/tanah",
-    icon: <Home className="h-6 w-6 text-green-600" />,
-    bg: "bg-green-50",
-    borderColor: "hover:border-green-500"
-  },
-  {
-    id: 2,
-    title: "Status Perkawinan",
-    desc: "Surat pengantar nikah (N1-N4), keterangan belum menikah, atau status duda/janda.",
-    link: "/layanan/administrasi/status-perkawinan",
-    icon: <Heart className="h-6 w-6 text-pink-600" />,
-    bg: "bg-pink-50",
-    borderColor: "hover:border-pink-500"
-  },
-  {
-    id: 3,
-    title: "Pernyataan Hukum & Waris",
-    desc: "Surat keterangan waris, pernyataan ahli waris, dan legalitas hukum keluarga.",
-    link: "/layanan/administrasi/pernyataan-hukum-warisan",
-    icon: <Scale className="h-6 w-6 text-blue-600" />,
-    bg: "bg-blue-50",
-    borderColor: "hover:border-blue-500"
-  },
-  {
-    id: 4,
-    title: "Pajak & Aset",
-    desc: "Administrasi terkait PBB-P2, NJOP, dan surat keterangan kepemilikan aset.",
-    link: "/layanan/administrasi/pajak-aset",
-    icon: <Wallet className="h-6 w-6 text-amber-600" />,
-    bg: "bg-amber-50",
-    borderColor: "hover:border-amber-500"
-  },
-  {
-    id: 5,
-    title: "Warga Negara Asing (WNA)",
-    desc: "Surat Keterangan Tempat Tinggal (SKTT) dan administrasi kependudukan WNA.",
-    link: "/layanan/administrasi/warga-negara-asing",
-    icon: <Globe2 className="h-6 w-6 text-purple-600" />,
-    bg: "bg-purple-50",
-    borderColor: "hover:border-purple-500"
-  },
-];
+const getIconComponent = (iconName) => {
+  switch (iconName) {
+    case 'Home': return <Home className="h-6 w-6 text-green-600" />;
+    case 'Heart': return <Heart className="h-6 w-6 text-pink-600" />;
+    case 'Scale': return <Scale className="h-6 w-6 text-blue-600" />;
+    case 'Wallet': return <Wallet className="h-6 w-6 text-amber-600" />;
+    case 'Globe2': return <Globe2 className="h-6 w-6 text-purple-600" />;
+    case 'Settings': return <Settings className="h-6 w-6 text-slate-600" />;
+    case 'Shield': return <Shield className="h-6 w-6 text-red-600" />;
+    case 'HelpCircle': return <HelpCircle className="h-6 w-6 text-indigo-600" />;
+    default: return <FileText className="h-6 w-6 text-slate-600" />;
+  }
+};
+
+const getStyleClasses = (iconName) => {
+  switch (iconName) {
+    case 'Home': return { bg: "bg-green-50", border: "hover:border-green-500" };
+    case 'Heart': return { bg: "bg-pink-50", border: "hover:border-pink-500" };
+    case 'Scale': return { bg: "bg-blue-50", border: "hover:border-blue-500" };
+    case 'Wallet': return { bg: "bg-amber-50", border: "hover:border-amber-500" };
+    case 'Globe2': return { bg: "bg-purple-50", border: "hover:border-purple-500" };
+    default: return { bg: "bg-slate-50", border: "hover:border-slate-500" };
+  }
+};
 
 export default function PelayananAdministrasiPage({ onConnectStaff }) {
+  const { data: dbServices, loading } = useData('layanan', { category: 'administrasi' });
+
+  // Use DB data if available, otherwise fallback to original hardcoded list
+  const servicesList = dbServices.length > 0 ? dbServices.map(s => ({
+    ...s,
+    icon: getIconComponent(s.icon_name),
+    ...getStyleClasses(s.icon_name),
+    link: `/layanan/administrasi/${s.slug}`
+  })) : [
+    {
+      id: 1,
+      title: "Layanan Pertanahan",
+      description: "Pengurusan surat keterangan tanah, PM1, dan administrasi pertanahan lainnya.",
+      link: "/layanan/administrasi/tanah",
+      icon: <Home className="h-6 w-6 text-green-600" />,
+      bg: "bg-green-50",
+      border: "hover:border-green-500"
+    },
+    {
+      id: 2,
+      title: "Status Perkawinan",
+      description: "Surat pengantar nikah (N1-N4), keterangan belum menikah, atau status duda/janda.",
+      link: "/layanan/administrasi/status-perkawinan",
+      icon: <Heart className="h-6 w-6 text-pink-600" />,
+      bg: "bg-pink-50",
+      border: "hover:border-pink-500"
+    },
+    {
+      id: 3,
+      title: "Pernyataan Hukum & Waris",
+      description: "Surat keterangan waris, pernyataan ahli waris, dan legalitas hukum keluarga.",
+      link: "/layanan/administrasi/pernyataan-hukum-warisan",
+      icon: <Scale className="h-6 w-6 text-blue-600" />,
+      bg: "bg-blue-50",
+      border: "hover:border-blue-500"
+    },
+    {
+      id: 4,
+      title: "Pajak & Aset",
+      description: "Administrasi terkait PBB-P2, NJOP, dan surat keterangan kepemilikan aset.",
+      link: "/layanan/administrasi/pajak-aset",
+      icon: <Wallet className="h-6 w-6 text-amber-600" />,
+      bg: "bg-amber-50",
+      border: "hover:border-amber-500"
+    },
+    {
+      id: 5,
+      title: "Warga Negara Asing (WNA)",
+      description: "Surat Keterangan Tempat Tinggal (SKTT) and administrasi kependudukan WNA.",
+      link: "/layanan/administrasi/warga-negara-asing",
+      icon: <Globe2 className="h-6 w-6 text-purple-600" />,
+      bg: "bg-purple-50",
+      border: "hover:border-purple-500"
+    },
+  ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
-      
+
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         {/* Pattern Background */}
-        <div className="absolute inset-0 opacity-10" 
-             style={{ backgroundImage: 'linear-gradient(135deg, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
+        <div className="absolute inset-0 opacity-10"
+          style={{ backgroundImage: 'linear-gradient(135deg, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Layanan Publik
@@ -106,20 +152,20 @@ export default function PelayananAdministrasiPage({ onConnectStaff }) {
       {/* --- MAIN CONTENT --- */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-10">
-          
+
           {/* LEFT COLUMN: LIST LAYANAN */}
           <div className="w-full lg:w-2/3 space-y-6">
             <div className="flex items-center gap-3 mb-2">
-               <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
-                 <FileText className="h-6 w-6 text-[#0B3D2E]" />
-               </div>
-               <h2 className="text-2xl font-bold text-slate-900">Pilih Jenis Layanan</h2>
+              <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
+                <FileText className="h-6 w-6 text-[#0B3D2E]" />
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900">Pilih Jenis Layanan</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {services.map((item) => (
+              {servicesList.map((item) => (
                 <Link key={item.id} to={item.link} className="block h-full">
-                  <Card className={`h-full border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 group ${item.borderColor}`}>
+                  <Card className={`h-full border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 group ${item.border}`}>
                     <CardHeader>
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-2 ${item.bg}`}>
                         {item.icon}
@@ -130,7 +176,7 @@ export default function PelayananAdministrasiPage({ onConnectStaff }) {
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-slate-600 leading-relaxed">
-                        {item.desc}
+                        {item.description}
                       </p>
                     </CardContent>
                     <CardFooter className="pt-0 mt-auto">
@@ -146,7 +192,7 @@ export default function PelayananAdministrasiPage({ onConnectStaff }) {
 
           {/* RIGHT COLUMN: SIDEBAR INFO */}
           <div className="w-full lg:w-1/3 space-y-6">
-            
+
             {/* Widget Jam Operasional */}
             <Card className="border-l-4 border-l-[#0B3D2E] shadow-sm">
               <CardHeader className="pb-2">
@@ -206,7 +252,7 @@ export default function PelayananAdministrasiPage({ onConnectStaff }) {
                 <p className="text-slate-300 text-sm mb-4">
                   Bingung dengan persyaratan dokumen? Tanyakan langsung pada petugas kami.
                 </p>
-                <Button 
+                <Button
                   onClick={() => onConnectStaff && onConnectStaff("Tanya Persyaratan Administrasi")}
                   className="w-full bg-amber-500 text-[#0B3D2E] hover:bg-amber-400 font-bold"
                 >

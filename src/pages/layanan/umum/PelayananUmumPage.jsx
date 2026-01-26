@@ -8,23 +8,44 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  FileText, 
-  Building2, 
-  MapPin, 
-  Briefcase, 
+import {
+  ArrowLeft,
+  FileText,
+  Building2,
+  MapPin,
+  Briefcase,
   AlertCircle,
   Clock,
-  CheckCircle2
+  CheckCircle2,
+  Loader2
 } from 'lucide-react';
+import { usePageContent, useData } from '../../../hooks/useContent';
+
+const getIconComponent = (iconName) => {
+  switch (iconName) {
+    case 'Briefcase': return <Briefcase className="h-6 w-6 text-amber-500" />;
+    case 'MapPin': return <MapPin className="h-6 w-6 text-amber-500" />;
+    case 'FileText': return <FileText className="h-6 w-6 text-amber-500" />;
+    case 'AlertCircle': return <AlertCircle className="h-6 w-6 text-amber-500" />;
+    default: return <FileText className="h-6 w-6 text-amber-500" />;
+  }
+};
 
 const PelayananUmumPage = () => {
-  // Data Layanan
-  const services = [
+  const { content: pageContent, loading: contentLoading } = usePageContent('pelayanan-umum');
+  const { data: dbServices, loading: servicesLoading } = useData('layanan', { category: 'umum' });
+
+  const isLoading = contentLoading || servicesLoading;
+
+  // Data Layanan Fallback
+  const servicesList = dbServices.length > 0 ? dbServices.map(s => ({
+    ...s,
+    icon: getIconComponent(s.icon_name),
+    link: `/layanan/umum/${s.slug}`
+  })) : [
     {
       title: "Surat Keterangan Usaha (SKU)",
-      desc: "Dokumen resmi untuk menerangkan usaha warga yang berdomisili di kelurahan.",
+      description: "Dokumen resmi untuk menerangkan usaha warga yang berdomisili di kelurahan.",
       icon: <Briefcase className="h-6 w-6 text-amber-500" />,
       requirements: [
         "Fotokopi KTP & KK",
@@ -32,22 +53,22 @@ const PelayananUmumPage = () => {
         "Surat Pengantar RT/RW",
         "Materai 10.000"
       ],
-      link: "#"
+      link: "/layanan/umum/pekerjaan"
     },
     {
       title: "Surat Keterangan Domisili",
-      desc: "Untuk keperluan administrasi perbankan, sekolah, atau pekerjaan.",
+      description: "Untuk keperluan administrasi perbankan, sekolah, atau pekerjaan.",
       icon: <MapPin className="h-6 w-6 text-amber-500" />,
       requirements: [
         "Fotokopi KTP & KK",
         "Surat Pengantar RT/RW",
         "Pas foto 3x4 (2 lembar)"
       ],
-      link: "#"
+      link: "/layanan/umum/pekerjaan"
     },
     {
       title: "Surat Pengantar Nikah (N1-N4)",
-      desc: "Berkas persyaratan untuk pendaftaran pernikahan di KUA.",
+      description: "Berkas persyaratan untuk pendaftaran pernikahan di KUA.",
       icon: <FileText className="h-6 w-6 text-amber-500" />,
       requirements: [
         "Fotokopi KTP & KK Calon Pengantin",
@@ -55,40 +76,48 @@ const PelayananUmumPage = () => {
         "Surat Pernyataan Belum Menikah",
         "Imunisasi TT (Bagi Wanita)"
       ],
-      link: "#"
+      link: "/layanan/umum/pekerjaan"
     },
     {
       title: "Surat Keterangan Tidak Mampu (SKTM)",
-      desc: "Untuk keringanan biaya kesehatan, pendidikan, atau bantuan sosial.",
+      description: "Untuk keringanan biaya kesehatan, pendidikan, atau bantuan sosial.",
       icon: <AlertCircle className="h-6 w-6 text-amber-500" />,
       requirements: [
         "Fotokopi KTP & KK",
         "Surat Pengantar RT/RW",
         "Foto rumah (tampak depan & dalam)"
       ],
-      link: "#"
+      link: "/layanan/umum/pekerjaan"
     }
   ];
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
-      
+
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         {/* Pattern */}
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <Building2 className="w-64 h-64 text-white" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Layanan Publik
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Administrasi Umum
+            {pageContent.hero_title || "Administrasi Umum"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Layanan pengurusan surat-menyurat dan administrasi kependudukan yang cepat, mudah, dan transparan.
+            {pageContent.hero_description || "Layanan pengurusan surat-menyurat and administrasi kependudukan yang cepat, mudah, and transparan."}
           </p>
         </div>
       </div>
@@ -104,7 +133,7 @@ const PelayananUmumPage = () => {
 
       {/* --- MAIN CONTENT --- */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        
+
         {/* INFO JAM LAYANAN */}
         <Card className="border-l-4 border-l-amber-500 shadow-sm bg-amber-50/50">
           <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -126,33 +155,33 @@ const PelayananUmumPage = () => {
         {/* LIST LAYANAN GRID */}
         <section>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {services.map((service, index) => (
+            {servicesList.map((service, index) => (
               <Card key={index} className="border-slate-200 hover:border-[#0B3D2E] hover:shadow-lg transition-all duration-300 group">
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="p-3 bg-[#0B3D2E]/5 rounded-xl group-hover:bg-[#0B3D2E] group-hover:text-white transition-colors">
                       {/* Clone icon agar bisa ganti warna saat hover */}
-                      {React.cloneElement(service.icon, { 
-                        className: "h-6 w-6 text-amber-500 group-hover:text-amber-400" 
+                      {React.cloneElement(service.icon, {
+                        className: "h-6 w-6 text-amber-500 group-hover:text-amber-400"
                       })}
                     </div>
-                    <Badge variant="secondary" className="bg-slate-100 text-slate-600">Online</Badge>
+                    <Badge variant="secondary" className="bg-slate-100 text-slate-600">Terpadu</Badge>
                   </div>
                   <CardTitle className="text-xl font-bold text-slate-800 mt-4 group-hover:text-[#0B3D2E]">
                     {service.title}
                   </CardTitle>
                   <CardDescription className="text-sm mt-1">
-                    {service.desc}
+                    {service.description}
                   </CardDescription>
                 </CardHeader>
-                
-                <CardContent>
+
+                <CardContent className="flex-grow">
                   <Separator className="mb-4" />
                   <h4 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
                     <FileText className="h-4 w-4" /> Persyaratan:
                   </h4>
                   <ul className="space-y-2">
-                    {service.requirements.map((req, i) => (
+                    {(service.requirements || []).map((req, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-slate-500">
                         <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
                         <span>{req}</span>
@@ -163,7 +192,7 @@ const PelayananUmumPage = () => {
 
                 <CardFooter className="pt-2">
                   <Button className="w-full bg-[#0B3D2E] hover:bg-[#0B3D2E]/90" asChild>
-                    <Link to={service.link}>Ajukan Sekarang</Link>
+                    <Link to={service.link}>Lihat Detail</Link>
                   </Button>
                 </CardFooter>
               </Card>

@@ -9,62 +9,97 @@ import { Badge } from "@/components/ui/badge";
 // --- ICONS ---
 import {
   ArrowLeft,
-  CreditCard, // GANTI IdentificationCard dengan CreditCard
+  CreditCard,
   Users,
   Truck,
   Baby,
   FileText,
-  MessageSquare,
-  Clock,
-  Info,
   ChevronRight,
+  Loader2
 } from "lucide-react";
+import { usePageContent, useData } from "../../../hooks/useContent";
 
-// Daftar Layanan Kependudukan
-const services = [
-  {
-    id: 1,
-    title: "KTP Elektronik (KTP-el)",
-    desc: "Perekaman baru, pencetakan ulang karena hilang/rusak, dan pembaruan data identitas.",
-    link: "/layanan/kependudukan/keterangan",
-    icon: <CreditCard className="h-6 w-6 text-blue-600" />, // Update Icon
-    color: "bg-blue-50 border-blue-100",
-  },
-  {
-    id: 2,
-    title: "Kartu Keluarga (KK)",
-    desc: "Pembuatan KK baru (pecah KK), penambahan anggota keluarga, atau perubahan data.",
-    link: "/layanan/kependudukan/keterangan",
-    icon: <Users className="h-6 w-6 text-green-600" />,
-    color: "bg-green-50 border-green-100",
-  },
-  {
-    id: 3,
-    title: "Perpindahan Penduduk",
-    desc: "Surat Keterangan Pindah (SKP) Masuk, Keluar, atau pindah antar alamat dalam kelurahan.",
-    link: "/layanan/kependudukan/domisili",
-    icon: <Truck className="h-6 w-6 text-orange-600" />,
-    color: "bg-orange-50 border-orange-100",
-  },
-  {
-    id: 4,
-    title: "Kartu Identitas Anak (KIA)",
-    desc: "Penerbitan kartu identitas resmi bagi anak berusia kurang dari 17 tahun.",
-    link: "/layanan/kependudukan/keterangan",
-    icon: <Baby className="h-6 w-6 text-pink-600" />,
-    color: "bg-pink-50 border-pink-100",
-  },
-  {
-    id: 5,
-    title: "Surat Keterangan Kependudukan",
-    desc: "Surat keterangan domisili warga, domisili lembaga/yayasan, dan keterangan kelahiran/kematian.",
-    link: "/layanan/kependudukan/keterangan",
-    icon: <FileText className="h-6 w-6 text-purple-600" />,
-    color: "bg-purple-50 border-purple-100",
-  },
-];
+const getIconComponent = (iconName) => {
+  switch (iconName) {
+    case 'CreditCard': return <CreditCard className="h-6 w-6 text-blue-600" />;
+    case 'Users': return <Users className="h-6 w-6 text-green-600" />;
+    case 'Truck': return <Truck className="h-6 w-6 text-orange-600" />;
+    case 'Baby': return <Baby className="h-6 w-6 text-pink-600" />;
+    default: return <FileText className="h-6 w-6 text-purple-600" />;
+  }
+};
+
+const getStyleClasses = (iconName) => {
+  switch (iconName) {
+    case 'CreditCard': return "bg-blue-50 border-blue-100";
+    case 'Users': return "bg-green-50 border-green-100";
+    case 'Truck': return "bg-orange-50 border-orange-100";
+    case 'Baby': return "bg-pink-50 border-pink-100";
+    default: return "bg-purple-50 border-purple-100";
+  }
+};
 
 export default function PelayananKependudukanPage({ onConnectStaff }) {
+  const { content: pageContent, loading: contentLoading } = usePageContent('kependudukan');
+  const { data: dbServices, loading: servicesLoading } = useData('layanan', { category: 'kependudukan' });
+
+  const isLoading = contentLoading || servicesLoading;
+
+  const servicesList = dbServices.length > 0 ? dbServices.map(s => ({
+    ...s,
+    icon: getIconComponent(s.icon_name),
+    color: getStyleClasses(s.icon_name),
+    link: `/layanan/kependudukan/${s.slug}`
+  })) : [
+    {
+      id: 1,
+      title: "KTP Elektronik (KTP-el)",
+      description: "Perekaman baru, pencetakan ulang karena hilang/rusak, dan pembaruan data identitas.",
+      link: "/layanan/kependudukan/keterangan",
+      icon: <CreditCard className="h-6 w-6 text-blue-600" />,
+      color: "bg-blue-50 border-blue-100",
+    },
+    {
+      id: 2,
+      title: "Kartu Keluarga (KK)",
+      description: "Pembuatan KK baru (pecah KK), penambahan anggota keluarga, atau perubahan data.",
+      link: "/layanan/kependudukan/keterangan",
+      icon: <Users className="h-6 w-6 text-green-600" />,
+      color: "bg-green-50 border-green-100",
+    },
+    {
+      id: 3,
+      title: "Perpindahan Penduduk",
+      description: "Surat Keterangan Pindah (SKP) Masuk, Keluar, atau pindah antar alamat dalam kelurahan.",
+      link: "/layanan/kependudukan/domisili",
+      icon: <Truck className="h-6 w-6 text-orange-600" />,
+      color: "bg-orange-50 border-orange-100",
+    },
+    {
+      id: 4,
+      title: "Kartu Identitas Anak (KIA)",
+      description: "Penerbitan kartu identitas resmi bagi anak berusia kurang dari 17 tahun.",
+      link: "/layanan/kependudukan/keterangan",
+      icon: <Baby className="h-6 w-6 text-pink-600" />,
+      color: "bg-pink-50 border-pink-100",
+    },
+    {
+      id: 5,
+      title: "Surat Keterangan Kependudukan",
+      description: "Surat keterangan domisili warga, domisili lembaga/yayasan, dan keterangan kelahiran/kematian.",
+      link: "/layanan/kependudukan/keterangan",
+      icon: <FileText className="h-6 w-6 text-purple-600" />,
+      color: "bg-purple-50 border-purple-100",
+    },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
   return (
     // Container Utama (Tanpa pt-24 agar menempel dengan Navbar)
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
@@ -83,11 +118,10 @@ export default function PelayananKependudukanPage({ onConnectStaff }) {
             Layanan Publik
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Pelayanan Kependudukan
+            {pageContent.hero_title || "Pelayanan Kependudukan"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Layanan resmi penerbitan dokumen identitas warga negara,
-            pemutakhiran data keluarga, dan administrasi kependudukan lainnya.
+            {pageContent.hero_description || "Layanan resmi penerbitan dokumen identitas warga negara, pemutakhiran data keluarga, dan administrasi kependudukan lainnya."}
           </p>
         </div>
       </div>
@@ -121,7 +155,7 @@ export default function PelayananKependudukanPage({ onConnectStaff }) {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {services.map((item) => (
+              {servicesList.map((item) => (
                 <Link to={item.link} key={item.id} className="block group">
                   <Card
                     className={`border shadow-sm hover:shadow-md transition-all duration-300 h-full ${item.color}`}
@@ -135,7 +169,7 @@ export default function PelayananKependudukanPage({ onConnectStaff }) {
                         {item.title}
                       </h4>
                       <p className="text-sm text-slate-600 leading-relaxed mb-4 flex-grow">
-                        {item.desc}
+                        {item.description}
                       </p>
 
                       <div className="flex items-center text-[#0B3D2E] text-sm font-bold mt-auto">

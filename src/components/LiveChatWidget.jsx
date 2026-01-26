@@ -11,16 +11,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
 // --- ICONS (Lucide React - Konsisten dengan page lain) ---
-import { 
-  MessageSquare, 
-  X, 
-  Send, 
-  User, 
-  Bot, 
-  Sparkles, 
+import {
+  MessageSquare,
+  X,
+  Send,
+  User,
+  Bot,
+  Sparkles,
   AlertCircle,
   Loader2
 } from 'lucide-react';
+import { useData } from "../hooks/useContent";
 
 // --- KONFIGURASI ---
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
@@ -60,12 +61,12 @@ const Typewriter = ({ text, speed = 15, onComplete }) => {
   );
 };
 
-export default function LiveChatWidget({ 
+export default function LiveChatWidget({
   isOpen, // Note: Jika parent mengatur state, gunakan props ini. Jika mandiri, gunakan local state.
   setIsOpen, // Opsional jika dikontrol parent
-  startHumanMode = false, 
+  startHumanMode = false,
   onResetHumanMode,
-  chatTopic = "" 
+  chatTopic = ""
 }) {
   // State Lokal untuk kontrol buka/tutup jika props tidak tersedia
   const [localIsOpen, setLocalIsOpen] = useState(false);
@@ -86,6 +87,10 @@ export default function LiveChatWidget({
   const [greeting, setGreeting] = useState("Selamat Pagi");
 
   const messagesEndRef = useRef(null);
+
+  // --- FETCH DYNAMIC DATA FOR BOT CONTEXT ---
+  const { data: dbLayanan } = useData('items', { type: 'layanan' });
+  const { data: dbFasilitas } = useData('items', { type: 'fasilitas' });
 
   // LOGIC AUTO CONNECT STAFF
   useEffect(() => {
@@ -193,7 +198,7 @@ export default function LiveChatWidget({
       localStorage.setItem("chat_session_id", data.id);
       setSessionId(data.id);
       setShowIdentityForm(false);
-      
+
       if (initialStatus === "live") {
         await supabase.from("chat_messages").insert([
           { session_id: data.id, sender: "system", message: "Anda terhubung dengan layanan Staff. Silakan sampaikan keperluan Anda." },
@@ -227,15 +232,16 @@ export default function LiveChatWidget({
     setIsTyping(true);
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
-      const contextData = generateAIContext(); // Fungsi dari knowledgeBase.js
+      const contextData = generateAIContext(dbLayanan, dbFasilitas); // Pass dynamic data here
 
       const prompt = `
         ${contextData}
         KAMU ADALAH BOT CS KELURAHAN LENTENG AGUNG.
         Waktu: ${greeting}. User: ${userIdentity.name || "Warga"}.
         ATURAN:
-        1. Jika user bertanya di luar konteks atau minta staff, JAWAB: "HANDOVER_TO_HUMAN".
-        2. Jawab sopan & formal.
+        1. Anda memberikan info persyaratan layanan (KTP, KK, Tanah, dll) DAN fasilitas umum (RPTRA, Puskesmas, dll).
+        2. Jika user bertanya di luar konteks (misal: resep masakan, politik nasional) atau minta bicara dengan orang asli, JAWAB: "HANDOVER_TO_HUMAN".
+        3. Jawab sopan & formal.
         PERTANYAAN: ${userText}
       `;
 
@@ -260,11 +266,11 @@ export default function LiveChatWidget({
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end space-y-4 font-sans">
-      
+
       {/* --- CHAT WINDOW --- */}
       {showWidget && (
         <Card className="w-[350px] h-[500px] shadow-2xl border-none animate-in slide-in-from-bottom-10 fade-in duration-300 overflow-hidden flex flex-col">
-          
+
           {/* HEADER */}
           <div className="bg-[#0B3D2E] p-4 flex justify-between items-center text-white shrink-0">
             <div className="flex gap-3 items-center">
@@ -291,7 +297,7 @@ export default function LiveChatWidget({
 
           {/* CONTENT */}
           <div className="flex-1 overflow-hidden flex flex-col bg-slate-50 relative">
-            
+
             {showIdentityForm ? (
               // VIEW 1: FORM IDENTITAS
               <div className="flex-1 p-6 flex flex-col justify-center">
@@ -306,7 +312,7 @@ export default function LiveChatWidget({
                 <form onSubmit={handleStartChat} className="space-y-4">
                   <div className="space-y-1">
                     <label className="text-xs font-bold text-slate-600">Nama Lengkap</label>
-                    <Input 
+                    <Input
                       required
                       placeholder="Contoh: Budi Santoso"
                       value={userIdentity.name}
@@ -316,7 +322,7 @@ export default function LiveChatWidget({
                   </div>
                   <div className="space-y-1">
                     <label className="text-xs font-bold text-slate-600">No. WhatsApp / Email</label>
-                    <Input 
+                    <Input
                       required
                       placeholder="0812..."
                       value={userIdentity.contact}
@@ -324,8 +330,8 @@ export default function LiveChatWidget({
                       className="bg-white"
                     />
                   </div>
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     className="w-full bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 mt-2"
                     disabled={isRegistering}
                   >
@@ -342,12 +348,12 @@ export default function LiveChatWidget({
                   <div className="flex gap-2">
                     <Avatar className="h-8 w-8 mt-1 border border-slate-200">
                       <AvatarImage src="/logo_kel.png" />
-                      <AvatarFallback className="bg-[#0B3D2E] text-white"><Bot className="h-4 w-4"/></AvatarFallback>
+                      <AvatarFallback className="bg-[#0B3D2E] text-white"><Bot className="h-4 w-4" /></AvatarFallback>
                     </Avatar>
                     <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 text-sm text-slate-700 max-w-[85%]">
-                      <Typewriter 
-                        text={`${greeting}, Kak ${userIdentity.name || "Warga"}! 👋\nSaya Asisten Virtual Kelurahan.\n\nAda yang bisa saya bantu?`} 
-                        speed={10} 
+                      <Typewriter
+                        text={`${greeting}, Kak ${userIdentity.name || "Warga"}! 👋\nSaya Asisten Virtual Kelurahan.\n\nAda yang bisa saya bantu?`}
+                        speed={10}
                       />
                     </div>
                   </div>
@@ -357,19 +363,18 @@ export default function LiveChatWidget({
                     <div key={msg.id} className={`flex gap-2 ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}>
                       <Avatar className="h-8 w-8 mt-1 border border-slate-200 shrink-0">
                         {msg.sender === "user" ? (
-                          <AvatarFallback className="bg-slate-200 text-slate-600"><User className="h-4 w-4"/></AvatarFallback>
+                          <AvatarFallback className="bg-slate-200 text-slate-600"><User className="h-4 w-4" /></AvatarFallback>
                         ) : (
                           <AvatarFallback className={`${isHumanMode && msg.sender === "system" && !msg.message.includes("bot") ? "bg-amber-500" : "bg-[#0B3D2E]"} text-white`}>
-                            {isHumanMode && msg.sender === "system" ? <User className="h-4 w-4"/> : <Sparkles className="h-4 w-4"/>}
+                            {isHumanMode && msg.sender === "system" ? <User className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
                           </AvatarFallback>
                         )}
                       </Avatar>
-                      
-                      <div className={`p-3 rounded-2xl shadow-sm text-sm max-w-[85%] ${
-                        msg.sender === "user" 
-                          ? "bg-[#0B3D2E] text-white rounded-tr-none" 
-                          : "bg-white text-slate-700 rounded-tl-none border border-slate-100"
-                      }`}>
+
+                      <div className={`p-3 rounded-2xl shadow-sm text-sm max-w-[85%] ${msg.sender === "user"
+                        ? "bg-[#0B3D2E] text-white rounded-tr-none"
+                        : "bg-white text-slate-700 rounded-tl-none border border-slate-100"
+                        }`}>
                         {msg.sender === "system" && !isHumanMode ? (
                           <Typewriter text={msg.message} speed={5} />
                         ) : (
@@ -386,7 +391,7 @@ export default function LiveChatWidget({
                   {isTyping && (
                     <div className="flex gap-2">
                       <Avatar className="h-8 w-8 border border-slate-200">
-                        <AvatarFallback className="bg-[#0B3D2E] text-white"><Sparkles className="h-4 w-4"/></AvatarFallback>
+                        <AvatarFallback className="bg-[#0B3D2E] text-white"><Sparkles className="h-4 w-4" /></AvatarFallback>
                       </Avatar>
                       <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 w-16 flex items-center justify-center gap-1">
                         <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
@@ -401,15 +406,15 @@ export default function LiveChatWidget({
                 {/* Input Area */}
                 <div className="p-3 bg-white border-t border-slate-100">
                   <form onSubmit={handleSendMessage} className="flex gap-2 relative">
-                    <Input 
+                    <Input
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
                       placeholder="Ketik pesan..."
                       disabled={isTyping}
                       className="pr-12 bg-slate-50 focus-visible:ring-[#0B3D2E]"
                     />
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       size="icon"
                       disabled={!inputText.trim() || isTyping}
                       className="absolute right-1 top-1 h-8 w-8 bg-[#0B3D2E] hover:bg-[#0B3D2E]/90"
@@ -425,8 +430,8 @@ export default function LiveChatWidget({
       )}
 
       {/* --- TOGGLE BUTTON (FAB) --- */}
-      <Button 
-        size="icon" 
+      <Button
+        size="icon"
         className={`h-14 w-14 rounded-full shadow-xl transition-all duration-300 ${showWidget ? 'bg-red-500 hover:bg-red-600 rotate-90' : 'bg-[#0B3D2E] hover:bg-[#092e23] hover:scale-110'}`}
         onClick={() => toggleWidget(!showWidget)}
       >

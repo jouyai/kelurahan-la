@@ -283,16 +283,35 @@ export const DATA_LAYANAN = [
 // ============================================================================
 // HELPER FUNCTION UNTUK AI
 // ============================================================================
-export const generateAIContext = () => {
+export const generateAIContext = (dbLayanan = [], dbFasilitas = []) => {
   const today = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
+  // 1. DATA LAYANAN
+  const sourceLayanan = dbLayanan.length > 0
+    ? dbLayanan.map(item => ({
+      layanan: item.title,
+      kategori: item.data?.kategori || "Umum",
+      syarat: item.data?.syarat || []
+    }))
+    : DATA_LAYANAN;
+
   let knowledgeText = "";
-  DATA_LAYANAN.forEach((item, index) => {
+  sourceLayanan.forEach((item, index) => {
     knowledgeText += `\n${index + 1}. LAYANAN: ${item.layanan}\n   KATEGORI: ${item.kategori}\n   SYARAT:\n`;
-    item.syarat.forEach((s) => {
+    (item.syarat || []).forEach((s) => {
       knowledgeText += `   - ${s}\n`;
     });
   });
+
+  // 2. DATA FASILITAS
+  if (dbFasilitas.length > 0) {
+    knowledgeText += `\n=================================================================\n`;
+    knowledgeText += `DAFTAR FASILITAS UMUM\n`;
+    knowledgeText += `=================================================================\n`;
+    dbFasilitas.forEach((f) => {
+      knowledgeText += `- ${f.title} (${f.data?.category || "Umum"}): ${f.description}\n`;
+    });
+  }
 
   const systemPrompt = `
 =================================================================

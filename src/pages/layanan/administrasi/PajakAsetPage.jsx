@@ -10,40 +10,53 @@ import { Separator } from "@/components/ui/separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  Wallet, 
-  FileCheck, 
-  CheckCircle2, 
-  Info,
-  Building2,
-  Landmark,
-  ExternalLink
+import {
+  ExternalLink,
+  Loader2
 } from 'lucide-react';
+import { usePageContent, useData } from "../../../hooks/useContent";
 
 export default function PajakAsetPage() {
-  // Filter Data: Ambil hanya kategori "Pajak"
-  const layananPajak = DATA_LAYANAN.filter(item => item.kategori === "Pajak");
+  const { content: pageContent, loading: contentLoading } = usePageContent('layanan-pajak-aset');
+  const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
+
+  const isLoading = contentLoading || layananLoading;
+
+  // Filter Data
+  const layananPajak = dbLayanan.length > 0
+    ? dbLayanan.filter(item => item.data?.kategori === "Pajak & Aset" || item.data?.kategori === "Pajak").map(item => ({
+      layanan: item.title,
+      syarat: item.data?.syarat || []
+    }))
+    : [];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pt-24 pb-12">
-      
+
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         {/* Pattern Money/Wallet */}
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <Landmark className="w-64 h-64 text-white" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-indigo-400 text-indigo-300 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Perpajakan Daerah
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Layanan Pajak & Aset
+            {pageContent.hero_title || "Layanan Pajak & Aset"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Informasi persyaratan administrasi PBB-P2, balik nama SPPT, dan surat keterangan aset.
+            {pageContent.hero_description || "Informasi persyaratan administrasi PBB-P2, balik nama SPPT, and surat keterangan aset."}
           </p>
         </div>
       </div>
@@ -60,10 +73,10 @@ export default function PajakAsetPage() {
       {/* --- MAIN CONTENT --- */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          
+
           {/* LEFT COLUMN: DAFTAR LAYANAN */}
           <div className="lg:col-span-2 space-y-8">
-            
+
             {/* Alert Info SPPT */}
             <Alert className="bg-indigo-50 border-indigo-200 text-indigo-900">
               <Info className="h-4 w-4 text-indigo-600" />
@@ -74,10 +87,10 @@ export default function PajakAsetPage() {
             </Alert>
 
             <div className="flex items-center gap-3 mb-2">
-               <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
-                 <Wallet className="h-6 w-6 text-[#0B3D2E]" />
-               </div>
-               <h2 className="text-2xl font-bold text-slate-900">Persyaratan Dokumen</h2>
+              <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
+                <Wallet className="h-6 w-6 text-[#0B3D2E]" />
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900">Persyaratan Dokumen</h2>
             </div>
 
             {layananPajak.length > 0 ? (
@@ -125,7 +138,7 @@ export default function PajakAsetPage() {
 
           {/* RIGHT COLUMN: SIDEBAR INFO */}
           <div className="space-y-6">
-            
+
             {/* Widget Cek PBB */}
             <Card className="bg-white border-slate-200 shadow-sm">
               <CardHeader className="pb-3">

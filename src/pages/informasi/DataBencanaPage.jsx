@@ -19,74 +19,114 @@ import {
   BarChart3,
   Waves,
   Trees,
+  Loader2
 } from "lucide-react";
+import { usePageContent, useData } from "../../hooks/useContent";
 
-// Dummy Data Statistik Bencana (2025-2026)
-const stats = [
-  {
-    label: "Kejadian Banjir",
-    value: "12",
-    icon: Waves,
-    color: "bg-blue-100 text-blue-600",
-  },
-  {
-    label: "Kebakaran",
-    value: "3",
-    icon: Flame,
-    color: "bg-red-100 text-red-600",
-  },
-  {
-    label: "Pohon Tumbang",
-    value: "8",
-    icon: Trees,
-    color: "bg-green-100 text-green-600",
-  },
-  {
-    label: "Tanah Longsor",
-    value: "1",
-    icon: AlertTriangle,
-    color: "bg-amber-100 text-amber-600",
-  },
-];
-
-// Data Riwayat Bencana Terbaru
-const recentDisasters = [
-  {
-    id: 1,
-    title: "Siaga Banjir Kiriman (Katulampa)",
-    date: "14 Januari 2026",
-    location: "RW 01 & RW 03 (Bantaran Ciliwung)",
-    status: "Waspada",
-    statusBadge: "bg-amber-100 text-amber-700 border-amber-200",
-    desc: "Kenaikan debit air Ciliwung menyebabkan genangan setinggi 30-50 cm di beberapa titik bantaran kali.",
-    type: "Banjir",
-    typeBadge: "bg-blue-50 text-blue-700 border-blue-100",
-  },
-  {
-    id: 2,
-    title: "Pohon Tumbang Hujan Angin",
-    date: "02 Januari 2026",
-    location: "Jl. Raya Lenteng Agung (Arah Depok)",
-    status: "Selesai",
-    statusBadge: "bg-green-100 text-green-700 border-green-200",
-    desc: "Pohon angsana tua tumbang menutup sebagian jalan. Penanganan selesai dilakukan oleh PPSU dan Damkar.",
-    type: "Cuaca Ekstrem",
-    typeBadge: "bg-slate-100 text-slate-700 border-slate-200",
-  },
-  {
-    id: 3,
-    title: "Kebakaran Lahan Kosong",
-    date: "12 Desember 2025",
-    location: "Jl. Joe (Lahan Warga)",
-    status: "Selesai",
-    statusBadge: "bg-green-100 text-green-700 border-green-200",
-    desc: "Diduga akibat puntung rokok. Api berhasil dipadamkan warga sebelum armada Damkar tiba.",
-    type: "Kebakaran",
-    typeBadge: "bg-red-50 text-red-700 border-red-100",
-  },
-];
+const getIconComponent = (iconName) => {
+  switch (iconName) {
+    case 'Waves': return Waves;
+    case 'Flame': return Flame;
+    case 'Trees': return Trees;
+    case 'AlertTriangle': return AlertTriangle;
+    default: return AlertTriangle;
+  }
+};
 
 export default function DataBencanaPage() {
+  const { content: pageContent, loading: contentLoading } = usePageContent('bencana');
+  const { data: dbStats, loading: statsLoading } = useData('items', { type: 'bencana_stats' });
+  const { data: dbRecent, loading: recentLoading } = useData('items', { type: 'bencana_riwayat' });
+
+  const isLoading = contentLoading || statsLoading || recentLoading;
+
+  // Dummy Data Statistik Bencana Fallback
+  const statsList = dbStats.length > 0 ? dbStats.map(s => ({
+    label: s.title,
+    value: s.description,
+    icon: getIconComponent(s.data?.icon),
+    color: s.data?.color || "bg-blue-100 text-blue-600"
+  })) : [
+    {
+      label: "Kejadian Banjir",
+      value: "12",
+      icon: Waves,
+      color: "bg-blue-100 text-blue-600",
+    },
+    {
+      label: "Kebakaran",
+      value: "3",
+      icon: Flame,
+      color: "bg-red-100 text-red-600",
+    },
+    {
+      label: "Pohon Tumbang",
+      value: "8",
+      icon: Trees,
+      color: "bg-green-100 text-green-600",
+    },
+    {
+      label: "Tanah Longsor",
+      value: "1",
+      icon: AlertTriangle,
+      color: "bg-amber-100 text-amber-600",
+    },
+  ];
+
+  // Data Riwayat Bencana Terbaru Fallback
+  const recentDisastersList = dbRecent.length > 0 ? dbRecent.map(r => ({
+    id: r.id,
+    title: r.title,
+    date: r.description,
+    location: r.data?.location || "",
+    status: r.data?.status || "Selesai",
+    statusBadge: r.data?.statusBadge || "bg-green-100 text-green-700 border-green-200",
+    desc: r.data?.desc || "",
+    type: r.data?.type || "Bencana",
+    typeBadge: r.data?.typeBadge || "bg-blue-50 text-blue-700 border-blue-100"
+  })) : [
+    {
+      id: 1,
+      title: "Siaga Banjir Kiriman (Katulampa)",
+      date: "14 Januari 2026",
+      location: "RW 01 & RW 03 (Bantaran Ciliwung)",
+      status: "Waspada",
+      statusBadge: "bg-amber-100 text-amber-700 border-amber-200",
+      desc: "Kenaikan debit air Ciliwung menyebabkan genangan setinggi 30-50 cm di beberapa titik bantaran kali.",
+      type: "Banjir",
+      typeBadge: "bg-blue-50 text-blue-700 border-blue-100",
+    },
+    {
+      id: 2,
+      title: "Pohon Tumbang Hujan Angin",
+      date: "02 Januari 2026",
+      location: "Jl. Raya Lenteng Agung (Arah Depok)",
+      status: "Selesai",
+      statusBadge: "bg-green-100 text-green-700 border-green-200",
+      desc: "Pohon angsana tua tumbang menutup sebagian jalan. Penanganan selesai dilakukan oleh PPSU and Damkar.",
+      type: "Cuaca Ekstrem",
+      typeBadge: "bg-slate-100 text-slate-700 border-slate-200",
+    },
+    {
+      id: 3,
+      title: "Kebakaran Lahan Kosong",
+      date: "12 Desember 2025",
+      location: "Jl. Joe (Lahan Warga)",
+      status: "Selesai",
+      statusBadge: "bg-green-100 text-green-700 border-green-200",
+      desc: "Diduga akibat puntung rokok. Api berhasil dipadamkan warga sebelum armada Damkar tiba.",
+      type: "Kebakaran",
+      typeBadge: "bg-red-50 text-red-700 border-red-100",
+    },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
       {/* === HERO SECTION === */}
@@ -103,11 +143,10 @@ export default function DataBencanaPage() {
             Siaga Bencana
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Data & Potensi Bencana
+            {pageContent.hero_title || "Data & Potensi Bencana"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Informasi terkini mengenai titik rawan, riwayat kejadian, dan
-            kesiapsiagaan bencana di lingkungan Kelurahan Lenteng Agung.
+            {pageContent.hero_description || "Informasi terkini mengenai titik rawan, riwayat kejadian, and kesiapsiagaan bencana di lingkungan Kelurahan Lenteng Agung."}
           </p>
         </div>
       </div>
@@ -128,7 +167,7 @@ export default function DataBencanaPage() {
       {/* === STATS CARDS === */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {stats.map((stat, idx) => (
+          {statsList.map((stat, idx) => (
             <Card key={idx} className="border-slate-100 shadow-sm">
               <CardContent className="p-5 flex items-center justify-between">
                 <div>
@@ -238,7 +277,7 @@ export default function DataBencanaPage() {
               </div>
 
               <div className="space-y-4">
-                {recentDisasters.map((item) => (
+                {recentDisastersList.map((item) => (
                   <Card
                     key={item.id}
                     className="border-slate-200 shadow-sm hover:shadow-md transition-shadow"

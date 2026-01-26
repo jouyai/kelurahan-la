@@ -8,37 +8,52 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  Target, 
-  Compass, 
-  CheckCircle2, 
-  Quote, 
+import {
+  ArrowLeft,
+  Target,
+  Compass,
+  Quote,
   Award,
   Users,
-  Leaf
+  Leaf,
+  Loader2
 } from 'lucide-react';
+import { usePageContent, useData } from '../../hooks/useContent';
 
 const VisiMisiPage = () => {
+  const { content: pageContent, loading: contentLoading } = usePageContent('visi-misi');
+  const { data: misiList, loading: misiLoading } = useData('items', { type: 'misi' });
+  const { data: coreValues, loading: valuesLoading } = useData('items', { type: 'core_value' });
+
+  const isLoading = contentLoading || misiLoading || valuesLoading;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
-      
+
       {/* --- HERO SECTION (Compact Style) --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         {/* Decorative Pattern */}
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <Target className="w-64 h-64 text-white" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Profil Kelurahan
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Visi & Misi
+            {pageContent.hero_title || "Visi & Misi"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Komitmen kami dalam membangun tata kelola pemerintahan yang transparan dan melayani masyarakat dengan sepenuh hati.
+            {pageContent.hero_description || "Komitmen kami dalam membangun tata kelola pemerintahan yang transparan dan melayani masyarakat dengan sepenuh hati."}
           </p>
         </div>
       </div>
@@ -54,18 +69,18 @@ const VisiMisiPage = () => {
 
       {/* --- MAIN CONTENT --- */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        
+
         {/* VISI SECTION */}
         <section className="text-center space-y-6">
           <div className="inline-flex items-center justify-center p-3 bg-amber-100 rounded-full mb-2">
             <Target className="w-8 h-8 text-[#0B3D2E]" />
           </div>
           <h2 className="text-3xl font-bold text-[#0B3D2E] uppercase tracking-wide">Visi</h2>
-          
+
           <div className="relative max-w-4xl mx-auto">
             <Quote className="absolute top-0 left-0 w-8 h-8 text-amber-200 -translate-x-4 -translate-y-4 opacity-50" />
             <h3 className="text-2xl md:text-4xl font-serif font-medium text-slate-800 leading-snug px-6 py-4">
-              "Terwujudnya Kelurahan Lenteng Agung yang <span className="text-[#0B3D2E] font-bold underline decoration-amber-400 underline-offset-4 decoration-4">Maju, Lestari, dan Berbudaya</span> menuju Masyarakat Sejahtera."
+              {pageContent.visi_text ? `"${pageContent.visi_text}"` : '"Terwujudnya Kelurahan Lenteng Agung yang Maju, Lestari, dan Berbudaya menuju Masyarakat Sejahtera."'}
             </h3>
             <Quote className="absolute bottom-0 right-0 w-8 h-8 text-amber-200 translate-x-4 translate-y-4 rotate-180 opacity-50" />
           </div>
@@ -83,31 +98,39 @@ const VisiMisiPage = () => {
               <h2 className="text-2xl font-bold text-slate-900">Misi Pembangunan</h2>
             </div>
             <p className="text-slate-600 leading-relaxed">
-              Untuk mencapai visi tersebut, Kelurahan Lenteng Agung menetapkan langkah-langkah strategis yang terukur dan berorientasi pada hasil nyata bagi masyarakat.
+              {pageContent.misi_intro || "Untuk mencapai visi tersebut, Kelurahan Lenteng Agung menetapkan langkah-langkah strategis yang terukur dan berorientasi pada hasil nyata bagi masyarakat."}
             </p>
             <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg mt-4">
               <p className="text-sm text-slate-700 italic">
-                "Misi adalah kompas yang menuntun setiap kebijakan dan program kerja kami setiap harinya."
+                {pageContent.misi_quote || '"Misi adalah kompas yang menuntun setiap kebijakan dan program kerja kami setiap harinya."'}
               </p>
             </div>
           </div>
 
           <div className="space-y-4">
-            <MisiCard index="01">
-              Mewujudkan tata kelola pemerintahan yang profesional, transparan, dan akuntabel berbasis teknologi informasi.
-            </MisiCard>
-            <MisiCard index="02">
-              Meningkatkan kualitas infrastruktur lingkungan yang ramah anak, lansia, dan disabilitas.
-            </MisiCard>
-            <MisiCard index="03">
-              Memberdayakan ekonomi masyarakat melalui pengembangan UMKM dan ekonomi kreatif berbasis potensi lokal.
-            </MisiCard>
-            <MisiCard index="04">
-              Menciptakan lingkungan yang hijau, bersih, dan asri melalui partisipasi aktif masyarakat.
-            </MisiCard>
-            <MisiCard index="05">
-              Melestarikan nilai-nilai budaya dan kearifan lokal sebagai jati diri warga Lenteng Agung.
-            </MisiCard>
+            {misiList.length > 0 ? misiList.map((misi, idx) => (
+              <MisiCard key={misi.id} index={String(idx + 1).padStart(2, '0')}>
+                {misi.description}
+              </MisiCard>
+            )) : (
+              <>
+                <MisiCard index="01">
+                  Mewujudkan tata kelola pemerintahan yang profesional, transparan, dan akuntabel berbasis teknologi informasi.
+                </MisiCard>
+                <MisiCard index="02">
+                  Meningkatkan kualitas infrastruktur lingkungan yang ramah anak, lansia, dan disabilitas.
+                </MisiCard>
+                <MisiCard index="03">
+                  Memberdayakan ekonomi masyarakat melalui pengembangan UMKM dan ekonomi kreatif berbasis potensi lokal.
+                </MisiCard>
+                <MisiCard index="04">
+                  Menciptakan lingkungan yang hijau, bersih, dan asri melalui partisipasi aktif masyarakat.
+                </MisiCard>
+                <MisiCard index="05">
+                  Melestarikan nilai-nilai budaya dan kearifan lokal sebagai jati diri warga Lenteng Agung.
+                </MisiCard>
+              </>
+            )}
           </div>
         </section>
 
@@ -115,27 +138,47 @@ const VisiMisiPage = () => {
         <section className="bg-white rounded-2xl p-8 md:p-12 shadow-sm border border-slate-100 text-center">
           <h2 className="text-2xl font-bold text-slate-900 mb-8">Nilai Utama Organisasi</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <ValueItem 
-              icon={<Users className="w-6 h-6 text-white" />} 
-              title="Melayani" 
-              desc="Mengutamakan kepuasan masyarakat dengan pelayanan ramah dan cepat."
-            />
-            <ValueItem 
-              icon={<Award className="w-6 h-6 text-white" />} 
-              title="Integritas" 
-              desc="Jujur, disiplin, dan bertanggung jawab dalam setiap tindakan."
-            />
-            <ValueItem 
-              icon={<Leaf className="w-6 h-6 text-white" />} 
-              title="Berkelanjutan" 
-              desc="Berorientasi pada kelestarian lingkungan untuk masa depan."
-            />
+            {coreValues.length > 0 ? coreValues.map((val) => (
+              <ValueItem
+                key={val.id}
+                icon={getIconComponent(val.image_url) || <Users className="w-6 h-6 text-white" />}
+                title={val.title}
+                desc={val.description}
+              />
+            )) : (
+              <>
+                <ValueItem
+                  icon={<Users className="w-6 h-6 text-white" />}
+                  title="Melayani"
+                  desc="Mengutamakan kepuasan masyarakat dengan pelayanan ramah dan cepat."
+                />
+                <ValueItem
+                  icon={<Award className="w-6 h-6 text-white" />}
+                  title="Integritas"
+                  desc="Jujur, disiplin, dan bertanggung jawab dalam setiap tindakan."
+                />
+                <ValueItem
+                  icon={<Leaf className="w-6 h-6 text-white" />}
+                  title="Berkelanjutan"
+                  desc="Berorientasi pada kelestarian lingkungan untuk masa depan."
+                />
+              </>
+            )}
           </div>
         </section>
 
       </div>
     </div>
   );
+};
+
+const getIconComponent = (iconName) => {
+  switch (iconName) {
+    case 'Users': return <Users className="w-6 h-6 text-white" />;
+    case 'Award': return <Award className="w-6 h-6 text-white" />;
+    case 'Leaf': return <Leaf className="w-6 h-6 text-white" />;
+    default: return null;
+  }
 };
 
 const MisiCard = ({ index, children }) => (

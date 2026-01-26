@@ -8,35 +8,41 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  Briefcase, 
-  Building2, 
-  FileText, 
-  CheckCircle2, 
+import {
   Wallet,
-  Info
+  Info,
+  Loader2
 } from 'lucide-react';
+import { usePageContent } from "../../../hooks/useContent";
 
 export default function PekerjaanUsahaPage() {
+  const { content: pageContent, loading } = usePageContent('layanan-usaha');
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
-      
+
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <Briefcase className="w-64 h-64 text-white" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Administrasi Umum
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Layanan Pekerjaan & Usaha
+            {pageContent.hero_title || "Layanan Pekerjaan & Usaha"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Panduan persyaratan pengurusan Surat Keterangan Usaha (SKU) dan dokumen ketenagakerjaan lainnya.
+            {pageContent.hero_description || "Panduan persyaratan pengurusan Surat Keterangan Usaha (SKU) and dokumen ketenagakerjaan lainnya."}
           </p>
         </div>
       </div>
@@ -52,7 +58,7 @@ export default function PekerjaanUsahaPage() {
 
       {/* --- CONTENT SECTION --- */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        
+
         {/* SURAT KETERANGAN USAHA (SKU) */}
         <Card className="border-l-4 border-l-[#0B3D2E] shadow-md">
           <CardHeader>
@@ -60,22 +66,22 @@ export default function PekerjaanUsahaPage() {
               <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
                 <Building2 className="h-6 w-6 text-[#0B3D2E]" />
               </div>
-              Surat Keterangan Usaha (SKU)
+              {pageContent.section_1_title || "Surat Keterangan Usaha (SKU)"}
             </CardTitle>
             <CardDescription>
-              Dokumen legalitas untuk UMKM atau usaha rumahan, biasanya untuk syarat pinjaman bank atau bantuan.
+              {pageContent.section_1_desc || "Dokumen legalitas untuk UMKM atau usaha rumahan, biasanya untuk syarat pinjaman bank atau bantuan."}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="bg-slate-50 p-5 rounded-xl border border-slate-100">
               <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
               <ul className="space-y-3">
-                {[
+                {(pageContent.section_1_requirements ? JSON.parse(pageContent.section_1_requirements) : [
                   "Surat Pengantar RT/RW yang mencantumkan jenis usaha.",
-                  "Fotokopi KTP dan KK Pemohon (Asli diperlihatkan).",
+                  "Fotokopi KTP and KK Pemohon (Asli diperlihatkan).",
                   "Foto lokasi usaha atau produk usaha (dicetak).",
                   "Surat Pernyataan Tidak Keberatan dari tetangga (jika diperlukan untuk usaha tertentu)."
-                ].map((req, idx) => (
+                ]).map((req, idx) => (
                   <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
                     <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
                     <span>{req}</span>
@@ -93,22 +99,22 @@ export default function PekerjaanUsahaPage() {
               <div className="p-2 bg-amber-100 rounded-lg">
                 <Briefcase className="h-6 w-6 text-amber-600" />
               </div>
-              Keterangan Tidak Bekerja / Pencari Kerja
+              {pageContent.section_2_title || "Keterangan Tidak Bekerja / Pencari Kerja"}
             </CardTitle>
             <CardDescription>
-              Untuk keperluan beasiswa, keringanan biaya, atau administrasi lamaran kerja.
+              {pageContent.section_2_desc || "Untuk keperluan beasiswa, keringanan biaya, atau administrasi lamaran kerja."}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="bg-amber-50 p-5 rounded-xl border border-amber-100">
               <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
               <ul className="space-y-3">
-                {[
+                {(pageContent.section_2_requirements ? JSON.parse(pageContent.section_2_requirements) : [
                   "Surat Pengantar RT/RW setempat.",
-                  "Fotokopi KTP dan Kartu Keluarga (KK).",
+                  "Fotokopi KTP and Kartu Keluarga (KK).",
                   "Surat Pernyataan Belum/Tidak Bekerja bermaterai 10.000.",
                   "Fotokopi Ijazah Terakhir (jika diperlukan)."
-                ].map((req, idx) => (
+                ]).map((req, idx) => (
                   <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
                     <CheckCircle2 className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
                     <span>{req}</span>
@@ -126,21 +132,21 @@ export default function PekerjaanUsahaPage() {
               <div className="p-2 bg-blue-100 rounded-lg">
                 <Wallet className="h-6 w-6 text-blue-600" />
               </div>
-              Surat Keterangan Penghasilan
+              {pageContent.section_3_title || "Surat Keterangan Penghasilan"}
             </CardTitle>
             <CardDescription>
-              Bagi pekerja sektor informal (tidak memiliki slip gaji) untuk keperluan administrasi sekolah anak atau bank.
+              {pageContent.section_3_desc || "Bagi pekerja sektor informal (tidak memiliki slip gaji) untuk keperluan administrasi sekolah anak atau bank."}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="bg-blue-50 p-5 rounded-xl border border-blue-100">
               <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
               <ul className="space-y-3">
-                {[
+                {(pageContent.section_3_requirements ? JSON.parse(pageContent.section_3_requirements) : [
                   "Surat Pengantar RT/RW yang menyebutkan nominal rata-rata penghasilan per bulan.",
-                  "Fotokopi KTP dan Kartu Keluarga (KK).",
+                  "Fotokopi KTP and Kartu Keluarga (KK).",
                   "Surat Pernyataan Penghasilan bermaterai yang diketahui RT/RW."
-                ].map((req, idx) => (
+                ]).map((req, idx) => (
                   <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
                     <CheckCircle2 className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
                     <span>{req}</span>
@@ -155,7 +161,7 @@ export default function PekerjaanUsahaPage() {
         <div className="bg-slate-100 p-4 rounded-lg flex gap-3 items-start border border-slate-200">
           <Info className="h-5 w-5 text-slate-500 shrink-0 mt-0.5" />
           <p className="text-sm text-slate-600">
-            <strong>Catatan:</strong> Pelayanan Surat Keterangan Usaha (SKU) juga dapat diajukan secara online melalui aplikasi <strong>JAKEVO</strong> (untuk izin mikro) atau datang langsung ke PTSP Kelurahan.
+            <strong>Catatan:</strong> {pageContent.footer_note || "Pelayanan Surat Keterangan Usaha (SKU) juga dapat diajukan secara online melalui aplikasi JAKEVO (untuk izin mikro) atau datang langsung ke PTSP Kelurahan."}
           </p>
         </div>
 

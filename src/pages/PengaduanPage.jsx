@@ -19,23 +19,26 @@ import {
 } from "@/components/ui/dialog";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  Send, 
-  Search, 
-  AlertCircle, 
-  CheckCircle2, 
-  Clock, 
+import {
+  ArrowLeft,
+  Send,
+  Search,
+  AlertCircle,
+  CheckCircle2,
+  Clock,
   MessageSquare,
-  FileText
+  FileText,
+  Loader2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { usePageContent } from '../hooks/useContent';
 
 const PengaduanPage = () => {
+  const { content: pageContent, loading: contentLoading } = usePageContent('pengaduan');
   // State Utama
   const [loading, setLoading] = useState(false);
   const [riwayat, setRiwayat] = useState([]);
-  
+
   // State Modal Sukses
   const [showModal, setShowModal] = useState(false);
   const [currentTicketId, setCurrentTicketId] = useState('');
@@ -69,8 +72,8 @@ const PengaduanPage = () => {
         .from('pengaduan')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(5); 
-      
+        .limit(5);
+
       if (error) throw error;
       if (data) setRiwayat(data);
     } catch (error) {
@@ -123,7 +126,7 @@ const PengaduanPage = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  
+
   // Handle khusus untuk Select Shadcn
   const handleCategoryChange = (value) => {
     setFormData({ ...formData, kategori: value });
@@ -153,7 +156,7 @@ const PengaduanPage = () => {
       setCurrentTicketId(ticketId);
       setShowModal(true);
       setFormData({ nama: '', email: '', kategori: 'Pelayanan Publik', laporan: '' });
-      fetchRiwayat(); 
+      fetchRiwayat();
 
     } catch (error) {
       console.error('Error:', error);
@@ -174,27 +177,27 @@ const PengaduanPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
-      
+
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-12 mb-10 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10" 
-             style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
+        <div className="absolute inset-0 opacity-10"
+          style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
         </div>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Layanan Warga
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Pusat Pengaduan & Aspirasi
+            {pageContent.hero_title || "Pusat Pengaduan & Aspirasi"}
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Sampaikan keluhan, saran, atau laporan Anda untuk kemajuan Kelurahan Lenteng Agung. Kami siap mendengar dan menindaklanjuti.
+            {pageContent.hero_description || "Sampaikan keluhan, saran, atau laporan Anda untuk kemajuan Kelurahan Lenteng Agung. Kami siap mendengar and menindaklanjuti."}
           </p>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10">
-        
+
         {/* --- KOLOM KIRI: FORM PENGADUAN --- */}
         <div className="space-y-6">
           <div className="flex items-center gap-2 mb-2">
@@ -214,25 +217,25 @@ const PengaduanPage = () => {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-slate-700">Nama Lengkap</label>
-                  <Input 
+                  <Input
                     name="nama"
-                    placeholder="Sesuai KTP" 
-                    value={formData.nama} 
-                    onChange={handleChange} 
-                    required 
+                    placeholder="Sesuai KTP"
+                    value={formData.nama}
+                    onChange={handleChange}
+                    required
                     className="focus-visible:ring-[#0B3D2E]"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-slate-700">Email / Kontak</label>
-                  <Input 
+                  <Input
                     name="email"
                     type="email"
-                    placeholder="email@contoh.com" 
-                    value={formData.email} 
-                    onChange={handleChange} 
-                    required 
+                    placeholder="email@contoh.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
                     className="focus-visible:ring-[#0B3D2E]"
                   />
                 </div>
@@ -253,13 +256,13 @@ const PengaduanPage = () => {
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-slate-700">Isi Laporan</label>
-                  <Textarea 
+                  <Textarea
                     name="laporan"
-                    placeholder="Jelaskan detail masalah, lokasi, dan waktu kejadian..." 
+                    placeholder="Jelaskan detail masalah, lokasi, dan waktu kejadian..."
                     rows={5}
-                    value={formData.laporan} 
-                    onChange={handleChange} 
-                    required 
+                    value={formData.laporan}
+                    onChange={handleChange}
+                    required
                     className="focus-visible:ring-[#0B3D2E]"
                   />
                 </div>
@@ -278,7 +281,7 @@ const PengaduanPage = () => {
 
         {/* --- KOLOM KANAN: TRACKING & RIWAYAT --- */}
         <div className="space-y-8">
-          
+
           {/* WIDGET CARI TIKET */}
           <Card className="shadow-md bg-[#0B3D2E] text-white border-none">
             <CardHeader>
@@ -291,8 +294,8 @@ const PengaduanPage = () => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSearch} className="flex gap-2">
-                <Input 
-                  placeholder="Contoh: 829012" 
+                <Input
+                  placeholder="Contoh: 829012"
                   value={searchId}
                   onChange={(e) => setSearchId(e.target.value)}
                   className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-amber-400"
@@ -312,40 +315,40 @@ const PengaduanPage = () => {
 
               {searchResult && (
                 <div className="mt-6 bg-white rounded-lg p-4 text-slate-800 shadow-lg animate-in fade-in zoom-in duration-300">
-                   <div className="flex justify-between items-start mb-4">
-                     <div>
-                       <span className="text-xs text-slate-500 block uppercase tracking-wider">Nomor Tiket</span>
-                       <span className="text-2xl font-mono font-bold text-[#0B3D2E]">#{searchResult.ticket_id}</span>
-                     </div>
-                     <Button variant="ghost" size="sm" onClick={handleResetSearch} className="h-6 w-6 p-0 rounded-full hover:bg-slate-100">
-                       x
-                     </Button>
-                   </div>
-                   
-                   <div className="space-y-3 text-sm">
-                     <div className="flex justify-between border-b pb-2">
-                       <span className="text-slate-500">Status</span>
-                       {getStatusBadge(searchResult.status)}
-                     </div>
-                     <div className="flex justify-between border-b pb-2">
-                       <span className="text-slate-500">Kategori</span>
-                       <span className="font-medium">{searchResult.kategori}</span>
-                     </div>
-                     <div className="bg-slate-50 p-3 rounded border border-slate-100 italic text-slate-600">
-                       "{searchResult.laporan}"
-                     </div>
-                     
-                     {searchResult.tanggapan ? (
-                       <div className="bg-blue-50 p-3 rounded border border-blue-100">
-                         <p className="text-xs font-bold text-blue-700 mb-1 flex items-center gap-1">
-                           <MessageSquare className="w-3 h-3" /> Tanggapan Admin:
-                         </p>
-                         <p className="text-slate-700">{searchResult.tanggapan}</p>
-                       </div>
-                     ) : (
-                       <p className="text-xs text-slate-400 text-center py-2">Belum ada tanggapan.</p>
-                     )}
-                   </div>
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <span className="text-xs text-slate-500 block uppercase tracking-wider">Nomor Tiket</span>
+                      <span className="text-2xl font-mono font-bold text-[#0B3D2E]">#{searchResult.ticket_id}</span>
+                    </div>
+                    <Button variant="ghost" size="sm" onClick={handleResetSearch} className="h-6 w-6 p-0 rounded-full hover:bg-slate-100">
+                      x
+                    </Button>
+                  </div>
+
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between border-b pb-2">
+                      <span className="text-slate-500">Status</span>
+                      {getStatusBadge(searchResult.status)}
+                    </div>
+                    <div className="flex justify-between border-b pb-2">
+                      <span className="text-slate-500">Kategori</span>
+                      <span className="font-medium">{searchResult.kategori}</span>
+                    </div>
+                    <div className="bg-slate-50 p-3 rounded border border-slate-100 italic text-slate-600">
+                      "{searchResult.laporan}"
+                    </div>
+
+                    {searchResult.tanggapan ? (
+                      <div className="bg-blue-50 p-3 rounded border border-blue-100">
+                        <p className="text-xs font-bold text-blue-700 mb-1 flex items-center gap-1">
+                          <MessageSquare className="w-3 h-3" /> Tanggapan Admin:
+                        </p>
+                        <p className="text-slate-700">{searchResult.tanggapan}</p>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-slate-400 text-center py-2">Belum ada tanggapan.</p>
+                    )}
+                  </div>
                 </div>
               )}
             </CardContent>
@@ -356,7 +359,7 @@ const PengaduanPage = () => {
             <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
               <Clock className="w-5 h-5 text-[#0B3D2E]" /> Laporan Terkini
             </h3>
-            
+
             <div className="space-y-3">
               {riwayat.length === 0 ? (
                 <div className="text-center py-8 bg-white rounded-lg border border-dashed">
@@ -375,8 +378,8 @@ const PengaduanPage = () => {
                       <h4 className="font-semibold text-slate-800 text-sm mb-1">{item.kategori}</h4>
                       <p className="text-xs text-slate-500 line-clamp-2 mb-2">"{item.laporan}"</p>
                       <div className="flex items-center gap-2 text-[10px] text-slate-400">
-                         <Clock className="w-3 h-3" /> 
-                         {new Date(item.created_at).toLocaleDateString('id-ID')}
+                        <Clock className="w-3 h-3" />
+                        {new Date(item.created_at).toLocaleDateString('id-ID')}
                       </div>
                     </CardContent>
                   </Card>
@@ -400,7 +403,7 @@ const PengaduanPage = () => {
               Terima kasih atas laporan Anda. Simpan nomor tiket di bawah ini untuk memantau status penyelesaian.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="flex items-center justify-center p-6 bg-slate-50 rounded-lg border border-slate-100 border-dashed">
             <span className="text-4xl font-mono font-bold text-[#0B3D2E] tracking-widest selection:bg-amber-200">
               {currentTicketId}
@@ -408,8 +411,8 @@ const PengaduanPage = () => {
           </div>
 
           <DialogFooter className="sm:justify-center">
-            <Button 
-              type="button" 
+            <Button
+              type="button"
               className="bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 w-full sm:w-auto px-8"
               onClick={() => setShowModal(false)}
             >
