@@ -1,24 +1,26 @@
-import { useState, useEffect, useRef, Fragment } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { generateAIContext } from "../data/knowledgeBase";
-import {
-  ChatBubbleLeftRightIcon,
-  PaperAirplaneIcon,
-  XMarkIcon,
-  UserCircleIcon,
-  SparklesIcon,
-  BuildingOffice2Icon,
-  PhoneIcon,
-  IdentificationIcon,
-} from "@heroicons/react/24/solid";
-import {
-  Transition,
-  Dialog,
-  TransitionChild,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
+
+// --- SHADCN UI IMPORTS ---
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+
+// --- ICONS (Lucide React - Konsisten dengan page lain) ---
+import { 
+  MessageSquare, 
+  X, 
+  Send, 
+  User, 
+  Bot, 
+  Sparkles, 
+  AlertCircle,
+  Loader2
+} from 'lucide-react';
 
 // --- KONFIGURASI ---
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
@@ -59,12 +61,17 @@ const Typewriter = ({ text, speed = 15, onComplete }) => {
 };
 
 export default function LiveChatWidget({ 
-  isOpen, 
-  setIsOpen, 
+  isOpen, // Note: Jika parent mengatur state, gunakan props ini. Jika mandiri, gunakan local state.
+  setIsOpen, // Opsional jika dikontrol parent
   startHumanMode = false, 
   onResetHumanMode,
-  chatTopic = "" // Menerima topik dari App
+  chatTopic = "" 
 }) {
+  // State Lokal untuk kontrol buka/tutup jika props tidak tersedia
+  const [localIsOpen, setLocalIsOpen] = useState(false);
+  const showWidget = isOpen !== undefined ? isOpen : localIsOpen;
+  const toggleWidget = setIsOpen || setLocalIsOpen;
+
   const [sessionId, setSessionId] = useState(null);
 
   // State Form Identitas
@@ -83,9 +90,8 @@ export default function LiveChatWidget({
   // LOGIC AUTO CONNECT STAFF
   useEffect(() => {
     const connectStaff = async () => {
-      if (isOpen && startHumanMode) {
+      if (showWidget && startHumanMode) {
         setIsHumanMode(true);
-        // Jika sudah ada sesi aktif, update statusnya di database
         if (sessionId) {
           await supabase
             .from("chat_sessions")
@@ -96,7 +102,7 @@ export default function LiveChatWidget({
       }
     };
     connectStaff();
-  }, [isOpen, startHumanMode, sessionId, onResetHumanMode]);
+  }, [showWidget, startHumanMode, sessionId, onResetHumanMode]);
 
   // 1. Cek Sesi Saat Load
   useEffect(() => {
@@ -136,70 +142,50 @@ export default function LiveChatWidget({
       .channel(`room:${sessionId}`)
       .on(
         "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "chat_messages",
-          filter: `session_id=eq.${sessionId}`,
-        },
+        { event: "INSERT", schema: "public", table: "chat_messages", filter: `session_id=eq.${sessionId}` },
         (payload) => {
           setMessages((prev) => {
             if (prev.find((m) => m.id === payload.new.id)) return prev;
             return [...prev, payload.new];
           });
           if (payload.new.sender === "system") setIsTyping(false);
-        },
+        }
       )
       .on(
         "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "chat_sessions",
-          filter: `id=eq.${sessionId}`,
-        },
+        { event: "UPDATE", schema: "public", table: "chat_sessions", filter: `id=eq.${sessionId}` },
         (payload) => {
-          if (
-            payload.new.status === "bot" ||
-            payload.new.status === "resolved"
-          ) {
+          if (payload.new.status === "bot" || payload.new.status === "resolved") {
             setIsHumanMode(false);
-          }
-          else if (payload.new.status === "live") {
+          } else if (payload.new.status === "live") {
             setIsHumanMode(true);
           }
-        },
+        }
       )
       .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, [sessionId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isOpen, isTyping, showIdentityForm]);
+  }, [messages, showWidget, isTyping, showIdentityForm]);
 
-  // 3. HANDLER: SUBMIT FORM IDENTITAS (MODIFIED)
+  // 3. HANDLER: SUBMIT FORM IDENTITAS
   const handleStartChat = async (e) => {
     e.preventDefault();
     if (!userIdentity.name.trim() || !userIdentity.contact.trim()) return;
 
     setIsRegistering(true);
-
-    // Tentukan status awal
     const initialStatus = (isHumanMode || startHumanMode) ? "live" : "bot";
 
     const { data, error } = await supabase
       .from("chat_sessions")
-      .insert([
-        {
-          user_name: userIdentity.name,
-          contact: userIdentity.contact,
-          status: initialStatus,
-        },
-      ])
+      .insert([{
+        user_name: userIdentity.name,
+        contact: userIdentity.contact,
+        status: initialStatus,
+      }])
       .select()
       .single();
 
@@ -208,30 +194,14 @@ export default function LiveChatWidget({
       setSessionId(data.id);
       setShowIdentityForm(false);
       
-      // JIKA MODE STAFF: Kirim pesan sistem & pesan otomatis user berisi topik
       if (initialStatus === "live") {
-        // 1. Pesan Sambutan Sistem
-        await supabase
-          .from("chat_messages")
-          .insert([
-            { 
-              session_id: data.id, 
-              sender: "system", 
-              message: "Anda terhubung dengan layanan Staff. Silakan sampaikan keperluan Anda." 
-            },
-          ]);
-
-        // 2. Pesan Otomatis dari User sesuai Topik Halaman
+        await supabase.from("chat_messages").insert([
+          { session_id: data.id, sender: "system", message: "Anda terhubung dengan layanan Staff. Silakan sampaikan keperluan Anda." },
+        ]);
         if (chatTopic) {
-          await supabase
-            .from("chat_messages")
-            .insert([
-              { 
-                session_id: data.id, 
-                sender: "user", 
-                message: `Halo, saya ingin bertanya mengenai ${chatTopic}.` 
-              },
-            ]);
+          await supabase.from("chat_messages").insert([
+            { session_id: data.id, sender: "user", message: `Halo, saya ingin bertanya mengenai ${chatTopic}.` },
+          ]);
         }
       }
     } else {
@@ -240,7 +210,7 @@ export default function LiveChatWidget({
     setIsRegistering(false);
   };
 
-  // 4. HANDLER: KIRIM PESAN
+  // 4. HANDLER: KIRIM PESAN (LOGIC UTAMA)
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!inputText.trim() || !sessionId) return;
@@ -248,13 +218,8 @@ export default function LiveChatWidget({
     const userText = inputText;
     setInputText("");
 
-    await supabase
-      .from("chat_messages")
-      .insert([{ session_id: sessionId, sender: "user", message: userText }]);
-    await supabase
-      .from("chat_sessions")
-      .update({ last_message_at: new Date() })
-      .eq("id", sessionId);
+    await supabase.from("chat_messages").insert([{ session_id: sessionId, sender: "user", message: userText }]);
+    await supabase.from("chat_sessions").update({ last_message_at: new Date() }).eq("id", sessionId);
 
     if (isHumanMode) return;
 
@@ -262,17 +227,15 @@ export default function LiveChatWidget({
     setIsTyping(true);
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
-      const contextData = generateAIContext();
+      const contextData = generateAIContext(); // Fungsi dari knowledgeBase.js
 
       const prompt = `
         ${contextData}
         KAMU ADALAH BOT CS KELURAHAN LENTENG AGUNG.
         Waktu: ${greeting}. User: ${userIdentity.name || "Warga"}.
-        
         ATURAN:
         1. Jika user bertanya di luar konteks atau minta staff, JAWAB: "HANDOVER_TO_HUMAN".
         2. Jawab sopan & formal.
-
         PERTANYAAN: ${userText}
       `;
 
@@ -281,309 +244,205 @@ export default function LiveChatWidget({
 
       if (aiResponse.includes("HANDOVER_TO_HUMAN")) {
         setIsHumanMode(true);
-        await supabase
-          .from("chat_sessions")
-          .update({ status: "live", last_message_at: new Date() })
-          .eq("id", sessionId);
-
-        const fallbackMsg =
-          "Mohon maaf, saya akan menghubungkan Anda dengan Petugas Kelurahan kami. Mohon tunggu sebentar...";
-        await supabase
-          .from("chat_messages")
-          .insert([
-            { session_id: sessionId, sender: "system", message: fallbackMsg },
-          ]);
+        await supabase.from("chat_sessions").update({ status: "live", last_message_at: new Date() }).eq("id", sessionId);
+        const fallbackMsg = "Mohon maaf, saya akan menghubungkan Anda dengan Petugas Kelurahan kami. Mohon tunggu sebentar...";
+        await supabase.from("chat_messages").insert([{ session_id: sessionId, sender: "system", message: fallbackMsg }]);
       } else {
-        await supabase
-          .from("chat_messages")
-          .insert([
-            { session_id: sessionId, sender: "system", message: aiResponse },
-          ]);
+        await supabase.from("chat_messages").insert([{ session_id: sessionId, sender: "system", message: aiResponse }]);
       }
     } catch (error) {
       console.error("AI Error:", error);
       setIsHumanMode(true);
-      await supabase.from("chat_messages").insert([
-        {
-          session_id: sessionId,
-          sender: "system",
-          message: "Maaf, sistem sedang sibuk. Menghubungkan ke admin...",
-        },
-      ]);
-      await supabase
-        .from("chat_sessions")
-        .update({ status: "live", last_message_at: new Date() })
-        .eq("id", sessionId);
+      await supabase.from("chat_messages").insert([{ session_id: sessionId, sender: "system", message: "Maaf, sistem sedang sibuk. Menghubungkan ke admin..." }]);
+      await supabase.from("chat_sessions").update({ status: "live", last_message_at: new Date() }).eq("id", sessionId);
     }
   };
 
   return (
-    <>
-      {/* TOMBOL FLOATING */}
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-[#124076] hover:bg-blue-800 text-white px-5 py-3 rounded-full shadow-2xl transition-all hover:scale-105 active:scale-95 group"
-        >
-          <div className="flex flex-col items-start -space-y-0.5 text-left">
-            <span className="text-[10px] text-blue-200 font-medium">
-              BUTUH BANTUAN?
-            </span>
-            <span className="text-sm font-bold">Chat Asisten</span>
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end space-y-4 font-sans">
+      
+      {/* --- CHAT WINDOW --- */}
+      {showWidget && (
+        <Card className="w-[350px] h-[500px] shadow-2xl border-none animate-in slide-in-from-bottom-10 fade-in duration-300 overflow-hidden flex flex-col">
+          
+          {/* HEADER */}
+          <div className="bg-[#0B3D2E] p-4 flex justify-between items-center text-white shrink-0">
+            <div className="flex gap-3 items-center">
+              <div className="relative">
+                <Avatar className="h-10 w-10 border-2 border-white/20">
+                  <AvatarImage src="/logo_kel.png" />
+                  <AvatarFallback className="bg-white/10 text-white">LA</AvatarFallback>
+                </Avatar>
+                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-[#0B3D2E] rounded-full"></span>
+              </div>
+              <div>
+                <h4 className="font-bold text-sm">
+                  {showIdentityForm ? "Selamat Datang" : isHumanMode ? "Petugas Kelurahan" : "Asisten Virtual"}
+                </h4>
+                <p className="text-xs text-green-100 flex items-center gap-1">
+                  {showIdentityForm ? "Layanan Warga" : isHumanMode ? "Online" : "Menjawab otomatis"}
+                </p>
+              </div>
+            </div>
+            <button onClick={() => toggleWidget(false)} className="text-white/70 hover:text-white transition-colors">
+              <X className="h-5 w-5" />
+            </button>
           </div>
-          <ChatBubbleLeftRightIcon className="h-6 w-6 text-yellow-300 group-hover:rotate-6 transition-transform" />
-        </button>
-      )}
 
-      {/* MODAL CHAT */}
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-[9999]"
-          onClose={() => setIsOpen(false)}
-        >
-          <TransitionChild
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/30 sm:hidden" />
-          </TransitionChild>
-
-          <div className="fixed inset-0 flex items-end sm:items-end sm:justify-end sm:bottom-24 sm:right-6 pointer-events-none">
-            <TransitionChild
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="translate-y-full opacity-0 sm:translate-y-10 sm:scale-95"
-              enterTo="translate-y-0 opacity-100 sm:scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="translate-y-0 opacity-100 sm:scale-100"
-              leaveTo="translate-y-full opacity-0 sm:translate-y-10 sm:scale-95"
-            >
-              <DialogPanel className="pointer-events-auto w-full h-[100dvh] sm:h-[520px] sm:w-[340px] bg-white sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col ring-1 ring-black/5 font-sans">
-                {/* HEADER */}
-                <div className="bg-[#124076] p-3.5 flex justify-between items-center shadow-md shrink-0">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-white/10 p-1.5 rounded-full backdrop-blur-sm border border-white/20 relative">
-                      {isHumanMode ? (
-                        <BuildingOffice2Icon className="h-5 w-5 text-white" />
-                      ) : (
-                        <SparklesIcon className="h-5 w-5 text-yellow-300" />
-                      )}
-                      <span className="absolute bottom-0 right-0 block h-2 w-2 rounded-full ring-2 ring-[#124076] bg-green-400"></span>
-                    </div>
-                    <div>
-                      <DialogTitle className="font-bold text-white text-sm">
-                        {showIdentityForm
-                          ? "Selamat Datang"
-                          : isHumanMode
-                            ? "Petugas Kelurahan"
-                            : "Asisten Virtual"}
-                      </DialogTitle>
-                      <p className="text-[11px] text-blue-200">
-                        {showIdentityForm
-                          ? "Layanan Warga"
-                          : isHumanMode
-                            ? "Online"
-                            : "Menjawab otomatis"}
-                      </p>
-                    </div>
+          {/* CONTENT */}
+          <div className="flex-1 overflow-hidden flex flex-col bg-slate-50 relative">
+            
+            {showIdentityForm ? (
+              // VIEW 1: FORM IDENTITAS
+              <div className="flex-1 p-6 flex flex-col justify-center">
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 bg-[#0B3D2E]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <User className="h-8 w-8 text-[#0B3D2E]" />
                   </div>
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="p-1.5 hover:bg-white/10 rounded-full text-white transition-colors"
-                  >
-                    <XMarkIcon className="h-5 w-5" />
-                  </button>
+                  <h3 className="font-bold text-slate-800 text-lg">Isi Data Diri</h3>
+                  <p className="text-xs text-slate-500 mt-1">Agar petugas kami dapat melayani Anda dengan baik.</p>
                 </div>
 
-                {/* VIEW 1: FORM IDENTITAS */}
-                {showIdentityForm ? (
-                  <div className="flex-1 p-5 flex flex-col justify-center bg-[#F5F7FA]">
-                    <div className="text-center mb-5">
-                      <div className="w-14 h-14 bg-[#124076] rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
-                        <UserCircleIcon className="h-7 w-7 text-white" />
-                      </div>
-                      <h3 className="font-bold text-gray-800 text-base">
-                        Isi Data Diri
-                      </h3>
-                      <p className="text-[11px] text-gray-500 mt-1 leading-tight px-2">
-                        Agar petugas kami dapat menghubungi Anda kembali.
-                      </p>
-                    </div>
-
-                    <form onSubmit={handleStartChat} className="space-y-3">
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-bold text-gray-600 ml-1">
-                          Nama Lengkap
-                        </label>
-                        <div className="relative">
-                          <IdentificationIcon className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <input
-                            type="text"
-                            required
-                            placeholder="Contoh: Budi Santoso"
-                            className="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#124076] focus:border-[#124076] outline-none transition"
-                            value={userIdentity.name}
-                            onChange={(e) =>
-                              setUserIdentity({
-                                ...userIdentity,
-                                name: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-bold text-gray-600 ml-1">
-                          No. WhatsApp / Email
-                        </label>
-                        <div className="relative">
-                          <PhoneIcon className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <input
-                            type="text"
-                            required
-                            placeholder="0812..."
-                            className="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#124076] focus:border-[#124076] outline-none transition"
-                            value={userIdentity.contact}
-                            onChange={(e) =>
-                              setUserIdentity({
-                                ...userIdentity,
-                                contact: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
-                      </div>
-
-                      <button
-                        disabled={isRegistering}
-                        className="w-full bg-[#124076] hover:bg-blue-800 text-white font-bold py-2.5 rounded-lg shadow-lg shadow-blue-900/20 transition-all active:scale-95 disabled:bg-gray-400 mt-3 flex justify-center text-sm"
-                      >
-                        {isRegistering ? (
-                          <span className="flex items-center gap-2">
-                            <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>{" "}
-                            Memproses...
-                          </span>
-                        ) : (
-                          "Mulai Chat"
-                        )}
-                      </button>
-                    </form>
+                <form onSubmit={handleStartChat} className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-600">Nama Lengkap</label>
+                    <Input 
+                      required
+                      placeholder="Contoh: Budi Santoso"
+                      value={userIdentity.name}
+                      onChange={(e) => setUserIdentity({ ...userIdentity, name: e.target.value })}
+                      className="bg-white"
+                    />
                   </div>
-                ) : (
-                  // VIEW 2: CHAT ROOM
-                  <>
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#F5F7FA]">
-                      <div className="flex gap-2">
-                        <div className="shrink-0 w-7 h-7 rounded-full bg-[#124076] flex items-center justify-center border border-white shadow-sm">
-                          <SparklesIcon className="h-3.5 w-3.5 text-yellow-300" />
-                        </div>
-                        <div className="max-w-[85%] px-3 py-2.5 rounded-2xl rounded-tl-none bg-white text-gray-800 text-sm shadow-sm border border-gray-100">
-                          <Typewriter
-                            text={`${greeting}, Kak ${userIdentity.name || "Warga"}! 👋\nSaya Asisten Virtual Kelurahan.\n\nAda yang bisa saya bantu?`}
-                            speed={10}
-                          />
-                        </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-600">No. WhatsApp / Email</label>
+                    <Input 
+                      required
+                      placeholder="0812..."
+                      value={userIdentity.contact}
+                      onChange={(e) => setUserIdentity({ ...userIdentity, contact: e.target.value })}
+                      className="bg-white"
+                    />
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 mt-2"
+                    disabled={isRegistering}
+                  >
+                    {isRegistering ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                    {isRegistering ? "Memproses..." : "Mulai Chat"}
+                  </Button>
+                </form>
+              </div>
+            ) : (
+              // VIEW 2: CHAT ROOM
+              <>
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  {/* Greeting Bubble */}
+                  <div className="flex gap-2">
+                    <Avatar className="h-8 w-8 mt-1 border border-slate-200">
+                      <AvatarImage src="/logo_kel.png" />
+                      <AvatarFallback className="bg-[#0B3D2E] text-white"><Bot className="h-4 w-4"/></AvatarFallback>
+                    </Avatar>
+                    <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 text-sm text-slate-700 max-w-[85%]">
+                      <Typewriter 
+                        text={`${greeting}, Kak ${userIdentity.name || "Warga"}! 👋\nSaya Asisten Virtual Kelurahan.\n\nAda yang bisa saya bantu?`} 
+                        speed={10} 
+                      />
+                    </div>
+                  </div>
+
+                  {/* Messages Loop */}
+                  {messages.map((msg) => (
+                    <div key={msg.id} className={`flex gap-2 ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                      <Avatar className="h-8 w-8 mt-1 border border-slate-200 shrink-0">
+                        {msg.sender === "user" ? (
+                          <AvatarFallback className="bg-slate-200 text-slate-600"><User className="h-4 w-4"/></AvatarFallback>
+                        ) : (
+                          <AvatarFallback className={`${isHumanMode && msg.sender === "system" && !msg.message.includes("bot") ? "bg-amber-500" : "bg-[#0B3D2E]"} text-white`}>
+                            {isHumanMode && msg.sender === "system" ? <User className="h-4 w-4"/> : <Sparkles className="h-4 w-4"/>}
+                          </AvatarFallback>
+                        )}
+                      </Avatar>
+                      
+                      <div className={`p-3 rounded-2xl shadow-sm text-sm max-w-[85%] ${
+                        msg.sender === "user" 
+                          ? "bg-[#0B3D2E] text-white rounded-tr-none" 
+                          : "bg-white text-slate-700 rounded-tl-none border border-slate-100"
+                      }`}>
+                        {msg.sender === "system" && !isHumanMode ? (
+                          <Typewriter text={msg.message} speed={5} />
+                        ) : (
+                          <p className="whitespace-pre-wrap leading-relaxed">{msg.message}</p>
+                        )}
+                        <span className={`text-[9px] block text-right mt-1 ${msg.sender === "user" ? "text-green-200" : "text-slate-400"}`}>
+                          {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
                       </div>
-
-                      {messages.map((msg, index) => (
-                        <div
-                          key={msg.id}
-                          className={`flex gap-2 ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}
-                        >
-                          <div className="shrink-0 self-end">
-                            {msg.sender === "user" ? (
-                              <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center">
-                                <UserCircleIcon className="h-4 w-4 text-gray-500" />
-                              </div>
-                            ) : (
-                              <div
-                                className={`w-7 h-7 rounded-full flex items-center justify-center text-white ${isHumanMode && msg.sender === "system" && !msg.message.includes("bot") ? "bg-orange-600" : "bg-[#124076]"}`}
-                              >
-                                <SparklesIcon className="h-3.5 w-3.5" />
-                              </div>
-                            )}
-                          </div>
-                          <div
-                            className={`max-w-[85%] px-3 py-2.5 rounded-2xl text-sm shadow-sm ${
-                              msg.sender === "user"
-                                ? "bg-[#124076] text-white rounded-br-none"
-                                : "bg-white text-gray-800 rounded-bl-none border border-gray-100"
-                            }`}
-                          >
-                            {msg.sender === "system" &&
-                            index === messages.length - 1 &&
-                            !isHumanMode ? (
-                              <Typewriter text={msg.message} speed={15} />
-                            ) : (
-                              <p className="whitespace-pre-wrap leading-relaxed">
-                                {msg.message}
-                              </p>
-                            )}
-                            <p
-                              className={`text-[9px] mt-1 text-right ${msg.sender === "user" ? "text-blue-200" : "text-gray-400"}`}
-                            >
-                              {new Date(msg.created_at).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-
-                      {isTyping && (
-                        <div className="flex gap-2">
-                          <div className="shrink-0 w-7 h-7 rounded-full bg-[#124076] flex items-center justify-center">
-                            <SparklesIcon className="h-3.5 w-3.5 text-yellow-300" />
-                          </div>
-                          <div className="bg-white px-3 py-2.5 rounded-2xl rounded-tl-none shadow-sm border border-gray-100">
-                            <div className="flex gap-1 items-center h-5">
-                              <span className="w-1 h-1 bg-gray-400 rounded-full animate-bounce"></span>
-                              <span className="w-1 h-1 bg-gray-400 rounded-full animate-bounce delay-100"></span>
-                              <span className="w-1 h-1 bg-gray-400 rounded-full animate-bounce delay-200"></span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      <div ref={messagesEndRef} />
                     </div>
+                  ))}
 
-                    <div className="p-3 bg-white border-t border-gray-100">
-                      <form
-                        onSubmit={handleSendMessage}
-                        className="relative flex items-center gap-2"
-                      >
-                        <input
-                          type="text"
-                          value={inputText}
-                          onChange={(e) => setInputText(e.target.value)}
-                          placeholder="Ketik pesan..."
-                          disabled={isTyping}
-                          className="w-full pl-4 pr-10 py-2.5 bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#124076] focus:ring-1 focus:ring-[#124076] rounded-lg text-sm transition-all outline-none text-gray-800 placeholder-gray-400"
-                        />
-                        <button
-                          type="submit"
-                          disabled={!inputText.trim() || isTyping}
-                          className="absolute right-2 p-1.5 bg-[#124076] text-white rounded-md hover:bg-blue-800 disabled:bg-gray-300 transition-colors shadow-sm"
-                        >
-                          <PaperAirplaneIcon className="h-4 w-4" />
-                        </button>
-                      </form>
+                  {/* Typing Indicator */}
+                  {isTyping && (
+                    <div className="flex gap-2">
+                      <Avatar className="h-8 w-8 border border-slate-200">
+                        <AvatarFallback className="bg-[#0B3D2E] text-white"><Sparkles className="h-4 w-4"/></AvatarFallback>
+                      </Avatar>
+                      <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 w-16 flex items-center justify-center gap-1">
+                        <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
+                        <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-75"></span>
+                        <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-150"></span>
+                      </div>
                     </div>
-                  </>
-                )}
-              </DialogPanel>
-            </TransitionChild>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+
+                {/* Input Area */}
+                <div className="p-3 bg-white border-t border-slate-100">
+                  <form onSubmit={handleSendMessage} className="flex gap-2 relative">
+                    <Input 
+                      value={inputText}
+                      onChange={(e) => setInputText(e.target.value)}
+                      placeholder="Ketik pesan..."
+                      disabled={isTyping}
+                      className="pr-12 bg-slate-50 focus-visible:ring-[#0B3D2E]"
+                    />
+                    <Button 
+                      type="submit" 
+                      size="icon"
+                      disabled={!inputText.trim() || isTyping}
+                      className="absolute right-1 top-1 h-8 w-8 bg-[#0B3D2E] hover:bg-[#0B3D2E]/90"
+                    >
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </form>
+                </div>
+              </>
+            )}
           </div>
-        </Dialog>
-      </Transition>
-    </>
+        </Card>
+      )}
+
+      {/* --- TOGGLE BUTTON (FAB) --- */}
+      <Button 
+        size="icon" 
+        className={`h-14 w-14 rounded-full shadow-xl transition-all duration-300 ${showWidget ? 'bg-red-500 hover:bg-red-600 rotate-90' : 'bg-[#0B3D2E] hover:bg-[#092e23] hover:scale-110'}`}
+        onClick={() => toggleWidget(!showWidget)}
+      >
+        {showWidget ? (
+          <X className="h-6 w-6 text-white" />
+        ) : (
+          <div className="relative">
+            <MessageSquare className="h-6 w-6 text-white" />
+            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500 border border-white"></span>
+            </span>
+          </div>
+        )}
+      </Button>
+
+    </div>
   );
 }

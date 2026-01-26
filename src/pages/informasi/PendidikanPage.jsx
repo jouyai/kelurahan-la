@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+
+// --- SHADCN UI IMPORTS ---
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+// --- ICONS ---
 import { 
-  AcademicCapIcon, 
-  MapPinIcon, 
-  BuildingLibraryIcon, 
-  FunnelIcon,
-  StarIcon,
-  ChatBubbleLeftRightIcon,
-  BookOpenIcon
-} from "@heroicons/react/24/solid";
+  ArrowLeft, 
+  GraduationCap, 
+  MapPin, 
+  BookOpen, 
+  Star,
+  School,
+  MessageSquare
+} from 'lucide-react';
 
 // Dummy Data Sekolah
 const schools = [
@@ -22,7 +29,7 @@ const schools = [
   { id: 8, name: "PKBM Negeri 15 (Paket A/B/C)", level: "Non-Formal", address: "Jl. Joe", akreditasi: "B", status: "Negeri" },
 ];
 
-export default function PendidikanPage({ onConnectStaff }) {
+export default function PendidikanPage() {
   const [filter, setFilter] = useState("Semua");
 
   const filteredSchools = filter === "Semua" 
@@ -30,147 +37,137 @@ export default function PendidikanPage({ onConnectStaff }) {
     : schools.filter(s => s.level === filter || (filter === "SMA" && s.level === "SMK"));
 
   return (
-    <main className="min-h-screen bg-[#F5F7FA] pb-20 pt-24 md:pt-28">
+    <div className="min-h-screen bg-slate-50 font-sans pb-12">
       
-      {/* BREADCRUMB */}
-      <div className="max-w-6xl mx-auto px-4 md:px-0 mb-8">
-        <nav className="flex text-sm text-gray-500 mb-4" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-3">
-            <li className="inline-flex items-center">
-              <Link to="/" className="hover:text-[#06452F] hover:underline flex items-center gap-1">
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                Home
-              </Link>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                <span className="ml-1 text-gray-500 md:ml-2">Informasi</span>
-              </div>
-            </li>
-            <li aria-current="page">
-              <div className="flex items-center">
-                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                <span className="ml-1 text-[#06452F] font-bold md:ml-2">Pendidikan</span>
-              </div>
-            </li>
-          </ol>
-        </nav>
-
-        <div className="border-b border-gray-200 pb-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#124076] mb-2">
+      {/* === HERO SECTION === */}
+      <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-8 opacity-10">
+          <GraduationCap className="w-64 h-64 text-white" />
+        </div>
+        
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <Badge variant="outline" className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
+            Informasi Publik
+          </Badge>
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
             Sarana Pendidikan
           </h1>
-          <p className="text-gray-600 text-base md:text-lg max-w-3xl">
-            Data sekolah dan lembaga pendidikan formal maupun non-formal yang tersebar 
-            di wilayah Kelurahan Lenteng Agung.
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
+            Data sekolah dan lembaga pendidikan formal maupun non-formal yang tersebar di wilayah Kelurahan Lenteng Agung.
           </p>
         </div>
       </div>
 
-      {/* CONTENT */}
-      <section className="max-w-6xl mx-auto px-4 md:px-0 mt-8">
-        <div className="flex flex-col lg:flex-row gap-8">
+      {/* === BREADCRUMB === */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <Button variant="ghost" asChild className="pl-0 text-slate-500 hover:text-[#0B3D2E] hover:bg-transparent">
+          <Link to="/" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" /> Kembali ke Beranda
+          </Link>
+        </Button>
+      </div>
+
+      {/* === CONTENT SECTION === */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           
           {/* LEFT: SCHOOL LIST */}
-          <div className="w-full lg:w-2/3">
+          <div className="lg:col-span-2 space-y-6">
             
             {/* Filter Tabs */}
-            <div className="flex flex-wrap gap-2 mb-6">
+            <div className="flex flex-wrap gap-2 mb-2">
               {["Semua", "PAUD", "SD", "SMP", "SMA"].map((level) => (
-                <button
+                <Button
                   key={level}
+                  variant={filter === level ? "default" : "outline"}
                   onClick={() => setFilter(level)}
-                  className={`px-4 py-2 rounded-full text-xs font-bold transition-all border ${
+                  className={`rounded-full px-5 h-9 text-xs font-bold ${
                     filter === level 
-                    ? "bg-[#06452F] text-white border-[#06452F]" 
-                    : "bg-white text-gray-600 border-gray-200 hover:border-[#06452F]"
+                    ? "bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 text-white border-transparent" 
+                    : "bg-white text-slate-600 border-slate-300 hover:border-[#0B3D2E] hover:text-[#0B3D2E]"
                   }`}
                 >
                   {level}
-                </button>
+                </Button>
               ))}
             </div>
 
-            <div className="space-y-4">
+            <div className="grid gap-4">
               {filteredSchools.map((item) => (
-                <div 
-                  key={item.id} 
-                  className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-md transition-all flex flex-col sm:flex-row gap-5 items-start"
-                >
-                  <div className="shrink-0 w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-blue-700 font-bold text-lg border border-blue-100">
-                    {item.level}
-                  </div>
-                  
-                  <div className="flex-1 w-full">
-                    <div className="flex flex-wrap justify-between items-start mb-1">
-                      <h3 className="font-bold text-gray-800 text-lg">{item.name}</h3>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
-                        item.status === 'Negeri' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-orange-50 text-orange-700 border-orange-100'
-                      }`}>
-                        {item.status}
-                      </span>
+                <Card key={item.id} className="border-slate-200 shadow-sm hover:shadow-md transition-all group">
+                  <CardContent className="p-5 flex flex-col sm:flex-row gap-5 items-start">
+                    <div className="shrink-0 w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-blue-700 border border-blue-100 group-hover:scale-110 transition-transform">
+                      {item.level === "Non-Formal" ? <BookOpen className="w-6 h-6" /> : <School className="w-6 h-6" />}
                     </div>
+                    
+                    <div className="flex-1 w-full">
+                      <div className="flex flex-wrap justify-between items-start mb-1 gap-2">
+                        <h3 className="font-bold text-slate-800 text-lg group-hover:text-[#0B3D2E] transition-colors leading-tight">
+                          {item.name}
+                        </h3>
+                        <Badge variant="secondary" className={`border ${
+                          item.status === 'Negeri' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-orange-50 text-orange-700 border-orange-100'
+                        }`}>
+                          {item.status}
+                        </Badge>
+                      </div>
 
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
-                      <MapPinIcon className="h-4 w-4 text-gray-400" />
-                      {item.address}
-                    </div>
+                      <div className="flex items-center gap-2 text-sm text-slate-600 mb-3">
+                        <MapPin className="h-4 w-4 text-slate-400 shrink-0" />
+                        {item.address}
+                      </div>
 
-                    <div className="flex gap-3 text-xs">
-                      <div className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded">
-                        <StarIcon className="h-3 w-3 text-yellow-500" />
-                        Akreditasi: <span className="font-bold text-gray-800">{item.akreditasi}</span>
+                      <div className="flex gap-3">
+                        <Badge variant="outline" className="bg-slate-50 border-slate-200 text-slate-600 font-normal gap-1">
+                          <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                          Akreditasi: <strong>{item.akreditasi}</strong>
+                        </Badge>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </div>
 
           {/* RIGHT: SIDEBAR INFO */}
-          <div className="w-full lg:w-1/3 space-y-6">
+          <div className="space-y-6">
             
             {/* Info KJP & PPDB */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 sticky top-24">
-              <h4 className="font-bold text-[#124076] mb-4 flex items-center gap-2">
-                <BookOpenIcon className="h-5 w-5" />
-                Informasi Penting
-              </h4>
-              
-              <div className="space-y-4">
-                <div className="bg-orange-50 p-4 rounded-lg border border-orange-100">
-                  <h5 className="font-bold text-orange-800 text-sm mb-1">KJP Plus</h5>
-                  <p className="text-xs text-orange-700 leading-relaxed">
+            <Card className="bg-white border-slate-200 shadow-sm sticky top-24">
+              <CardHeader className="pb-3 border-b border-slate-100">
+                <CardTitle className="text-[#0B3D2E] text-lg font-bold flex items-center gap-2">
+                  <BookOpen className="h-5 w-5" /> Informasi Penting
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4 space-y-4">
+                <div className="bg-amber-50 p-4 rounded-lg border border-amber-100">
+                  <h5 className="font-bold text-amber-800 text-sm mb-1">KJP Plus</h5>
+                  <p className="text-xs text-amber-800/80 leading-relaxed">
                     Pusat Pelayanan Pendanaan Personal dan Operasional Pendidikan (P4OP) bagi warga tidak mampu.
                   </p>
                 </div>
 
                 <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
                   <h5 className="font-bold text-blue-800 text-sm mb-1">PPDB Online</h5>
-                  <p className="text-xs text-blue-700 leading-relaxed">
+                  <p className="text-xs text-blue-800/80 leading-relaxed">
                     Pendaftaran Peserta Didik Baru (PPDB) DKI Jakarta biasanya dibuka bulan Mei-Juni.
                   </p>
                 </div>
-              </div>
 
-              {/* Chat Button */}
-              <div className="mt-6 pt-6 border-t border-gray-50">
-                <button
-                  onClick={() => onConnectStaff && onConnectStaff("Tanya Info KJP/PPDB")}
-                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#06452F] py-2.5 text-sm font-bold text-white hover:bg-[#053724] transition-colors shadow-sm"
-                >
-                  <ChatBubbleLeftRightIcon className="h-4 w-4" />
-                  Tanya Petugas
-                </button>
-              </div>
-            </div>
+                <Button className="w-full bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 text-white font-bold mt-2" asChild>
+                  <Link to="/pengaduan">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Tanya Info KJP/PPDB
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
 
           </div>
 
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
   );
 }

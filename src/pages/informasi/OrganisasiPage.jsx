@@ -1,14 +1,22 @@
 import React from "react";
 import { Link } from "react-router-dom";
+
+// --- SHADCN UI IMPORTS ---
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+// --- ICONS ---
 import { 
-  UserGroupIcon, 
-  HeartIcon, 
-  SparklesIcon, 
-  ShieldCheckIcon, 
-  ChatBubbleLeftRightIcon,
-  BuildingOffice2Icon,
-  HandRaisedIcon
-} from "@heroicons/react/24/solid";
+  ArrowLeft, 
+  Users, 
+  Heart, 
+  Sparkles, 
+  ShieldCheck, 
+  MessageSquare, 
+  Building2, 
+  Hand
+} from 'lucide-react';
 
 // Data Organisasi
 const organizations = [
@@ -19,9 +27,9 @@ const organizations = [
     desc: "Gerakan nasional dalam pembangunan masyarakat yang tumbuh dari bawah dengan wanita sebagai penggeraknya untuk mewujudkan keluarga sejahtera.",
     leader: "Ibu Ketua PKK",
     jadwal: "Selasa (Minggu ke-2)",
-    icon: HeartIcon,
-    color: "bg-pink-100 text-pink-600",
-    border: "border-pink-200"
+    icon: <Heart className="h-8 w-8 text-pink-600" />,
+    color: "bg-pink-50 border-pink-100",
+    buttonColor: "bg-pink-600 hover:bg-pink-700"
   },
   {
     id: 2,
@@ -30,9 +38,9 @@ const organizations = [
     desc: "Wadah pengembangan generasi muda non-partisan yang tumbuh atas dasar kesadaran dan rasa tanggung jawab sosial untuk masyarakat.",
     leader: "Sdr. Ketua Karang Taruna",
     jadwal: "Sabtu Malam",
-    icon: SparklesIcon,
-    color: "bg-blue-100 text-blue-600",
-    border: "border-blue-200"
+    icon: <Sparkles className="h-8 w-8 text-blue-600" />,
+    color: "bg-blue-50 border-blue-100",
+    buttonColor: "bg-blue-600 hover:bg-blue-700"
   },
   {
     id: 3,
@@ -41,9 +49,9 @@ const organizations = [
     desc: "Upaya kesehatan bersumberdaya masyarakat (UKBM) yang dikelola dari, oleh, untuk, dan bersama masyarakat guna memberdayakan kesehatan keluarga.",
     leader: "Koordinator Kader",
     jadwal: "Awal Bulan",
-    icon: UserGroupIcon,
-    color: "bg-green-100 text-green-600",
-    border: "border-green-200"
+    icon: <Users className="h-8 w-8 text-green-600" />,
+    color: "bg-green-50 border-green-100",
+    buttonColor: "bg-green-600 hover:bg-green-700"
   },
   {
     id: 4,
@@ -52,9 +60,9 @@ const organizations = [
     desc: "Mitra kerja kelurahan dalam menampung dan menyalurkan aspirasi masyarakat serta menyusun rencana pembangunan partisipatif.",
     leader: "Bapak Ketua LPM",
     jadwal: "Kondisional",
-    icon: BuildingOffice2Icon,
-    color: "bg-orange-100 text-orange-600",
-    border: "border-orange-200"
+    icon: <Building2 className="h-8 w-8 text-orange-600" />,
+    color: "bg-orange-50 border-orange-100",
+    buttonColor: "bg-orange-600 hover:bg-orange-700"
   },
   {
     id: 5,
@@ -63,9 +71,9 @@ const organizations = [
     desc: "Lembaga pendidikan non-formal Islam yang bertujuan meningkatkan keimanan dan ketaqwaan serta mempererat ukhuwah islamiyah.",
     leader: "Ust. Ketua Forum",
     jadwal: "Jumat Pagi",
-    icon: ShieldCheckIcon,
-    color: "bg-purple-100 text-purple-600",
-    border: "border-purple-200"
+    icon: <ShieldCheck className="h-8 w-8 text-purple-600" />,
+    color: "bg-purple-50 border-purple-100",
+    buttonColor: "bg-purple-600 hover:bg-purple-700"
   },
   {
     id: 6,
@@ -74,109 +82,98 @@ const organizations = [
     desc: "Wadah partisipasi anak untuk menyuarakan aspirasi dan kebutuhan anak dalam proses pembangunan kelurahan.",
     leader: "Duta Anak",
     jadwal: "Minggu Sore",
-    icon: HandRaisedIcon,
-    color: "bg-yellow-100 text-yellow-600",
-    border: "border-yellow-200"
+    icon: <Hand className="h-8 w-8 text-yellow-600" />,
+    color: "bg-yellow-50 border-yellow-100",
+    buttonColor: "bg-yellow-600 hover:bg-yellow-700"
   }
 ];
 
-export default function OrganisasiPage({ onConnectStaff }) {
+export default function OrganisasiPage() {
   return (
-    <main className="min-h-screen bg-[#F5F7FA] pb-20 pt-24 md:pt-28">
+    <div className="min-h-screen bg-slate-50 font-sans pb-12">
       
-      {/* === BREADCRUMB SECTION === */}
-      <div className="max-w-6xl mx-auto px-4 md:px-0 mb-8">
-        <nav className="flex text-sm text-gray-500 mb-4" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-3">
-            <li className="inline-flex items-center">
-              <Link to="/" className="hover:text-[#06452F] hover:underline flex items-center gap-1">
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                Home
-              </Link>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                <span className="ml-1 text-gray-500 md:ml-2">Informasi</span>
-              </div>
-            </li>
-            <li aria-current="page">
-              <div className="flex items-center">
-                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                <span className="ml-1 text-[#06452F] font-bold md:ml-2">Organisasi</span>
-              </div>
-            </li>
-          </ol>
-        </nav>
-
-        <div className="border-b border-gray-200 pb-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#124076] mb-2">
+      {/* === HERO SECTION === */}
+      <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-8 opacity-10">
+          <Users className="w-64 h-64 text-white" />
+        </div>
+        
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <Badge variant="outline" className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
+            Mitra Pemerintah
+          </Badge>
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
             Lembaga Kemasyarakatan
           </h1>
-          <p className="text-gray-600 text-base md:text-lg max-w-3xl">
-            Daftar organisasi mitra pemerintah kelurahan yang berperan aktif dalam 
-            memberdayakan masyarakat, menyalurkan aspirasi, dan menjaga kerukunan warga.
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
+            Daftar organisasi mitra pemerintah kelurahan yang berperan aktif dalam memberdayakan masyarakat.
           </p>
         </div>
       </div>
 
+      {/* === BREADCRUMB === */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <Button variant="ghost" asChild className="pl-0 text-slate-500 hover:text-[#0B3D2E] hover:bg-transparent">
+          <Link to="/" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" /> Kembali ke Beranda
+          </Link>
+        </Button>
+      </div>
+
       {/* === CONTENT SECTION === */}
-      <section className="max-w-6xl mx-auto px-4 md:px-0 mt-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-8">
           
           {/* LEFT: ORGANIZATION GRID */}
           <div className="w-full lg:w-3/4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {organizations.map((org) => (
-                <div 
+                <Card 
                   key={org.id} 
-                  className={`bg-white border ${org.border} rounded-2xl p-6 hover:shadow-lg transition-all flex flex-col items-start gap-4 group relative overflow-hidden`}
+                  className={`border ${org.color} shadow-sm hover:shadow-lg transition-all group overflow-hidden`}
                 >
-                  {/* Decorative Background Blob */}
-                  <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full ${org.color} opacity-10 group-hover:scale-150 transition-transform duration-500`}></div>
-
-                  <div className="flex items-start justify-between w-full relative z-10">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${org.color} bg-opacity-20`}>
-                      <org.icon className={`h-8 w-8 ${org.color.split(" ")[1]}`} />
+                  <CardContent className="p-6 flex flex-col h-full">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="bg-white p-3 rounded-2xl shadow-sm">
+                        {org.icon}
+                      </div>
+                      <Badge variant="outline" className="bg-white/50 text-slate-500 border-slate-200">
+                        Mitra Resmi
+                      </Badge>
                     </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider bg-gray-50 text-gray-500 px-2 py-1 rounded-md border border-gray-100">
-                      Mitra Resmi
-                    </span>
-                  </div>
-                  
-                  <div className="relative z-10 flex-1">
-                    <h3 className="text-xl font-bold text-gray-800 mb-1 group-hover:text-[#124076] transition-colors">
-                      {org.name}
-                    </h3>
-                    <p className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wide">
-                      {org.fullname}
-                    </p>
-                    <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                      {org.desc}
-                    </p>
                     
-                    <div className="flex flex-col gap-2 border-t border-gray-100 pt-3 mt-auto">
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="text-gray-400">Ketua/Koordinator:</span>
-                        <span className="font-semibold text-gray-700">{org.leader}</span>
-                      </div>
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="text-gray-400">Jadwal Pertemuan:</span>
-                        <span className="font-semibold text-gray-700">{org.jadwal}</span>
-                      </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-slate-800 mb-1 group-hover:text-[#0B3D2E] transition-colors">
+                        {org.name}
+                      </h3>
+                      <p className="text-xs font-bold text-slate-500 mb-3 uppercase tracking-wide">
+                        {org.fullname}
+                      </p>
+                      <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                        {org.desc}
+                      </p>
                     </div>
-                  </div>
+                    
+                    <div className="mt-auto space-y-4">
+                      <div className="flex flex-col gap-1 pt-4 border-t border-slate-200/50">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-slate-500">Ketua:</span>
+                          <span className="font-semibold text-slate-700">{org.leader}</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-slate-500">Jadwal:</span>
+                          <span className="font-semibold text-slate-700">{org.jadwal}</span>
+                        </div>
+                      </div>
 
-                  <div className="w-full mt-4 pt-2 relative z-10">
-                    <button 
-                      onClick={() => onConnectStaff && onConnectStaff(`Info ${org.name}`)}
-                      className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-gray-50 text-[#06452F] font-bold text-sm hover:bg-[#06452F] hover:text-white transition-colors border border-gray-100"
-                    >
-                      Hubungi Pengurus
-                      <ChatBubbleLeftRightIcon className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
+                      <Button className={`w-full ${org.buttonColor} text-white font-bold`} asChild>
+                        <Link to="/pengaduan">
+                          Hubungi Pengurus
+                        </Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </div>
@@ -185,41 +182,40 @@ export default function OrganisasiPage({ onConnectStaff }) {
           <div className="w-full lg:w-1/4 space-y-6">
             
             {/* Widget: Join Volunteer */}
-            <div className="bg-[#124076] rounded-2xl p-6 text-white shadow-lg sticky top-24">
-              <h4 className="font-bold text-lg mb-2">Ingin Berkontribusi?</h4>
-              <p className="text-sm text-blue-100 mb-6 leading-relaxed">
-                Jadilah bagian dari perubahan positif di lingkungan Anda. Bergabunglah menjadi relawan atau pengurus organisasi kemasyarakatan.
-              </p>
-              
-              <div className="space-y-3">
-                <button 
-                  onClick={() => onConnectStaff("Daftar Karang Taruna")}
-                  className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-sm font-semibold transition-colors flex items-center justify-between group"
-                >
-                  Karang Taruna
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </button>
-                <button 
-                  onClick={() => onConnectStaff("Daftar Kader PKK")}
-                  className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-sm font-semibold transition-colors flex items-center justify-between group"
-                >
-                  Kader PKK
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </button>
-                <button 
-                  onClick={() => onConnectStaff("Daftar Relawan")}
-                  className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-sm font-semibold transition-colors flex items-center justify-between group"
-                >
-                  Relawan Lainnya
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </button>
-              </div>
-            </div>
+            <Card className="bg-[#0B3D2E] text-white border-none shadow-lg sticky top-24">
+              <CardContent className="p-6">
+                <h4 className="font-bold text-lg mb-2">Ingin Berkontribusi?</h4>
+                <p className="text-sm text-slate-300 mb-6 leading-relaxed">
+                  Jadilah bagian dari perubahan positif di lingkungan Anda. Bergabunglah menjadi relawan.
+                </p>
+                
+                <div className="space-y-3">
+                  <Button variant="outline" className="w-full justify-between bg-white/10 hover:bg-white/20 text-white border-none h-auto py-3" asChild>
+                    <Link to="/pengaduan">
+                      <span>Karang Taruna</span>
+                      <span>→</span>
+                    </Link>
+                  </Button>
+                  <Button variant="outline" className="w-full justify-between bg-white/10 hover:bg-white/20 text-white border-none h-auto py-3" asChild>
+                    <Link to="/pengaduan">
+                      <span>Kader PKK</span>
+                      <span>→</span>
+                    </Link>
+                  </Button>
+                  <Button variant="outline" className="w-full justify-between bg-white/10 hover:bg-white/20 text-white border-none h-auto py-3" asChild>
+                    <Link to="/pengaduan">
+                      <span>Relawan Lainnya</span>
+                      <span>→</span>
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
           </div>
 
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
   );
 }

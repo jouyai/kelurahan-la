@@ -1,94 +1,165 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
+// --- SHADCN UI IMPORTS ---
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+
+// --- ICONS ---
+import { 
+  ArrowLeft, 
+  Briefcase, 
+  Building2, 
+  FileText, 
+  CheckCircle2, 
+  Wallet,
+  Info
+} from 'lucide-react';
 
 export default function PekerjaanUsahaPage() {
   return (
-    <main className="min-h-screen bg-[#F5F7FA] pb-20">
-      {/* HERO SECTION */}
-      <section className="relative h-48 md:h-56 w-full">
-        <img
-          src="/bg_hero.png"
-          alt="Pekerjaan dan Usaha"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          <h1 className="text-2xl md:text-3xl font-semibold text-white text-center">
-            Pekerjaan & Usaha
+    <div className="min-h-screen bg-slate-50 font-sans pb-12">
+      
+      {/* --- HERO SECTION --- */}
+      <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-8 opacity-10">
+          <Briefcase className="w-64 h-64 text-white" />
+        </div>
+        
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <Badge variant="outline" className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
+            Administrasi Umum
+          </Badge>
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
+            Layanan Pekerjaan & Usaha
           </h1>
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
+            Panduan persyaratan pengurusan Surat Keterangan Usaha (SKU) dan dokumen ketenagakerjaan lainnya.
+          </p>
         </div>
-      </section>
+      </div>
 
-      {/* CONTENT SECTION */}
-      <section className="max-w-5xl mx-auto px-4 md:px-0 mt-10">
-        <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm">
-          
-          {/* INFO BOX (GRAY BACKGROUND) */}
-          <div className="bg-[#E5E5E5] rounded-xl p-6 mb-10 text-center shadow-sm">
-            <p className="text-sm md:text-base text-gray-800 leading-relaxed">
-              Layanan ini dikhususkan untuk memfasilitasi administrasi warga terkait
-              ketenagakerjaan dan perizinan usaha mikro. Pastikan Anda telah 
-              melengkapi berkas persyaratan sebelum mengajukan permohonan ke 
-              kantor kelurahan.
-            </p>
-            <div className="mt-6 flex justify-center">
-              <button
-                type="button"
-                className="rounded-full bg-[#06452F] px-6 py-2 text-sm font-medium text-white hover:bg-[#053724] transition-colors shadow-sm"
-              >
-                Terhubung dengan staff terkait
-              </button>
+      {/* --- BREADCRUMB --- */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <Button variant="ghost" asChild className="pl-0 text-slate-500 hover:text-[#0B3D2E] hover:bg-transparent">
+          <Link to="/layanan/umum" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" /> Kembali ke Menu Layanan
+          </Link>
+        </Button>
+      </div>
+
+      {/* --- CONTENT SECTION --- */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        
+        {/* SURAT KETERANGAN USAHA (SKU) */}
+        <Card className="border-l-4 border-l-[#0B3D2E] shadow-md">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
+              <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
+                <Building2 className="h-6 w-6 text-[#0B3D2E]" />
+              </div>
+              Surat Keterangan Usaha (SKU)
+            </CardTitle>
+            <CardDescription>
+              Dokumen legalitas untuk UMKM atau usaha rumahan, biasanya untuk syarat pinjaman bank atau bantuan.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="bg-slate-50 p-5 rounded-xl border border-slate-100">
+              <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
+              <ul className="space-y-3">
+                {[
+                  "Surat Pengantar RT/RW yang mencantumkan jenis usaha.",
+                  "Fotokopi KTP dan KK Pemohon (Asli diperlihatkan).",
+                  "Foto lokasi usaha atau produk usaha (dicetak).",
+                  "Surat Pernyataan Tidak Keberatan dari tetangga (jika diperlukan untuk usaha tertentu)."
+                ].map((req, idx) => (
+                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
+                    <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+                    <span>{req}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          {/* JUDUL UTAMA */}
-          <h2 className="text-lg md:text-xl font-semibold text-[#124076] mb-6 text-center">
-            Persyaratan & Ketentuan Layanan
-          </h2>
+        {/* PENCATATAN PENCARI KERJA */}
+        <Card className="border-l-4 border-l-amber-500 shadow-md">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
+              <div className="p-2 bg-amber-100 rounded-lg">
+                <Briefcase className="h-6 w-6 text-amber-600" />
+              </div>
+              Keterangan Tidak Bekerja / Pencari Kerja
+            </CardTitle>
+            <CardDescription>
+              Untuk keperluan beasiswa, keringanan biaya, atau administrasi lamaran kerja.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="bg-amber-50 p-5 rounded-xl border border-amber-100">
+              <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
+              <ul className="space-y-3">
+                {[
+                  "Surat Pengantar RT/RW setempat.",
+                  "Fotokopi KTP dan Kartu Keluarga (KK).",
+                  "Surat Pernyataan Belum/Tidak Bekerja bermaterai 10.000.",
+                  "Fotokopi Ijazah Terakhir (jika diperlukan)."
+                ].map((req, idx) => (
+                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
+                    <CheckCircle2 className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+                    <span>{req}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
 
-          {/* ITEM 1: IZIN BEKERJA DI LUAR NEGERI */}
-          <div className="mb-8">
-            <h3 className="font-semibold text-[#124076] md:text-lg mb-2">
-              • Permohonan Pencatatan Register Izin Bekerja di Luar Negeri
-            </h3>
-            <p className="text-sm text-gray-800 mb-2">
-              Berikut merupakan persyaratan yang harus dilengkapi dalam pengajuan
-              surat keterangan/izin bagi Tenaga Kerja Indonesia (TKI):
-            </p>
-            <ol className="list-decimal ml-5 space-y-1 text-sm text-gray-700">
-              <li>Surat Pengantar RT/RW</li>
-              <li>Fotocopy KTP (Kartu Tanda Penduduk) Pemohon</li>
-              <li>Fotocopy KK (Kartu Keluarga) Pemohon</li>
-              <li>Fotocopy Akta Kelahiran / Ijazah Terakhir</li>
-              <li>Surat Izin dari Orang Tua / Suami / Istri (bermaterai)</li>
-              <li>Fotocopy KTP Orang Tua / Suami / Istri yang memberi izin</li>
-              <li>Surat Rekomendasi dari PT/Penyalur Tenaga Kerja (jika ada)</li>
-            </ol>
-          </div>
+        {/* KETERANGAN PENGHASILAN */}
+        <Card className="border-l-4 border-l-blue-500 shadow-md">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Wallet className="h-6 w-6 text-blue-600" />
+              </div>
+              Surat Keterangan Penghasilan
+            </CardTitle>
+            <CardDescription>
+              Bagi pekerja sektor informal (tidak memiliki slip gaji) untuk keperluan administrasi sekolah anak atau bank.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="bg-blue-50 p-5 rounded-xl border border-blue-100">
+              <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
+              <ul className="space-y-3">
+                {[
+                  "Surat Pengantar RT/RW yang menyebutkan nominal rata-rata penghasilan per bulan.",
+                  "Fotokopi KTP dan Kartu Keluarga (KK).",
+                  "Surat Pernyataan Penghasilan bermaterai yang diketahui RT/RW."
+                ].map((req, idx) => (
+                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
+                    <CheckCircle2 className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
+                    <span>{req}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
 
-          {/* DIVIDER (Garis Pemisah Halus) */}
-          <hr className="border-gray-200 my-6" />
-
-          {/* ITEM 2: IUMK */}
-          <div className="mb-8">
-            <h3 className="font-semibold text-[#124076] md:text-lg mb-2">
-              • Permohonan Rekomendasi IUMK (Izin Usaha Mikro Kecil)
-            </h3>
-            <p className="text-sm text-gray-800 mb-2">
-              Berikut merupakan persyaratan yang harus dilengkapi bagi pelaku usaha
-              mikro untuk mendapatkan surat rekomendasi perizinan:
-            </p>
-            <ol className="list-decimal ml-5 space-y-1 text-sm text-gray-700">
-              <li>Surat Pengantar RT/RW (Menyatakan lokasi usaha)</li>
-              <li>Fotocopy KTP Pemohon (Pemilik Usaha)</li>
-              <li>Fotocopy Kartu Keluarga (KK)</li>
-              <li>Pas Foto berwarna ukuran 4x6 (2 lembar)</li>
-              <li>Foto lokasi tempat usaha (dicetak)</li>
-              <li>Surat Pernyataan kebenaran lokasi dan jenis usaha (bermaterai)</li>
-              <li>Mengisi formulir permohonan IUMK di Kelurahan</li>
-            </ol>
-          </div>
-
+        {/* INFO TAMBAHAN */}
+        <div className="bg-slate-100 p-4 rounded-lg flex gap-3 items-start border border-slate-200">
+          <Info className="h-5 w-5 text-slate-500 shrink-0 mt-0.5" />
+          <p className="text-sm text-slate-600">
+            <strong>Catatan:</strong> Pelayanan Surat Keterangan Usaha (SKU) juga dapat diajukan secara online melalui aplikasi <strong>JAKEVO</strong> (untuk izin mikro) atau datang langsung ke PTSP Kelurahan.
+          </p>
         </div>
-      </section>
-    </main>
+
+      </div>
+    </div>
   );
 }

@@ -1,89 +1,127 @@
-import { MapPinIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-export default function Footer() {
-    return (
-        <footer className="bg-[#06452F] text-white">
-            <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-10 md:flex-row md:items-start md:justify-between md:py-12">
-                {/* KIRI: Logo + Info alamat */}
-                <div className="flex items-start gap-4 md:w-1/2">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-sm overflow-hidden">
-                        <img
-                            src="/logo_kel.png"
-                            alt="Logo DKI Jakarta"
-                            className="h-14 w-14 object-contain"
-                        />
-                    </div>
+// --- SHADCN COMPONENTS ---
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
-                    <div>
-                        <p className="text-sm font-semibold tracking-wide uppercase">
-                            Kelurahan
-                        </p>
-                        <p className="text-xl font-semibold -mt-1">
-                            Lenteng Agung
-                        </p>
+// --- ICONS ---
+import { MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
 
-                        <div className="mt-4 space-y-2 text-sm">
-                            <div className="flex items-start gap-2">
-                                <MapPinIcon className="mt-0.5 h-5 w-5 flex-shrink-0" />
-                                <p className="leading-relaxed">
-                                    Jl. Agung Raya No.1, RT.9/RW.2, Lenteng Agung, Jagakarsa,
-                                    Kota Jakarta Selatan 12610, Indonesia
-                                </p>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <PhoneIcon className="h-5 w-5 flex-shrink-0" />
-                                <a
-                                    href="tel:0217873637"
-                                    className="text-sm hover:underline"
-                                >
-                                    (021) 7873637
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* TENGAH: Menu */}
-                <div className="md:w-1/4">
-                    <h3 className="mb-3 text-lg font-semibold text-center md:text-left">
-                        Menu
-                    </h3>
-                    <ul className="space-y-2 text-sm">
-                        <li>
-                            <a href="#" className="underline underline-offset-2">
-                                Profil Kelurahan
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" className="underline underline-offset-2">
-                                Layanan Publik
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" className="underline underline-offset-2">
-                                Pengumuman
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                {/* KANAN: Map */}
-                <div className="md:w-auto">
-                    <div className="w-[334px] h-[154px] overflow-hidden rounded-lg shadow-lg">
-                        <iframe
-                            title="Peta Kantor Kelurahan Lenteng Agung"
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3433.70438143702!2d106.83489457430028!3d-6.323815861878294!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69edc13106a5f7%3A0x37ec1ef890d0cd3e!2sKantor%20Kelurahan%20Lenteng%20Agung!5e1!3m2!1sid!2sid!4v1763725731047!5m2!1sid!2sid"
-                            loading="lazy"
-                            referrerPolicy="no-referrer-when-downgrade"
-                            allowFullScreen
-                            className="h-full w-full border-0"
-                        />
-                    </div>
-                </div>
+const Footer = () => {
+  return (
+    <footer className="bg-[#0B3D2E] text-white font-sans border-t border-[#0d4635]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          
+          {/* KOLOM 1: BRAND */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <img 
+                src="/logo_kel.png" 
+                alt="Logo" 
+                className="h-14 w-auto" 
+                onError={(e) => e.target.style.display = 'none'}
+              />
+              <div>
+                <h3 className="text-sm font-bold text-amber-400 uppercase tracking-widest leading-none mb-1">Kelurahan</h3>
+                <h3 className="text-xl font-extrabold text-white leading-none">Lenteng Agung</h3>
+              </div>
             </div>
-        </footer>
-    );
-}
+            <p className="text-slate-300 text-sm leading-relaxed">
+              Website resmi pemerintah Kelurahan Lenteng Agung. Mewujudkan pelayanan publik yang transparan, akuntabel, dan prima menuju masyarakat yang sejahtera.
+            </p>
+            <div className="flex gap-2">
+              <SocialButton icon={<Facebook className="w-4 h-4" />} href="#" />
+              <SocialButton icon={<Instagram className="w-4 h-4" />} href="#" />
+              <SocialButton icon={<Twitter className="w-4 h-4" />} href="#" />
+              <SocialButton icon={<Youtube className="w-4 h-4" />} href="#" />
+            </div>
+          </div>
 
+          {/* KOLOM 2: JELAJAH */}
+          <div className="space-y-5">
+            <h4 className="text-white font-bold text-lg border-b-2 border-amber-500 inline-block pb-1">Jelajah</h4>
+            <ul className="space-y-3 text-sm">
+              <li><FooterLink to="/">Beranda</FooterLink></li>
+              <li><FooterLink to="/profil/sejarah">Sejarah Wilayah</FooterLink></li>
+              <li><FooterLink to="/profil/struktur">Perangkat Kelurahan</FooterLink></li>
+              <li><FooterLink to="/layanan/umum">Layanan Online</FooterLink></li>
+              <li><FooterLink to="/informasi/berita">Kabar Berita</FooterLink></li>
+              <li><FooterLink to="/pengaduan">Pengaduan Warga</FooterLink></li>
+            </ul>
+          </div>
 
+          {/* KOLOM 3: KONTAK */}
+          <div className="space-y-5">
+            <h4 className="text-white font-bold text-lg border-b-2 border-amber-500 inline-block pb-1">Hubungi Kami</h4>
+            <ul className="space-y-4 text-sm">
+              <li className="flex items-start gap-3 group">
+                <MapPin className="w-5 h-5 text-amber-400 shrink-0 mt-0.5 group-hover:text-amber-300 transition-colors" />
+                <span className="text-slate-300 group-hover:text-white transition-colors">
+                  Jl. Agung Raya No. 1, Lenteng Agung, Kec. Jagakarsa, Kota Jakarta Selatan, DKI Jakarta 12610
+                </span>
+              </li>
+              <li className="flex items-center gap-3 group">
+                <Phone className="w-5 h-5 text-amber-400 shrink-0 group-hover:text-amber-300 transition-colors" />
+                <span className="text-slate-300 group-hover:text-white transition-colors">(021) 781-2345</span>
+              </li>
+              <li className="flex items-center gap-3 group">
+                <Mail className="w-5 h-5 text-amber-400 shrink-0 group-hover:text-amber-300 transition-colors" />
+                <span className="text-slate-300 group-hover:text-white transition-colors">admin@lentengagung.go.id</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* KOLOM 4: JAM OPERASIONAL */}
+          <div className="space-y-5">
+            <h4 className="text-white font-bold text-lg border-b-2 border-amber-500 inline-block pb-1">Jam Pelayanan</h4>
+            <ul className="space-y-3 text-sm text-slate-300">
+              <li className="flex justify-between items-center border-b border-[#1a5542] pb-2">
+                <span>Senin - Kamis</span>
+                <span className="font-bold text-white">07:30 - 16:00</span>
+              </li>
+              <li className="flex justify-between items-center border-b border-[#1a5542] pb-2">
+                <span>Jumat</span>
+                <span className="font-bold text-white">07:30 - 16:30</span>
+              </li>
+              <li className="flex justify-between items-center pb-2">
+                <span>Sabtu - Minggu</span>
+                <span className="text-amber-400 font-bold bg-amber-400/10 px-2 py-0.5 rounded">Tutup</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+        <Separator className="my-10 bg-[#1a5542]" />
+
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
+          <p>© {new Date().getFullYear()} Kelurahan Lenteng Agung. All rights reserved.</p>
+          <div className="flex gap-6">
+            <Link to="#" className="hover:text-amber-400 transition-colors">Kebijakan Privasi</Link>
+            <Link to="#" className="hover:text-amber-400 transition-colors">Syarat & Ketentuan</Link>
+            <Link to="#" className="hover:text-amber-400 transition-colors">Peta Situs</Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+const FooterLink = ({ to, children }) => (
+  <Link to={to} className="text-slate-300 hover:text-amber-400 hover:translate-x-1 transition-all block py-1">
+    {children}
+  </Link>
+);
+
+const SocialButton = ({ icon, href }) => (
+  <Button variant="outline" size="icon" className="h-9 w-9 bg-[#082f23] border-[#1a5542] hover:bg-amber-500 hover:border-amber-500 hover:text-[#0B3D2E] transition-all text-slate-300 rounded-full" asChild>
+    <a href={href} target="_blank" rel="noreferrer">
+      {icon}
+    </a>
+  </Button>
+);
+
+export default Footer;

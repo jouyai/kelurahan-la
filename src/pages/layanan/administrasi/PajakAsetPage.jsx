@@ -1,0 +1,175 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import { DATA_LAYANAN } from "../../../data/knowledgeBase";
+
+// --- SHADCN UI IMPORTS ---
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+
+// --- ICONS ---
+import { 
+  ArrowLeft, 
+  Wallet, 
+  FileCheck, 
+  CheckCircle2, 
+  Info,
+  Building2,
+  Landmark,
+  ExternalLink
+} from 'lucide-react';
+
+export default function PajakAsetPage() {
+  // Filter Data: Ambil hanya kategori "Pajak"
+  const layananPajak = DATA_LAYANAN.filter(item => item.kategori === "Pajak");
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans pt-24 pb-12">
+      
+      {/* --- HERO SECTION --- */}
+      <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
+        {/* Pattern Money/Wallet */}
+        <div className="absolute top-0 right-0 p-8 opacity-10">
+          <Landmark className="w-64 h-64 text-white" />
+        </div>
+        
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <Badge variant="outline" className="border-indigo-400 text-indigo-300 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
+            Perpajakan Daerah
+          </Badge>
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
+            Layanan Pajak & Aset
+          </h1>
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
+            Informasi persyaratan administrasi PBB-P2, balik nama SPPT, dan surat keterangan aset.
+          </p>
+        </div>
+      </div>
+
+      {/* --- BREADCRUMB --- */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <Button variant="ghost" asChild className="pl-0 text-slate-500 hover:text-[#0B3D2E] hover:bg-transparent">
+          <Link to="/layanan/administrasi" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" /> Kembali ke Menu Administrasi
+          </Link>
+        </Button>
+      </div>
+
+      {/* --- MAIN CONTENT --- */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          
+          {/* LEFT COLUMN: DAFTAR LAYANAN */}
+          <div className="lg:col-span-2 space-y-8">
+            
+            {/* Alert Info SPPT */}
+            <Alert className="bg-indigo-50 border-indigo-200 text-indigo-900">
+              <Info className="h-4 w-4 text-indigo-600" />
+              <AlertTitle className="font-bold">Info Penting PBB</AlertTitle>
+              <AlertDescription className="text-sm mt-1">
+                Pastikan Anda telah melunasi <strong>PBB Tahun Berjalan</strong> sebelum mengajukan permohonan balik nama atau mutasi objek pajak. Bawa bukti lunas (STTS) asli.
+              </AlertDescription>
+            </Alert>
+
+            <div className="flex items-center gap-3 mb-2">
+               <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
+                 <Wallet className="h-6 w-6 text-[#0B3D2E]" />
+               </div>
+               <h2 className="text-2xl font-bold text-slate-900">Persyaratan Dokumen</h2>
+            </div>
+
+            {layananPajak.length > 0 ? (
+              <div className="grid gap-6">
+                {layananPajak.map((item, index) => (
+                  <Card key={index} className="border-l-4 border-l-indigo-500 shadow-sm hover:shadow-md transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="text-xl font-bold text-slate-800">
+                        {item.layanan}
+                      </CardTitle>
+                      <CardDescription>
+                        Berkas yang harus disiapkan:
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+                        <ul className="space-y-3">
+                          {item.syarat && item.syarat.map((req, idx) => (
+                            <li key={idx} className="flex items-start gap-3 text-sm text-slate-700">
+                              <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+                              <span className="leading-snug">{req}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              // Empty State
+              <Card className="border-dashed border-2 border-slate-200 bg-slate-50">
+                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="bg-slate-100 p-4 rounded-full mb-3">
+                    <Info className="h-8 w-8 text-slate-400" />
+                  </div>
+                  <h3 className="text-lg font-medium text-slate-900">Data Belum Tersedia</h3>
+                  <p className="text-slate-500 max-w-sm mt-1">
+                    Informasi persyaratan untuk layanan ini sedang diperbarui.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* RIGHT COLUMN: SIDEBAR INFO */}
+          <div className="space-y-6">
+            
+            {/* Widget Cek PBB */}
+            <Card className="bg-white border-slate-200 shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-slate-800 text-lg font-bold flex items-center gap-2">
+                  <Building2 className="h-5 w-5 text-[#0B3D2E]" /> Layanan Online
+                </CardTitle>
+                <CardDescription>
+                  Tautan eksternal Bapenda Jakarta
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button variant="outline" className="w-full justify-between group" asChild>
+                  <a href="https://pajakonline.jakarta.go.id/" target="_blank" rel="noreferrer">
+                    Cek Status PBB
+                    <ExternalLink className="h-4 w-4 text-slate-400 group-hover:text-[#0B3D2E]" />
+                  </a>
+                </Button>
+                <Button variant="outline" className="w-full justify-between group" asChild>
+                  <a href="https://bapenda.jakarta.go.id/" target="_blank" rel="noreferrer">
+                    Info NJOP Wilayah
+                    <ExternalLink className="h-4 w-4 text-slate-400 group-hover:text-[#0B3D2E]" />
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Widget Kontak */}
+            <Card className="bg-[#0B3D2E] text-white border-none shadow-md">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-lg mb-2">Kesulitan Dokumen?</h3>
+                <p className="text-slate-300 text-sm mb-4">
+                  Jika Anda mengalami kendala terkait SPPT PBB ganda atau hilang, silakan konsultasi dengan petugas kami.
+                </p>
+                <Button className="w-full bg-indigo-500 hover:bg-indigo-400 text-white font-bold border-none" asChild>
+                  <Link to="/pengaduan">
+                    Hubungi Petugas
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

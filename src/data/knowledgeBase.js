@@ -8,435 +8,323 @@
 export const INFO_KELURAHAN = {
   nama: "Kelurahan Lenteng Agung",
   alamat: "Jl. Agung Raya No. 1, Lenteng Agung, Jagakarsa, Jakarta Selatan",
-  jamKerja: "Senin - Jumat, 08.00 - 16.00 WIB",
+  jamKerja: "Senin - Jumat, 07.30 - 16.00 WIB",
   kontak: "(021) 786-xxxx",
 };
 
 export const DATA_LAYANAN = [
   // =========================================
-  // 1. KATEGORI: TANAH
+  // 1. KATEGORI: KTP ELEKTRONIK (KTP-el)
+  // =========================================
+  {
+    id: "ktp-1",
+    kategori: "KTP & Identitas",
+    layanan: "Perekaman KTP-el Baru (Pemula 17 Tahun)",
+    syarat: [
+      "Telah berusia 17 tahun",
+      "Surat Pengantar RT/RW",
+      "Fotokopi Kartu Keluarga (KK)",
+      "Fotokopi Akta Kelahiran / Ijazah Terakhir",
+      "Datang langsung ke Kelurahan/Kecamatan untuk foto & sidik jari (Wajib, pakaian rapi berkerah)",
+    ],
+  },
+  {
+    id: "ktp-2",
+    kategori: "KTP & Identitas",
+    layanan: "Pengurusan KTP Hilang",
+    syarat: [
+      "Surat Keterangan Kehilangan dari Kepolisian (Asli)",
+      "Surat Pengantar RT/RW",
+      "Fotokopi Kartu Keluarga (KK)",
+      "Fotokopi KTP yang hilang (jika ada arsipnya)",
+    ],
+  },
+  {
+    id: "ktp-3",
+    kategori: "KTP & Identitas",
+    layanan: "Pengurusan KTP Rusak / Patah / Terkelupas",
+    syarat: [
+      "Fisik KTP asli yang rusak",
+      "Surat Pengantar RT/RW",
+      "Fotokopi Kartu Keluarga (KK)",
+    ],
+  },
+  {
+    id: "kia-1",
+    kategori: "KTP & Identitas",
+    layanan: "Pembuatan Kartu Identitas Anak (KIA)",
+    syarat: [
+      "Surat Pengantar RT/RW",
+      "Fotokopi Akta Kelahiran Anak",
+      "Fotokopi Kartu Keluarga (KK)",
+      "Fotokopi KTP Kedua Orang Tua",
+      "Pas Foto Anak 2x3 (2 lembar) untuk anak usia > 5 tahun (usia < 5 tahun tidak perlu foto)",
+    ],
+  },
+
+  // =========================================
+  // 2. KATEGORI: KARTU KELUARGA (KK)
+  // =========================================
+  {
+    id: "kk-1",
+    kategori: "Kartu Keluarga",
+    layanan: "Pembuatan KK Baru (Baru Menikah / Pecah KK)",
+    syarat: [
+      "Surat Pengantar RT/RW",
+      "Kartu Keluarga (KK) Asli dari orang tua masing-masing",
+      "Fotokopi Buku Nikah / Akta Perkawinan (legalisir KUA/Catatn Sipil)",
+      "Fotokopi KTP Suami & Istri",
+      "Surat Pindah (SKPWNI) jika salah satu dari luar daerah",
+    ],
+  },
+  {
+    id: "kk-2",
+    kategori: "Kartu Keluarga",
+    layanan: "Pengurusan KK Hilang atau Rusak",
+    syarat: [
+      "Surat Keterangan Kehilangan dari Kepolisian (Asli) - Untuk KK Hilang",
+      "Fisik KK yang rusak (Asli) - Untuk KK Rusak",
+      "Surat Pengantar RT/RW",
+      "Fotokopi KTP Kepala Keluarga",
+      "Fotokopi KTP salah satu anggota keluarga lain",
+    ],
+  },
+  {
+    id: "kk-3",
+    kategori: "Kartu Keluarga",
+    layanan: "Perubahan Data KK (Penambahan Anggota / Kelahiran)",
+    syarat: [
+      "Surat Pengantar RT/RW",
+      "Kartu Keluarga (KK) Asli",
+      "Fotokopi KTP Orang Tua",
+      "Surat Keterangan Lahir dari RS/Bidan (Asli)",
+      "Fotokopi Buku Nikah Orang Tua",
+    ],
+  },
+  {
+    id: "kk-4",
+    kategori: "Kartu Keluarga",
+    layanan: "Perubahan Data KK (Pengurangan Anggota / Kematian)",
+    syarat: [
+      "Surat Pengantar RT/RW",
+      "Kartu Keluarga (KK) Asli",
+      "Surat Keterangan Kematian (dari RS atau Kelurahan)",
+      "KTP Asli yang meninggal (untuk ditarik)",
+    ],
+  },
+
+  // =========================================
+  // 3. KATEGORI: PERPINDAHAN PENDUDUK
+  // =========================================
+  {
+    id: "pindah-1",
+    kategori: "Perpindahan Penduduk",
+    layanan: "Surat Keterangan Pindah Keluar (SKP) DKI",
+    syarat: [
+      "Surat Pengantar RT/RW",
+      "Kartu Keluarga (KK) Asli",
+      "KTP Asli pemohon dan pengikut pindah (untuk ditarik)",
+      "Alamat lengkap tujuan pindah (Jalan, RT/RW, Kelurahan, Kecamatan, Kab/Kota, Provinsi)",
+      "Pas Foto 3x4 (2 lembar) - opsional tergantung tujuan",
+    ],
+  },
+  {
+    id: "pindah-2",
+    kategori: "Perpindahan Penduduk",
+    layanan: "Lapor Pindah Datang (Masuk ke Lenteng Agung)",
+    syarat: [
+      "Surat Pengantar RT/RW tempat tinggal baru",
+      "Surat Keterangan Pindah (SKPWNI) dari daerah asal (Asli)",
+      "KTP & KK Penjamin / Keluarga yang ditumpangi (jika numpang KK)",
+      "Surat Pernyataan Jaminan Tempat Tinggal (bermaterai)",
+    ],
+  },
+
+  // =========================================
+  // 4. KATEGORI: PELAYANAN UMUM (SKU, SKTM, DLL)
+  // =========================================
+  {
+    id: "umum-1",
+    kategori: "Pelayanan Umum",
+    layanan: "Surat Keterangan Usaha (SKU)",
+    syarat: [
+      "Surat Pengantar RT/RW (Mencantumkan jenis usaha)",
+      "Fotokopi KTP Pemohon",
+      "Fotokopi Kartu Keluarga",
+      "Bukti/Foto kegiatan usaha atau tempat usaha (dicetak)",
+      "Surat Pernyataan Tidak Keberatan Tetangga (jika usaha berpotensi ganggu lingkungan)",
+    ],
+  },
+  {
+    id: "umum-2",
+    kategori: "Pelayanan Umum",
+    layanan: "Surat Keterangan Tidak Mampu (SKTM) - Sekolah/RS",
+    syarat: [
+      "Surat Pengantar RT/RW (Menyatakan keluarga tidak mampu)",
+      "Fotokopi KTP & KK",
+      "Surat Pernyataan Tidak Mampu (Bermaterai 10.000)",
+      "Foto kondisi rumah (Depan, Ruang Tamu, Dapur)",
+      "Kartu KIS/BPJS (jika ada)",
+    ],
+  },
+  {
+    id: "umum-3",
+    kategori: "Pelayanan Umum",
+    layanan: "Surat Pengantar SKCK (Catatan Kepolisian)",
+    syarat: [
+      "Surat Pengantar RT/RW",
+      "Fotokopi KTP & KK",
+      "Fotokopi Akta Kelahiran / Ijazah",
+      "Pas Foto 4x6 Background Merah (untuk di Polsek)",
+    ],
+  },
+  {
+    id: "umum-4",
+    kategori: "Pelayanan Umum",
+    layanan: "Surat Izin Keramaian / Kegiatan Warga",
+    syarat: [
+      "Surat Pengantar RT/RW",
+      "Fotokopi KTP Penanggung Jawab Acara",
+      "Proposal Singkat Kegiatan (Waktu, Lokasi, Bentuk Acara)",
+      "Surat Pernyataan Menjaga Ketertiban (Bermaterai)",
+    ],
+  },
+  {
+    id: "umum-5",
+    kategori: "Pelayanan Umum",
+    layanan: "Surat Keterangan Domisili Usaha / Lembaga",
+    syarat: [
+      "Surat Pengantar RT/RW",
+      "Fotokopi KTP & KK Ketua/Penanggung Jawab",
+      "Akta Pendirian Yayasan/Badan Usaha (Fotokopi)",
+      "Bukti Kepemilikan Tempat (Sertifikat/PBB) atau Surat Sewa",
+      "Foto Lokasi Kantor/Sekretariat",
+    ],
+  },
+
+  // =========================================
+  // 5. KATEGORI: TANAH & WARISAN
   // =========================================
   {
     id: "tanah-1",
-    kategori: "Tanah",
-    layanan: "Permohonan Pengantar Laporan Bukti Kepemilikan Tanah yang Hilang",
-    syarat: [
-      "Surat Permohonan Kepada Lurah",
-      "Surat Pengantar RT/RW",
-      "Fotocopy KTP dan Kartu Keluarga",
-      "Fotocopy Asal Usul Surat Tanah / Keterangan Tanah",
-      "Fotocopy Surat Ahli Waris (jika terkait warisan)",
-      "Fotocopy SPPT PBB dan Bukti Lunas",
-      "Surat Pernyataan Tidak Sengketa",
-      "Surat Pernyataan Penguasaan Fisik",
-      "Surat Pernyataan Keabsahan Dokumen",
-      "Surat Kehilangan dari Kepolisian (Jika Dokumen Hilang)",
-      "Iklan di 2 Surat Kabar berbeda (Jika Dokumen Hilang)",
-      "Fotocopy KTP Saksi 2 orang",
-    ],
-  },
-  {
-    id: "tanah-2",
-    kategori: "Tanah",
-    layanan: "Permohonan Surat Rekomendasi Hak Atas Tanah Negara",
-    syarat: [
-      "Surat Permohonan Kepada Lurah",
-      "Surat Pengantar RT/RW",
-      "Fotocopy KTP dan Kartu Keluarga",
-      "Fotocopy Asal Usul Surat Tanah / Keterangan Tanah / Bukti Kepemilikan Tanah",
-      "Fotocopy Surat Ahli Waris (jika terkait warisan)",
-      "Fotocopy SPPT PBB dan Bukti Lunas",
-      "Surat Pernyataan Tidak Sengketa",
-      "Surat Pernyataan Penguasaan Fisik",
-      "Surat Pernyataan Keabsahan Dokumen",
-      "Surat Pernyataan Alamat yang Sama",
-      "Surat Pernyataan Pemasangan Tanda Batas",
-      "KTP Saksi-saksi",
-    ],
-  },
-  {
-    id: "tanah-3",
-    kategori: "Tanah",
-    layanan: "Permohonan Surat Keterangan Riwayat Tanah",
-    syarat: [
-      "Surat Permohonan Kepada Lurah",
-      "Surat Pengantar RT/RW",
-      "Fotocopy KTP dan Kartu Keluarga",
-      "Fotocopy Asal Usul Surat Tanah / Keterangan Tanah / Bukti Kepemilikan Tanah",
-      "Fotocopy SPPT PBB dan Bukti Lunas",
-      "Surat Pernyataan Tidak Sengketa",
-      "Surat Pernyataan Penguasaan Fisik",
-      "Surat Pernyataan Keabsahan Dokumen",
-      "Surat Pernyataan Alamat yang Sama",
-      "Surat Pernyataan Pemasangan Tanda Batas",
-      "KTP Saksi-saksi",
-    ],
-  },
-  {
-    id: "tanah-4",
-    kategori: "Tanah",
-    layanan: "Permohonan Pencatatan Register Pengaktifan Kembali HGB Expired",
-    syarat: [
-      "Form Permohonan Kepada Lurah",
-      "Surat Pengantar RT/RW",
-      "Fotocopy KTP",
-      "Fotocopy Kartu Keluarga",
-      "Surat Pernyataan bahwa tanah/bangunan untuk tempat tinggal sendiri",
-      "Surat Kuasa (jika dikuasakan)",
-      "Fotocopy Sertifikat HGB",
-      "Fotocopy SPPT PBB",
-      "Bukti Lunas PBB",
-      "Surat Pernyataan Tidak Sengketa",
-      "Surat Pernyataan Penguasaan Fisik",
-      "Surat Pernyataan Keabsahan Dokumen",
-      "Surat Pernyataan Alamat Yang Sama",
-      "Fotocopy KTP Saksi 2 orang",
-    ],
-  },
-  {
-    id: "tanah-5",
-    kategori: "Tanah",
-    layanan: "Permohonan Pencatatan Register PM1 – Balik Nama Sertifikat",
-    syarat: [
-      "Form Permohonan Kepada Lurah",
-      "Surat Pengantar RT/RW",
-      "Fotocopy KTP",
-      "Fotocopy Kartu Keluarga",
-      "Bukti kepemilikan (SHM / AJB / Girik / Waris)",
-      "Fotocopy SPPT PBB dan Bukti Lunas",
-      "Surat Pernyataan Tidak Sengketa",
-      "Surat Pernyataan Penguasaan Fisik",
-      "Surat Pernyataan Keabsahan Dokumen",
-      "Surat Pernyataan Alamat Yang Sama",
-      "Surat Kuasa, jika dikuasakan",
-      "Fotocopy KTP Penerima Kuasa",
-      "Fotocopy KTP Saksi 2 orang",
-    ],
-  },
-
-  // =========================================
-  // 2. KATEGORI: PAJAK & ASET
-  // =========================================
-  {
-    id: "pajak-1",
-    kategori: "Pajak",
-    layanan: "Pencatatan PMI – Keringanan PBB",
+    kategori: "Pertanahan & Waris",
+    layanan: "Surat Keterangan Waris (WNI Pribumi)",
     syarat: [
       "Surat Pengantar RT/RW",
-      "Fotocopy KTP",
-      "Fotocopy Kartu Keluarga",
-      "Bukti kepemilikan (SHM / AJB / Girik / Waris)",
-      "Fotocopy SPPT PBB dan Bukti Lunas",
-      "Pas Foto Warna 4x6",
-      "Surat Pernyataan Keabsahan Dokumen",
-      "Foto Lokasi Usaha",
-      "Fotocopy KTP Saksi 2 orang",
-    ],
-  },
-  {
-    id: "pajak-2",
-    kategori: "Pajak",
-    layanan: "Pencatatan PMI – Balik Nama PBB",
-    syarat: [
-      "Form Permohonan Kepada Lurah",
-      "Surat Pengantar RT/RW",
-      "Fotocopy KTP",
-      "Fotocopy Kartu Keluarga",
-      "Bukti kepemilikan (SHM / AJB / Girik)",
-      "Fotocopy SPPT PBB dan Bukti Lunas",
-      "Surat Pernyataan Tidak Sengketa",
-      "Surat Pernyataan Penguasaan Fisik",
-      "Surat Pernyataan Keabsahan Dokumen",
-      "Surat Pernyataan Alamat Yang Sama",
-      "Surat Kuasa (jika dikuasakan)",
-      "Fotocopy KTP Penerima Kuasa",
-      "Fotocopy KTP Saksi 2 orang",
-    ],
-  },
-
-  // =========================================
-  // 3. KATEGORI: KEPENDUDUKAN (LAINNYA)
-  // =========================================
-  {
-    id: "penduduk-1",
-    kategori: "Kependudukan",
-    layanan: "Pencatatan Register Surat Pengantar PMI Belum Memiliki Rumah",
-    syarat: [
-      "Surat permohonan kepada Lurah yang ditandatangani pemohon",
-      "Surat pengantar RT/RW setempat",
-      "Fotokopi KTP dan Kartu Keluarga pemohon",
-      "Surat keterangan belum memiliki rumah dari RT/RW atau pernyataan bermaterai",
-      "Dokumen pendukung lain sesuai ketentuan (jika ada)",
-    ],
-  },
-  {
-    id: "penduduk-2",
-    kategori: "Kependudukan",
-    layanan: "Pencatatan Register Surat Keterangan Bersih Diri untuk Sekolah Kedinasan",
-    syarat: [
-      "Surat permohonan kepada Lurah yang ditandatangani pemohon",
-      "Surat pengantar RT/RW",
-      "Fotokopi KTP dan Kartu Keluarga",
-      "Pas foto terbaru sesuai ketentuan sekolah kedinasan (jika diminta)",
-      "Surat atau formulir dari instansi/sekolah kedinasan (jika ada format khusus)",
-    ],
-  },
-
-  // =========================================
-  // 4. KATEGORI: WARGA NEGARA ASING (WNA)
-  // =========================================
-  {
-    id: "wna-1",
-    kategori: "Warga Negara Asing",
-    layanan: "Surat Keterangan Tempat Tinggal (SKTT) WNA",
-    syarat: [
-      "Surat Pengantar RT/RW setempat",
-      "Fotokopi Paspor yang masih berlaku",
-      "Fotokopi KITAS (Kartu Izin Tinggal Terbatas) / KITAP (Tetap)",
-      "Surat Tanda Melapor (STM) dari Kepolisian",
-      "Fotokopi KTP Sponsor / Penjamin",
-      "Pas Foto berwarna ukuran 3x4 (2 lembar) latar belakang merah",
-      "Surat Kuasa (jika pengurusan dikuasakan) bermaterai",
-    ],
-  },
-  {
-    id: "wna-2",
-    kategori: "Warga Negara Asing",
-    layanan: "Surat Keterangan Kelahiran Orang Asing",
-    syarat: [
-      "Surat Pengantar RT/RW",
-      "Surat Keterangan Kelahiran dari Rumah Sakit / Bidan",
-      "Fotokopi Paspor Orang Tua",
-      "Fotokopi KITAS/KITAP Orang Tua",
-      "Fotokopi Buku Nikah / Akta Perkawinan Orang Tua (Terjemahan Bahasa Indonesia)",
-      "Fotokopi KTP Saksi 2 orang",
-    ],
-  },
-
-  // =========================================
-  // 5. KATEGORI: PERNYATAAN HUKUM & WARISAN
-  // =========================================
-  {
-    id: "hukum-1",
-    kategori: "Hukum & Warisan",
-    layanan: "Surat Keterangan Ahli Waris (WNI Pribumi)",
-    syarat: [
-      "Surat Pengantar RT/RW",
-      "Surat Permohonan Ahli Waris (Bermaterai)",
-      "Surat Keterangan Kematian Pewaris (Alm/Almh)",
-      "Fotokopi KTP & KK Seluruh Ahli Waris",
-      "Fotokopi Buku Nikah / Akta Perkawinan Pewaris",
-      "Fotokopi Akta Kelahiran Seluruh Ahli Waris",
+      "Surat Keterangan Kematian Pewaris",
+      "Fotokopi KTP & KK seluruh Ahli Waris",
+      "Fotokopi Buku Nikah Pewaris",
+      "Fotokopi Akta Kelahiran seluruh Ahli Waris",
       "Surat Pernyataan Dua Orang Saksi (Bermaterai) & Fotokopi KTP Saksi",
       "Bagan Silsilah Keluarga (Diketahui RT/RW)",
     ],
   },
   {
-    id: "hukum-2",
-    kategori: "Hukum & Warisan",
-    layanan: "Surat Keterangan Gaib / Tidak Diketahui Keberadaannya",
+    id: "tanah-2",
+    kategori: "Pertanahan & Waris",
+    layanan: "Surat Keterangan Riwayat Tanah / PM1",
     syarat: [
+      "Surat Permohonan kepada Lurah",
       "Surat Pengantar RT/RW",
-      "Surat Pernyataan Jaminan Keluarga (Bermaterai)",
-      "Fotokopi KTP & KK Pelapor",
-      "Surat Keterangan Lapor Orang Hilang dari Kepolisian",
-      "Fotokopi Dokumen pendukung orang yang hilang (jika ada)",
-    ],
-  },
-  {
-    id: "hukum-3",
-    kategori: "Hukum & Warisan",
-    layanan: "Surat Keterangan Catatan Kepolisian (Pengantar SKCK)",
-    syarat: [
-      "Surat Pengantar RT/RW",
-      "Fotokopi KTP dan Kartu Keluarga",
-      "Fotokopi Akta Kelahiran",
-      "Pas Foto ukuran 4x6 (Background Merah)",
-      "Mengisi Formulir Permohonan SKCK",
+      "Fotokopi KTP & KK Pemohon",
+      "Fotokopi Bukti Kepemilikan (Girik/AJB/Sertifikat)",
+      "Fotokopi SPPT PBB Tahun Terakhir (Lunas)",
+      "Surat Pernyataan Tidak Sengketa (Bermaterai)",
     ],
   },
 
   // =========================================
-  // 6. KATEGORI: STATUS PERKAWINAN
+  // 6. KATEGORI: PERNIKAHAN
   // =========================================
   {
     id: "nikah-1",
-    kategori: "Status Perkawinan",
+    kategori: "Pernikahan",
     layanan: "Surat Pengantar Nikah (N1, N2, N4)",
     syarat: [
-      "Surat Pengantar RT/RW",
-      "Fotokopi KTP & KK Calon Suami dan Istri",
-      "Fotokopi Akta Kelahiran Calon Suami dan Istri",
-      "Fotokopi KTP Orang Tua (Ayah & Ibu) Calon Pengantin",
-      "Surat Pernyataan Belum Menikah (Bermaterai) diketahui RT/RW",
-      "Pas Foto 2x3 dan 3x4 (Background Biru/Merah sesuai tahun lahir)",
-      "Surat Izin Orang Tua (jika umur kurang dari 21 tahun)",
-      "Akta Cerai / Surat Kematian Pasangan (jika status Janda/Duda)",
-      "Bukti Imunisasi TT (Tetanus) bagi Calon Pengantin Wanita (dari Puskesmas)",
+      "Surat Pengantar RT/RW (PM1)",
+      "Fotokopi KTP & KK Calon Suami Istri (Catin)",
+      "Fotokopi Akta Kelahiran & Ijazah Terakhir Catin",
+      "Fotokopi KTP Orang Tua (Ayah & Ibu)",
+      "Surat Pernyataan Belum Menikah (Bermaterai)",
+      "Pas Foto 2x3 (3 lembar) & 3x4 (2 lembar) background biru/merah",
+      "Bukti Imunisasi TT bagi Catin Wanita (dari Puskesmas)",
+      "Akta Cerai / Surat Kematian (jika status Janda/Duda)",
     ],
   },
   {
     id: "nikah-2",
-    kategori: "Status Perkawinan",
+    kategori: "Pernikahan",
     layanan: "Surat Keterangan Belum Menikah",
     syarat: [
       "Surat Pengantar RT/RW",
-      "Fotokopi KTP dan Kartu Keluarga",
-      "Surat Pernyataan Belum Pernah Menikah (Bermaterai 10.000)",
-      "Fotokopi KTP dua orang saksi",
-    ],
-  },
-  {
-    id: "nikah-3",
-    kategori: "Status Perkawinan",
-    layanan: "Surat Keterangan Janda / Duda",
-    syarat: [
-      "Surat Pengantar RT/RW",
-      "Fotokopi KTP dan Kartu Keluarga",
-      "Fotokopi Akta Cerai (Jika Cerai Hidup)",
-      "Fotokopi Surat Kematian Pasangan (Jika Cerai Mati)",
-      "Surat Pernyataan Status Janda/Duda (Bermaterai)",
+      "Fotokopi KTP & KK",
+      "Surat Pernyataan Belum Pernah Menikah (Bermaterai 10.000) diketahui saksi",
+      "Fotokopi KTP 2 orang saksi",
     ],
   },
 
   // =========================================
-  // 7. KATEGORI: LAYANAN KTP & KK (BARU)
+  // 7. KATEGORI: WNA (ASING)
   // =========================================
   {
-    id: "ktp-1",
-    kategori: "KTP & Kartu Keluarga",
-    layanan: "Perekaman KTP Elektronik (e-KTP) Baru / Pemula",
-    syarat: [
-      "Berusia minimal 17 tahun",
-      "Surat Pengantar RT/RW",
-      "Fotokopi Kartu Keluarga (KK)",
-      "Fotokopi Akta Kelahiran atau Ijazah Terakhir",
-      "Datang langsung untuk foto dan sidik jari (tidak bisa diwakilkan)",
-      "Berpakaian sopan (kemeja/berkerah)",
-    ],
-  },
-  {
-    id: "ktp-2",
-    kategori: "KTP & Kartu Keluarga",
-    layanan: "Pengurusan KTP Hilang atau Rusak",
+    id: "wna-1",
+    kategori: "Warga Negara Asing",
+    layanan: "Surat Keterangan Tempat Tinggal (SKTT)",
     syarat: [
       "Surat Pengantar RT/RW",
-      "Surat Keterangan Kehilangan dari Kepolisian (Asli) - Jika Hilang",
-      "Fisik KTP yang rusak - Jika Rusak",
-      "Fotokopi Kartu Keluarga (KK)",
-      "Pas foto 3x4 (opsional, tergantung kebijakan Dukcapil setempat)",
-    ],
-  },
-  {
-    id: "ktp-3",
-    kategori: "KTP & Kartu Keluarga",
-    layanan: "Pembuatan / Perubahan Kartu Keluarga (KK)",
-    syarat: [
-      "Surat Pengantar RT/RW",
-      "Kartu Keluarga (KK) Asli yang lama",
-      "Buku Nikah / Akta Perkawinan (jika baru menikah)",
-      "Surat Keterangan Pindah (SKPWNI) dari daerah asal (jika pendatang)",
-      "Akta Kelahiran Anak (jika penambahan anggota keluarga)",
-      "Surat Kematian (jika pengurangan anggota karena meninggal)",
-    ],
-  },
-
-  // =========================================
-  // 8. KATEGORI: PENGADUAN & KELUHAN WARGA (BARU)
-  // =========================================
-  {
-    id: "aduan-1",
-    kategori: "Pengaduan Masyarakat",
-    layanan: "Pelaporan Gangguan Fasilitas Publik (Jalan Rusak/Sampah/Lampu Mati)",
-    syarat: [
-      "Foto bukti kondisi / kerusakan",
-      "Alamat lengkap lokasi kejadian (RT/RW)",
-      "Identitas / KTP Pelapor",
-      "Sebaiknya sudah melapor ke RT/RW terlebih dahulu untuk diketahui",
-      "Mengisi formulir pengaduan di kantor kelurahan (jika lapor manual)",
-    ],
-  },
-  {
-    id: "aduan-2",
-    kategori: "Pengaduan Masyarakat",
-    layanan: "Laporan Gangguan Ketertiban Umum (Kebisingan/Keributan)",
-    syarat: [
-      "Lapor terlebih dahulu ke Ketua RT dan RW setempat (Wajib)",
-      "Bukti foto/video gangguan (jika ada)",
-      "Jika tidak selesai di tingkat RT/RW, lapor ke Kelurahan dengan membawa surat pengantar RT/RW",
+      "Fotokopi Paspor & KITAS/KITAP",
+      "Surat Tanda Melapor (STM) dari Kepolisian",
+      "Fotokopi KTP Sponsor / Penjamin di Indonesia",
+      "Pas Foto 3x4 (2 lembar)",
     ],
   },
 ];
 
 // ============================================================================
-// HELPER FUNCTION UNTUK AI (OPTIMIZED)
+// HELPER FUNCTION UNTUK AI
 // ============================================================================
-// Fungsi ini menghasilkan System Prompt yang kuat agar AI patuh pada data.
 export const generateAIContext = () => {
   const today = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-  // Kita susun data layanan agar mudah dibaca AI berdasarkan kategori
   let knowledgeText = "";
   DATA_LAYANAN.forEach((item, index) => {
-    knowledgeText += `\n[${index + 1}] LAYANAN: ${item.layanan} (Kategori: ${item.kategori})\n`;
-    knowledgeText += `    SYARAT:\n`;
+    knowledgeText += `\n${index + 1}. LAYANAN: ${item.layanan}\n   KATEGORI: ${item.kategori}\n   SYARAT:\n`;
     item.syarat.forEach((s) => {
-      knowledgeText += `    - ${s}\n`;
+      knowledgeText += `   - ${s}\n`;
     });
   });
 
   const systemPrompt = `
 =================================================================
-IDENTITAS & KONTEKS SISTEM
+IDENTITAS & KONTEKS
 =================================================================
-WAKTU SERVER: ${today}
+WAKTU: ${today}
+ANDA: Asisten Virtual (CS) Kelurahan Lenteng Agung.
+LOKASI: ${INFO_KELURAHAN.alamat}
+JAM OPERASIONAL: ${INFO_KELURAHAN.jamKerja}
 
-PERAN ANDA:
-Anda adalah Asisten Virtual (Customer Service) Resmi untuk ${INFO_KELURAHAN.nama}.
-Alamat: ${INFO_KELURAHAN.alamat}.
-Jam Kerja: ${INFO_KELURAHAN.jamKerja}.
-
-TUGAS UTAMA:
-Memberikan informasi persyaratan layanan kelurahan kepada warga dengan ramah, akurat, dan formal.
+TUGAS:
+Memberikan informasi persyaratan layanan administrasi, kependudukan, dan umum kepada warga.
 
 =================================================================
-DATABASE PENGETAHUAN (SINGLE SOURCE OF TRUTH)
+DATABASE PERSYARATAN (GUNAKAN INI SEBAGAI RUJUKAN UTAMA)
 =================================================================
-Gunakan data di bawah ini sebagai SATU-SATUNYA acuan jawaban Anda. 
-JANGAN MENGARANG ATAU MENAMBAH SYARAT SENDIRI.
-
 ${knowledgeText}
 
 =================================================================
-ATURAN MENJAWAB (PENTING!)
+ATURAN MENJAWAB
 =================================================================
-1. GAYA BAHASA: 
-   Gunakan Bahasa Indonesia yang baik, sopan, namun tetap luwes (tidak kaku seperti robot). Panggil user dengan sebutan "Kak" atau "Bapak/Ibu".
+1. Jawablah dengan format DAFTAR (Bullet Points) agar mudah dibaca.
+2. Gunakan bahasa Indonesia yang sopan, formal, tapi ramah.
+3. Panggil user dengan "Bapak/Ibu".
+4. Jika user bertanya syarat "Bikin KTP" atau "KK", pastikan tanya dulu kondisinya (Baru/Hilang/Rusak/Pindah) atau berikan opsi syarat untuk masing-masing kondisi jika tidak spesifik.
+5. Jika layanan tidak ada di data, katakan: "Mohon maaf, informasi belum tersedia." lalu arahkan ke petugas.
 
-2. FORMAT JAWABAN:
-   Jika user bertanya syarat layanan, sebutkan dalam bentuk DAFTAR (Bullet Points) agar mudah dibaca di layar HP.
-
-3. UNKNOWN KNOWLEDGE:
-   Jika user bertanya layanan yang TIDAK ADA di database di atas, katakan:
-   "Mohon maaf, informasi mengenai layanan tersebut belum tersedia di sistem saya."
-   Lalu picu handover.
-
-4. HANDOVER PROTOCOL (PENGALIHAN KE MANUSIA):
-   Keluarkan output teks persis: "HANDOVER_TO_HUMAN" (tanpa tanda kutip, hanya teks itu saja atau disisipkan di akhir kalimat) jika:
-   - User marah-marah atau komplain.
-   - User meminta berbicara dengan "orang", "admin", "staf", "manusia", "petugas".
-   - User bertanya hal sensitif di luar layanan umum.
-   - User ingin melakukan pendaftaran online yang butuh verifikasi manual.
-
-5. BATASAN:
-   Anda tidak bisa memproses dokumen, anda hanya memberikan INFORMASI persyaratan.
-
-CONTOH INTERAKSI:
-User: "Syarat nikah apa aja?"
-Bot: "Untuk pengurusan Surat Pengantar Nikah, berikut persyaratannya ya Kak:
-- Surat Pengantar RT/RW
-- Fotokopi KTP & KK Calon Suami dan Istri
-- (dan seterusnya sesuai data)..."
+HANDOVER KE MANUSIA:
+Keluarkan teks: "HANDOVER_TO_HUMAN" jika:
+- User ingin bicara dengan orang/petugas.
+- User marah/komplain.
+- Pertanyaan sangat spesifik di luar data persyaratan.
 `;
 
   return systemPrompt;

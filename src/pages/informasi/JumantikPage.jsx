@@ -1,36 +1,54 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { 
-  ShieldCheckIcon, 
-  TrashIcon, 
-  HomeModernIcon, 
-  ClipboardDocumentCheckIcon, 
-  ExclamationTriangleIcon,
-  ChatBubbleLeftRightIcon,
-  CheckCircleIcon,
-  CalendarDaysIcon
-} from "@heroicons/react/24/solid";
+
+// --- SHADCN UI IMPORTS ---
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+// --- ICONS ---
+import {
+  ArrowLeft,
+  ShieldCheck,
+  Trash2,
+  Home,
+  ClipboardCheck,
+  AlertTriangle,
+  MessageSquare,
+  CheckCircle2,
+  CalendarDays,
+  Activity,
+  FileText,
+} from "lucide-react";
 
 // Data Edukasi 3M Plus
 const steps3M = [
   {
     title: "Menguras",
     desc: "Membersihkan tempat penampungan air seperti bak mandi, ember, dan toren air minimal seminggu sekali.",
-    icon: HomeModernIcon,
-    color: "bg-blue-100 text-blue-600"
+    icon: <Home className="h-8 w-8 text-blue-600" />,
+    color: "bg-blue-50 border-blue-100",
   },
   {
     title: "Menutup",
     desc: "Menutup rapat-rapat tempat penampungan air agar nyamuk tidak bisa masuk dan bertelur.",
-    icon: ShieldCheckIcon,
-    color: "bg-green-100 text-green-600"
+    icon: <ShieldCheck className="h-8 w-8 text-green-600" />,
+    color: "bg-green-50 border-green-100",
   },
   {
     title: "Mendaur Ulang",
     desc: "Memanfaatkan kembali atau mendaur ulang barang bekas yang berpotensi menampung air hujan.",
-    icon: TrashIcon,
-    color: "bg-orange-100 text-orange-600"
-  }
+    icon: <Trash2 className="h-8 w-8 text-orange-600" />,
+    color: "bg-orange-50 border-orange-100",
+  },
 ];
 
 // Data Jadwal Jumling (Jumat Keliling)
@@ -41,189 +59,238 @@ const scheduleJumling = [
   { rw: "RW 04", location: "RT 01 - RT 04", team: "Kader Dawis Kenanga" },
 ];
 
-export default function JumantikPage({ onConnectStaff }) {
+export default function JumantikPage() {
   return (
-    <main className="min-h-screen bg-[#F5F7FA] pb-20 pt-24 md:pt-28">
-      
-      {/* === BREADCRUMB SECTION === */}
-      <div className="max-w-6xl mx-auto px-4 md:px-0 mb-8">
-        <nav className="flex text-sm text-gray-500 mb-4" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-3">
-            <li className="inline-flex items-center">
-              <Link to="/" className="hover:text-[#06452F] hover:underline flex items-center gap-1">
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                Home
-              </Link>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                <span className="ml-1 text-gray-500 md:ml-2">Informasi</span>
-              </div>
-            </li>
-            <li aria-current="page">
-              <div className="flex items-center">
-                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                <span className="ml-1 text-[#06452F] font-bold md:ml-2">Jumantik</span>
-              </div>
-            </li>
-          </ol>
-        </nav>
+    <div className="min-h-screen bg-slate-50 font-sans pb-12">
+      {/* === HERO SECTION === */}
+      <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-8 opacity-10">
+          <ShieldCheck className="w-64 h-64 text-white" />
+        </div>
 
-        <div className="border-b border-gray-200 pb-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#124076] mb-2">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <Badge
+            variant="outline"
+            className="border-amber-400 text-amber-400 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm"
+          >
+            Kesehatan Lingkungan
+          </Badge>
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
             Gerakan Satu Rumah Satu Jumantik
           </h1>
-          <p className="text-gray-600 text-base md:text-lg max-w-3xl">
-            Upaya pemberdayaan masyarakat untuk memantau jentik nyamuk secara mandiri 
-            di lingkungan rumah masing-masing guna mencegah Demam Berdarah Dengue (DBD).
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
+            Upaya pemberdayaan masyarakat untuk memantau jentik nyamuk secara
+            mandiri guna mencegah Demam Berdarah Dengue (DBD).
           </p>
         </div>
       </div>
 
+      {/* === BREADCRUMB === */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <Button
+          variant="ghost"
+          asChild
+          className="pl-0 text-slate-500 hover:text-[#0B3D2E] hover:bg-transparent"
+        >
+          <Link to="/" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" /> Kembali ke Beranda
+          </Link>
+        </Button>
+      </div>
+
       {/* === CONTENT SECTION === */}
-      <section className="max-w-6xl mx-auto px-4 md:px-0 mt-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row gap-10">
           {/* LEFT: MAIN CONTENT */}
-          <div className="w-full lg:w-2/3">
-            
+          <div className="w-full lg:w-2/3 space-y-10">
             {/* Intro Card */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-8 flex items-start gap-4">
-              <div className="bg-[#06452F]/10 p-3 rounded-lg hidden sm:block">
-                <ClipboardDocumentCheckIcon className="h-8 w-8 text-[#06452F]" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">Apa itu Jumantik Mandiri?</h3>
-                <p className="text-sm text-gray-600 leading-relaxed text-justify">
-                  Jumantik (Juru Pemantau Jentik) adalah warga yang secara sukarela memantau keberadaan jentik nyamuk 
-                  di lingkungannya. Melalui gerakan <strong>Satu Rumah Satu Jumantik (G1R1J)</strong>, setiap rumah tangga 
-                  diharapkan menunjuk satu anggota keluarga untuk menjadi Jumantik di rumahnya sendiri dan melakukan 
-                  pemeriksaan minimal seminggu sekali.
+            <Card className="border-l-4 border-l-[#0B3D2E] shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                  <ClipboardCheck className="h-6 w-6 text-[#0B3D2E]" /> Apa itu
+                  Jumantik Mandiri?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-600 leading-relaxed text-justify">
+                  Jumantik (Juru Pemantau Jentik) adalah warga yang secara
+                  sukarela memantau keberadaan jentik nyamuk di lingkungannya.
+                  Melalui gerakan{" "}
+                  <strong>Satu Rumah Satu Jumantik (G1R1J)</strong>, setiap
+                  rumah tangga diharapkan menunjuk satu anggota keluarga untuk
+                  menjadi Jumantik di rumahnya sendiri.
                 </p>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
 
             {/* 3M Plus Section */}
-            <div className="mb-8">
-              <h3 className="font-bold text-gray-700 text-lg mb-4 flex items-center gap-2">
-                <ShieldCheckIcon className="h-5 w-5 text-[#06452F]" />
-                Langkah Pencegahan 3M Plus
-              </h3>
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
+                  <ShieldCheck className="h-6 w-6 text-[#0B3D2E]" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900">
+                  Langkah Pencegahan 3M Plus
+                </h2>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {steps3M.map((step, idx) => (
-                  <div key={idx} className="bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition-all text-center">
-                    <div className={`w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3 ${step.color} bg-opacity-20`}>
-                      <step.icon className={`h-6 w-6 ${step.color.split(" ")[1]}`} />
-                    </div>
-                    <h4 className="font-bold text-gray-800 mb-2">{step.title}</h4>
-                    <p className="text-xs text-gray-600 leading-relaxed">{step.desc}</p>
-                  </div>
+                  <Card
+                    key={idx}
+                    className={`shadow-sm hover:shadow-md transition-all text-center ${step.color}`}
+                  >
+                    <CardContent className="p-6">
+                      <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 bg-white shadow-sm">
+                        {step.icon}
+                      </div>
+                      <h4 className="font-bold text-slate-800 mb-2">
+                        {step.title}
+                      </h4>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        {step.desc}
+                      </p>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
-              
+
               {/* Plus List */}
-              <div className="mt-4 bg-[#E5F2EF] p-4 rounded-xl border border-[#06452F]/10">
-                <h5 className="font-bold text-[#06452F] text-sm mb-2">Kegiatan "Plus" Lainnya:</h5>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-700">
-                  <li className="flex items-center gap-2"><CheckCircleIcon className="h-4 w-4 text-[#06452F]"/> Memelihara ikan pemakan jentik</li>
-                  <li className="flex items-center gap-2"><CheckCircleIcon className="h-4 w-4 text-[#06452F]"/> Menggunakan obat anti nyamuk</li>
-                  <li className="flex items-center gap-2"><CheckCircleIcon className="h-4 w-4 text-[#06452F]"/> Memasang kawat kasa pada jendela</li>
-                  <li className="flex items-center gap-2"><CheckCircleIcon className="h-4 w-4 text-[#06452F]"/> Gotong royong membersihkan lingkungan</li>
-                </ul>
+              <div className="mt-4 bg-[#0B3D2E]/5 p-5 rounded-xl border border-[#0B3D2E]/10">
+                <h5 className="font-bold text-[#0B3D2E] text-sm mb-3">
+                  Kegiatan "Plus" Lainnya:
+                </h5>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {[
+                    "Memelihara ikan pemakan jentik",
+                    "Menggunakan obat anti nyamuk",
+                    "Memasang kawat kasa pada jendela",
+                    "Gotong royong membersihkan lingkungan",
+                  ].map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-2 text-sm text-slate-700"
+                    >
+                      <CheckCircle2 className="h-4 w-4 text-[#0B3D2E]" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Jadwal Jumling */}
             <div>
-              <h3 className="font-bold text-gray-700 text-lg mb-4 flex items-center gap-2">
-                <CalendarDaysIcon className="h-5 w-5 text-[#06452F]" />
-                Jadwal Jumat Keliling (Jumling)
-              </h3>
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-gray-50 text-gray-700 font-bold border-b border-gray-200">
-                    <tr>
-                      <th className="px-6 py-3">Wilayah</th>
-                      <th className="px-6 py-3">Lokasi Fokus</th>
-                      <th className="px-6 py-3">Tim Petugas</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {scheduleJumling.map((item, idx) => (
-                      <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 font-medium text-gray-800">{item.rw}</td>
-                        <td className="px-6 py-4 text-gray-600">{item.location}</td>
-                        <td className="px-6 py-4 text-gray-600">{item.team}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
+                  <CalendarDays className="h-6 w-6 text-[#0B3D2E]" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900">
+                  Jadwal Jumat Keliling
+                </h2>
               </div>
-              <p className="text-[10px] text-gray-400 mt-2 italic">*Jadwal dilaksanakan setiap hari Jumat pagi pukul 08.00 WIB s/d Selesai.</p>
+
+              <div className="rounded-lg border border-slate-200 overflow-hidden">
+                <Table>
+                  <TableHeader className="bg-slate-50">
+                    <TableRow>
+                      <TableHead className="font-bold text-slate-700">
+                        Wilayah
+                      </TableHead>
+                      <TableHead className="font-bold text-slate-700">
+                        Lokasi Fokus
+                      </TableHead>
+                      <TableHead className="font-bold text-slate-700">
+                        Tim Petugas
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {scheduleJumling.map((item, idx) => (
+                      <TableRow
+                        key={idx}
+                        className="hover:bg-slate-50 transition-colors"
+                      >
+                        <TableCell className="font-medium text-slate-800">
+                          {item.rw}
+                        </TableCell>
+                        <TableCell className="text-slate-600">
+                          {item.location}
+                        </TableCell>
+                        <TableCell className="text-slate-600">
+                          {item.team}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+              <p className="text-xs text-slate-400 mt-2 italic">
+                *Jadwal dilaksanakan setiap hari Jumat pagi pukul 08.00 WIB s/d
+                Selesai.
+              </p>
             </div>
           </div>
 
           {/* RIGHT: SIDEBAR INFO */}
           <div className="w-full lg:w-1/3 space-y-6">
-            
             {/* Widget: Status DBD */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 sticky top-24">
-              <h4 className="font-bold text-[#124076] mb-4 flex items-center gap-2">
-                <ExclamationTriangleIcon className="h-5 w-5 text-orange-500" />
-                Status Kewaspadaan
-              </h4>
-              
-              <div className="bg-green-50 p-4 rounded-lg border border-green-100 text-center mb-4">
-                <span className="block text-xs text-green-800 font-bold uppercase tracking-wider mb-1">Status Kelurahan</span>
-                <span className="text-2xl font-extrabold text-green-600">AMAN</span>
-                <p className="text-[10px] text-green-700 mt-1">Tidak ada kasus DBD aktif minggu ini.</p>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs text-gray-600 border-b border-gray-50 pb-2">
-                  <span>Angka Bebas Jentik (ABJ)</span>
-                  <span className="font-bold text-[#06452F]">92%</span>
-                </div>
-                <div className="flex justify-between text-xs text-gray-600 border-b border-gray-50 pb-2">
-                  <span>Target ABJ Nasional</span>
-                  <span className="font-bold text-gray-800">≥ 95%</span>
-                </div>
-              </div>
-
-              {/* Action Button */}
-              <div className="mt-6">
-                <div className="bg-red-50 p-4 rounded-lg border border-red-100 text-center">
-                  <h5 className="font-bold text-red-800 text-sm mb-1">Ada Kasus DBD?</h5>
-                  <p className="text-xs text-red-700 mb-3">
-                    Segera laporkan jika ada warga yang terjangkit DBD untuk tindakan *fogging*.
+            <Card className="bg-white border-slate-200 shadow-sm sticky top-24">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-[#0B3D2E] text-lg font-bold flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-orange-500" /> Status
+                  Kewaspadaan
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="bg-green-50 p-6 rounded-xl border border-green-100 text-center">
+                  <span className="block text-xs text-green-800 font-bold uppercase tracking-wider mb-2">
+                    Status Kelurahan
+                  </span>
+                  <span className="text-4xl font-extrabold text-green-600">
+                    AMAN
+                  </span>
+                  <p className="text-xs text-green-700 mt-2">
+                    Tidak ada kasus DBD aktif minggu ini.
                   </p>
-                  <button
-                    onClick={() => onConnectStaff && onConnectStaff("Lapor Kasus DBD")}
-                    className="w-full flex items-center justify-center gap-2 rounded-lg bg-red-600 py-2 text-sm font-bold text-white hover:bg-red-700 transition-colors shadow-sm"
-                  >
-                    <ExclamationTriangleIcon className="h-4 w-4" />
-                    Lapor Sekarang
-                  </button>
                 </div>
-              </div>
-            </div>
-            
-            {/* Widget: Download Kartu */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-               <h4 className="font-bold text-gray-800 mb-2 text-sm">Kartu Kontrol Jentik</h4>
-               <p className="text-xs text-gray-500 mb-4">
-                 Unduh kartu pemantauan jentik mandiri untuk ditempel di rumah.
-               </p>
-               <button className="w-full py-2 border border-gray-300 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-50 transition-colors">
-                 Download PDF
-               </button>
-            </div>
 
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm text-slate-600 border-b border-slate-50 pb-2">
+                    <span>Angka Bebas Jentik (ABJ)</span>
+                    <span className="font-bold text-[#0B3D2E]">92%</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-slate-600 border-b border-slate-50 pb-2">
+                    <span>Target ABJ Nasional</span>
+                    <span className="font-bold text-slate-800">≥ 95%</span>
+                  </div>
+                </div>
+
+                {/* Action Button */}
+                <div className="bg-red-50 p-4 rounded-lg border border-red-100 text-center">
+                  <h5 className="font-bold text-red-800 text-sm mb-1">
+                    Ada Kasus DBD?
+                  </h5>
+                  <p className="text-xs text-red-700 mb-3">
+                    Segera laporkan jika ada warga yang terjangkit DBD untuk
+                    tindakan <em>fogging</em>.
+                  </p>
+                  <Button
+                    variant="destructive"
+                    className="w-full bg-red-600 hover:bg-red-700 font-bold shadow-sm"
+                    asChild
+                  >
+                    <Link to="/pengaduan">
+                      <AlertTriangle className="h-4 w-4 mr-2" />
+                      Lapor Sekarang
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
   );
 }
