@@ -11,11 +11,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 
 // --- ICONS ---
-import { 
-  Search, 
-  CalendarDays, 
-  ChevronRight, 
-  ArrowRight, 
+import {
+  Search,
+  CalendarDays,
+  ChevronRight,
+  ArrowRight,
   Newspaper,
   LayoutGrid,
   Filter
@@ -54,14 +54,14 @@ const BeritaPage = () => {
   // --- LOGIC FILTER ---
   const filteredBerita = beritaList.filter((item) => {
     // 1. Filter by Category
-    const matchCategory = activeCategory === "Semua" 
-      ? true 
+    const matchCategory = activeCategory === "Semua"
+      ? true
       : item.kategori?.toLowerCase().includes(activeCategory.toLowerCase());
 
     // 2. Filter by Search
     const searchLower = searchTerm.toLowerCase();
-    const matchSearch = 
-      item.judul?.toLowerCase().includes(searchLower) || 
+    const matchSearch =
+      item.judul?.toLowerCase().includes(searchLower) ||
       item.isi?.toLowerCase().includes(searchLower);
 
     return matchCategory && matchSearch;
@@ -75,8 +75,8 @@ const BeritaPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-      
+    <div className="min-h-screen bg-slate-50 font-sans pb-12 px-4 sm:px-6 lg:px-8">
+
       {/* --- HEADER SECTION --- */}
       <div className="max-w-7xl mx-auto mb-10">
         <div className="flex flex-col md:flex-row justify-between items-end gap-6">
@@ -99,13 +99,13 @@ const BeritaPage = () => {
 
       {/* --- CONTROLS SECTION (SEARCH & FILTER) --- */}
       <div className="max-w-7xl mx-auto mb-10 space-y-6">
-        
+
         {/* Search Bar */}
         <div className="relative max-w-xl">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-          <Input 
-            type="text" 
-            placeholder="Cari berita..." 
+          <Input
+            type="text"
+            placeholder="Cari berita..."
             className="pl-10 h-12 text-base border-slate-300 focus-visible:ring-[#0B3D2E]"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -121,8 +121,8 @@ const BeritaPage = () => {
               onClick={() => setActiveCategory(cat)}
               className={`
                 rounded-full px-6 
-                ${activeCategory === cat 
-                  ? "bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 text-white border-transparent" 
+                ${activeCategory === cat
+                  ? "bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 text-white border-transparent"
                   : "bg-white text-slate-600 border-slate-300 hover:border-[#0B3D2E] hover:text-[#0B3D2E]"}
               `}
             >
@@ -158,10 +158,10 @@ const BeritaPage = () => {
             <p className="text-muted-foreground mt-2">
               Coba kata kunci lain atau ganti kategori filter.
             </p>
-            <Button 
-              variant="link" 
+            <Button
+              variant="link"
               className="text-[#0B3D2E] mt-4"
-              onClick={() => {setSearchTerm(""); setActiveCategory("Semua");}}
+              onClick={() => { setSearchTerm(""); setActiveCategory("Semua"); }}
             >
               Reset Pencarian
             </Button>
@@ -173,8 +173,8 @@ const BeritaPage = () => {
               <Card key={item.id} className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 flex flex-col bg-white">
                 {/* Image Section */}
                 <div className="h-60 overflow-hidden relative bg-slate-200">
-                  <img 
-                    src={item.gambar_url || 'https://via.placeholder.com/600x400?text=Berita+Kelurahan'} 
+                  <img
+                    src={item.gambar_url || 'https://via.placeholder.com/600x400?text=Berita+Kelurahan'}
                     alt={item.judul}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                     onError={(e) => e.target.src = 'https://via.placeholder.com/600x400?text=No+Image'}
@@ -198,19 +198,19 @@ const BeritaPage = () => {
                     </Link>
                   </CardTitle>
                 </CardHeader>
-                
+
                 <CardContent className="pb-4 flex-1">
                   <p className="text-muted-foreground text-sm line-clamp-3">
-                     {item.isi?.replace(/<[^>]*>?/gm, '').substring(0, 120)}...
+                    {item.isi?.replace(/<[^>]*>?/gm, '').substring(0, 120)}...
                   </p>
                 </CardContent>
 
                 <CardFooter className="pt-4 border-t border-slate-100 p-6 bg-slate-50 group-hover:bg-[#0B3D2E]/5 transition-colors">
-                  <Link 
-                    to={`/berita/${item.id}`} 
+                  <Link
+                    to={`/berita/${item.id}`}
                     className="text-sm font-bold text-[#0B3D2E] flex items-center group/link"
                   >
-                    Baca Selengkapnya 
+                    Baca Selengkapnya
                     <ArrowRight className="ml-2 w-4 h-4 transform group-hover/link:translate-x-1 transition-transform text-amber-500" />
                   </Link>
                 </CardFooter>

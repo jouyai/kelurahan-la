@@ -20,48 +20,31 @@ import {
   MessageSquare,
   ChevronRight,
   Info,
-  Loader2,
-  Settings,
-  Shield,
-  HelpCircle
+  Loader2
 } from 'lucide-react';
 import { useData } from '../../../hooks/useContent';
 
-const getIconComponent = (iconName) => {
-  switch (iconName) {
-    case 'Home': return <Home className="h-6 w-6 text-green-600" />;
-    case 'Heart': return <Heart className="h-6 w-6 text-pink-600" />;
-    case 'Scale': return <Scale className="h-6 w-6 text-blue-600" />;
-    case 'Wallet': return <Wallet className="h-6 w-6 text-amber-600" />;
-    case 'Globe2': return <Globe2 className="h-6 w-6 text-purple-600" />;
-    case 'Settings': return <Settings className="h-6 w-6 text-slate-600" />;
-    case 'Shield': return <Shield className="h-6 w-6 text-red-600" />;
-    case 'HelpCircle': return <HelpCircle className="h-6 w-6 text-indigo-600" />;
-    default: return <FileText className="h-6 w-6 text-slate-600" />;
-  }
-};
-
-const getStyleClasses = (iconName) => {
-  switch (iconName) {
-    case 'Home': return { bg: "bg-green-50", border: "hover:border-green-500" };
-    case 'Heart': return { bg: "bg-pink-50", border: "hover:border-pink-500" };
-    case 'Scale': return { bg: "bg-blue-50", border: "hover:border-blue-500" };
-    case 'Wallet': return { bg: "bg-amber-50", border: "hover:border-amber-500" };
-    case 'Globe2': return { bg: "bg-purple-50", border: "hover:border-purple-500" };
-    default: return { bg: "bg-slate-50", border: "hover:border-slate-500" };
-  }
-};
+import { getServiceTheme } from "../../../lib/serviceUtils";
 
 export default function PelayananAdministrasiPage({ onConnectStaff }) {
-  const { data: dbServices, loading } = useData('layanan', { category: 'administrasi' });
+  const { data: dbLayanan, loading } = useData('items', { type: 'layanan' });
 
-  // Use DB data if available, otherwise fallback to original hardcoded list
-  const servicesList = dbServices.length > 0 ? dbServices.map(s => ({
-    ...s,
-    icon: getIconComponent(s.icon_name),
-    ...getStyleClasses(s.icon_name),
-    link: `/layanan/administrasi/${s.slug}`
-  })) : [
+  // Filter dynamic services that belong to "Administrasi" group
+  const adminCategories = ["Pertanahan & Waris", "Pernikahan", "Warga Negara Asing", "Pajak & Aset"];
+
+  const dynamicServices = dbLayanan.filter(s => adminCategories.includes(s.data?.kategori));
+
+  // Determine the list to display: dynamic if available, otherwise original fallback structure
+  const servicesList = dynamicServices.length > 0 ? dynamicServices.map(s => {
+    const theme = getServiceTheme(s.data?.kategori);
+    return {
+      ...s,
+      icon: theme.icon,
+      color: theme.bgLight,
+      border: theme.borderHover,
+      link: `/layanan/administrasi/${s.id}`
+    };
+  }) : [
     {
       id: 1,
       title: "Layanan Pertanahan",

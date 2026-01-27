@@ -10,13 +10,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 // --- ICONS ---
 import { ArrowRight, Building2, MapPin, Newspaper, Phone, ChevronRight, Activity, HardHat, Gavel, Loader2 } from 'lucide-react';
-import { usePageContent } from '../hooks/useContent';
+
 
 const HomePage = () => {
   const [beritaTerkini, setBeritaTerkini] = useState([]);
   const [loadingNews, setLoadingNews] = useState(true);
 
-  const { content: pageContent, loading: contentLoading } = usePageContent('home');
+
 
   // Warna Brand Utama (Bisa dipakai sebagai variabel jika mau)
   const BRAND_COLOR = "bg-[#0B3D2E]";
@@ -77,16 +77,16 @@ const HomePage = () => {
           </Badge> */}
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight drop-shadow-lg">
-            {pageContent.hero_title_part1 || "Kelurahan"} <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500">{pageContent.hero_title_accent || "Lenteng Agung"}</span>
+            Kelurahan <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500">Lenteng Agung</span>
           </h1>
 
           <p className="text-lg md:text-xl text-slate-100 max-w-2xl mx-auto leading-relaxed drop-shadow-md font-light">
-            {pageContent.hero_description || "Mewujudkan tata kelola pemerintahan yang Hijau, Maju, dan Berintegritas untuk kesejahteraan masyarakat."}
+            Mewujudkan tata kelola pemerintahan yang Hijau, Maju, dan Berintegritas untuk kesejahteraan masyarakat.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
             <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-[#0B3D2E] font-bold text-md h-12 px-8 shadow-xl border border-amber-400" asChild>
-              <Link to="/layanan/pelayanan-umum">
+              <Link to="/layanan/umum">
                 Layanan Digital
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
@@ -118,10 +118,10 @@ const HomePage = () => {
                 Profil Wilayah
               </div>
               <h2 className="text-4xl font-bold text-slate-900 leading-tight">
-                {pageContent.about_title || "Membangun Lingkungan yang Asri & Harmonis"}
+                Membangun Lingkungan yang Asri & Harmonis
               </h2>
               <p className="text-muted-foreground text-lg leading-relaxed text-justify">
-                {pageContent.about_text || "Kelurahan Lenteng Agung terus berinovasi dalam menghadirkan pelayanan publik yang prima. Dengan semangat gotong royong, kami mengintegrasikan teknologi dan kearifan lokal untuk menciptakan lingkungan yang nyaman bagi seluruh warga."}
+                Kelurahan Lenteng Agung terus berinovasi dalam menghadirkan pelayanan publik yang prima. Dengan semangat gotong royong, kami mengintegrasikan teknologi dan kearifan lokal untuk menciptakan lingkungan yang nyaman bagi seluruh warga.
               </p>
             </div>
 
@@ -178,7 +178,7 @@ const HomePage = () => {
             </Button>
           </div>
 
-          {loadingNews || contentLoading ? (
+          {loadingNews ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[1, 2, 3].map((n) => (
                 <Card key={n} className="border-none shadow-sm bg-white">

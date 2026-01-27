@@ -33,7 +33,7 @@ import {
   FileText,
   Loader2
 } from "lucide-react";
-import { usePageContent, useData } from "../../hooks/useContent";
+import { useData } from "../../hooks/useContent";
 
 const getIconComponent = (iconName) => {
   switch (iconName) {

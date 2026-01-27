@@ -18,7 +18,7 @@ import {
   CalendarCheck,
   Loader2
 } from 'lucide-react';
-import { usePageContent, useData } from "../../../hooks/useContent";
+import { useData } from "../../../hooks/useContent";
 
 const getIconComponent = (iconName) => {
   switch (iconName) {
@@ -31,10 +31,9 @@ const getIconComponent = (iconName) => {
 };
 
 export default function PelatihanPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('pelatihan');
-  const { data: dbPelatihan, loading: pelatihanLoading } = useData('items', { type: 'pelatihan_kerja' });
+  const { data: dbPelatihan, loading } = useData('items', { type: 'pelatihan_kerja' });
 
-  const isLoading = contentLoading || pelatihanLoading;
+  const isLoading = loading;
 
   const pelatihanList = dbPelatihan.length > 0 ? dbPelatihan.map(p => ({
     id: p.id,
@@ -99,10 +98,10 @@ export default function PelatihanPage() {
             Pemberdayaan Masyarakat
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Pelatihan Kerja & Wirausaha"}
+            Pelatihan Kerja & Wirausaha
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Tingkatkan keahlian (skill) Anda melalui program pelatihan gratis dari PPKD and Kelurahan."}
+            Tingkatkan keahlian (skill) Anda melalui program pelatihan gratis dari PPKD and Kelurahan.
           </p>
         </div>
       </div>

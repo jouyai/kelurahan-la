@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-// --- ICONS ---
 import {
   FileText,
   Loader2,
@@ -15,22 +14,106 @@ import {
   MapPin,
   CheckCircle2,
   Building2,
-  GraduationCap // Added GraduationCap as per instruction context
+  GraduationCap,
+  Download,
+  Info
 } from 'lucide-react';
-import { usePageContent } from "../../../hooks/useContent";
+import { useData } from "../../../hooks/useContent";
+
 
 export default function DomisiliWargaLembagaPage() {
-  const { content: pageContent, loading } = usePageContent('domisili-warga-lembaga');
+  const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
 
-  if (loading) {
+  const getTemplatePath = (layananName) => {
+    const templates = {
+      "Surat Keterangan Domisili Penduduk": "Permohonan Pencatatan Register Surat Keterangan Domisili Penduduk.pdf",
+      "Domisili Rumah Ibadah": "Surat Keterangan Domisili Rumah Ibadah.pdf",
+      "Domisili Yayasan / Organisasi": "Surat Keterangan Domisili Untuk YayasanInstansiOrganisasi.pdf"
+    };
+    return templates[layananName] || null;
+  };
+
+  const dynamicServices = dbLayanan
+    .filter(item => item.data?.kategori === "Kependudukan" || item.data?.kategori === "Lainnya")
+    .filter(item => item.title.includes("Domisili"))
+    .map(item => ({
+      id: item.id.toString(),
+      title: item.title,
+      description: item.description,
+      requirements: item.data?.syarat || [],
+      template: item.data?.template || getTemplatePath(item.title),
+      icon: item.title.includes("Rumah Ibadah") ? <Home className="h-6 w-6 text-amber-600" /> :
+        item.title.includes("Yayasan") ? <Building2 className="h-6 w-6 text-blue-600" /> :
+          <MapPin className="h-6 w-6 text-[#0B3D2E]" />,
+      color: item.title.includes("Rumah Ibadah") ? "border-l-amber-500" :
+        item.title.includes("Yayasan") ? "border-l-blue-500" :
+          "border-l-[#0B3D2E]",
+      bgColor: item.title.includes("Rumah Ibadah") ? "bg-amber-100" :
+        item.title.includes("Yayasan") ? "bg-blue-100" :
+          "bg-[#0B3D2E]/10"
+    }));
+
+  const fallbackServices = [
+    {
+      title: "Surat Keterangan Domisili Penduduk",
+      description: "Untuk keperluan administrasi perbankan, sekolah, atau melamar kerja.",
+      requirements: [
+        "Surat Pengantar RT/RW setempat.",
+        "Fotokopi KTP Pemohon (Asli diperlihatkan).",
+        "Fotokopi Kartu Keluarga (KK).",
+        "Surat Kuasa bermaterai (jika dikuasakan) beserta KTP penerima kuasa.",
+        "SKDS (Surat Keterangan Domisili Sementara) dari RT/RW bagi warga luar DKI."
+      ],
+      template: "Permohonan Pencatatan Register Surat Keterangan Domisili Penduduk.pdf",
+      icon: <MapPin className="h-6 w-6 text-[#0B3D2E]" />,
+      color: "border-l-[#0B3D2E]",
+      bgColor: "bg-[#0B3D2E]/10"
+    },
+    {
+      title: "Domisili Rumah Ibadah",
+      description: "Untuk legalitas operasional masjid, gereja, pura, vihara, dll.",
+      requirements: [
+        "Surat Pengantar RT/RW setempat.",
+        "Fotokopi KTP dan KK Ketua Pengurus/Pemohon.",
+        "Fotokopi Surat Tanah / Akta Wakaf.",
+        "Fotokopi SK Pengurus Rumah Ibadah (dengan KOP Surat resmi).",
+        "Surat Kuasa bermaterai (jika dikuasakan)."
+      ],
+      template: "Surat Keterangan Domisili Rumah Ibadah.pdf",
+      icon: <Home className="h-6 w-6 text-amber-600" />,
+      color: "border-l-amber-500",
+      bgColor: "bg-amber-100"
+    },
+    {
+      title: "Domisili Yayasan / Organisasi",
+      description: "Untuk legalitas badan usaha, yayasan sosial, atau ormas.",
+      requirements: [
+        "Surat Pengantar RT/RW setempat.",
+        "Fotokopi KTP dan KK Ketua/Penanggung Jawab.",
+        "Fotokopi Akta Pendirian dan SK Kemenkumham (jika ada).",
+        "Daftar Susunan Pengurus (KTP & KK Pengurus).",
+        "Surat Pernyataan Tempat Usaha/Sekretariat.",
+        "SKDS (jika pengurus berdomisili luar wilayah)."
+      ],
+      template: "Surat Keterangan Domisili Untuk YayasanInstansiOrganisasi.pdf",
+      icon: <Building2 className="h-6 w-6 text-blue-600" />,
+      color: "border-l-blue-500",
+      bgColor: "bg-blue-100"
+    }
+  ];
+
+  const servicesList = dynamicServices.length > 0 ? dynamicServices : fallbackServices;
+
+  if (layananLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
       </div>
     );
   }
+
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pt-24 pb-12">
+    <div className="min-h-screen bg-slate-50 font-sans pb-12">
 
       {/* === HERO SECTION === */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
@@ -43,17 +126,17 @@ export default function DomisiliWargaLembagaPage() {
             Layanan Kependudukan
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Domisili Warga & Lembaga"}
+            Domisili Warga & Lembaga
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Panduan pengurusan surat keterangan domisili untuk perorangan, perusahaan, and yayasan."}
+            Panduan pengurusan surat keterangan domisili untuk perorangan, perusahaan, and yayasan.
           </p>
         </div>
       </div>
 
       {/* === BREADCRUMB === */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-        <Button variant="ghost" asChild className="pl-0 text-slate-500 hover:text-[#0B3D2E] hover:bg-transparent">
+        <Button variant="ghost" asChild className="pl-0 text-slate-500 hover:text-[#0B3D2E] hover:bg-transparent transition-colors">
           <Link to="/layanan/kependudukan" className="flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" /> Kembali ke Menu Layanan
           </Link>
@@ -63,108 +146,49 @@ export default function DomisiliWargaLembagaPage() {
       {/* === CONTENT SECTION === */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-        {/* DOMISILI PENDUDUK */}
-        <Card className="border-l-4 border-l-[#0B3D2E] shadow-md">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
-              <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
-                <MapPin className="h-6 w-6 text-[#0B3D2E]" />
-              </div>
-              {pageContent.section_1_title || "Surat Keterangan Domisili Penduduk"}
-            </CardTitle>
-            <CardDescription>
-              {pageContent.section_1_desc || "Untuk keperluan administrasi perbankan, sekolah, atau melamar kerja."}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-slate-50 p-5 rounded-xl border border-slate-100">
-              <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
-              <ul className="space-y-3">
-                {(pageContent.section_1_requirements ? JSON.parse(pageContent.section_1_requirements) : [
-                  "Surat Pengantar RT/RW setempat.",
-                  "Fotokopi KTP Pemohon (Asli diperlihatkan).",
-                  "Fotokopi Kartu Keluarga (KK).",
-                  "Surat Kuasa bermaterai (jika dikuasakan) beserta KTP penerima kuasa.",
-                  "SKDS (Surat Keterangan Domisili Sementara) dari RT/RW bagi warga luar DKI."
-                ]).map((req, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                    <span>{req}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
+        {servicesList.map((service, index) => (
+          <Card key={index} className={`border-l-4 ${service.color} shadow-md`}>
+            <CardHeader>
+              <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
+                <div className={`p-2 ${service.bgColor} rounded-lg`}>
+                  {service.icon}
+                </div>
+                {service.title}
+              </CardTitle>
+              {service.description && (
+                <CardDescription>
+                  {service.description}
+                </CardDescription>
+              )}
+            </CardHeader>
+            <CardContent>
+              <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 space-y-4">
+                <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
+                <ul className="space-y-3">
+                  {service.requirements.map((req, idx) => (
+                    <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
+                      <CheckCircle2 className={`h-5 w-5 ${service.color.replace('border-l-', 'text-')} shrink-0 mt-0.5`.replace('amber-500', 'amber-600')} />
+                      <span>{req}</span>
+                    </li>
+                  ))}
+                </ul>
 
-        {/* RUMAH IBADAH */}
-        <Card className="border-l-4 border-l-amber-500 shadow-md">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
-              <div className="p-2 bg-amber-100 rounded-lg">
-                <Home className="h-6 w-6 text-amber-600" />
+                {service.template && (
+                  <Button variant="outline" className="w-full flex items-center gap-2 border-slate-200 text-slate-700 hover:bg-[#0B3D2E] hover:text-white transition-all shadow-sm" asChild>
+                    <a
+                      href={service.template.startsWith('http') ? service.template : `/template/${service.template}`}
+                      download={!service.template.startsWith('http') ? service.template : undefined}
+                      target={service.template.startsWith('http') ? "_blank" : undefined}
+                      rel={service.template.startsWith('http') ? "noopener noreferrer" : undefined}
+                    >
+                      <Download className="h-4 w-4" /> Unduh Template Surat
+                    </a>
+                  </Button>
+                )}
               </div>
-              {pageContent.section_2_title || "Domisili Rumah Ibadah"}
-            </CardTitle>
-            <CardDescription>
-              {pageContent.section_2_desc || "Untuk legalitas operasional masjid, gereja, pura, vihara, dll."}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-amber-50 p-5 rounded-xl border border-amber-100">
-              <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
-              <ul className="space-y-3">
-                {(pageContent.section_2_requirements ? JSON.parse(pageContent.section_2_requirements) : [
-                  "Surat Pengantar RT/RW setempat.",
-                  "Fotokopi KTP dan KK Ketua Pengurus/Pemohon.",
-                  "Fotokopi Surat Tanah / Akta Wakaf.",
-                  "Fotokopi SK Pengurus Rumah Ibadah (dengan KOP Surat resmi).",
-                  "Surat Kuasa bermaterai (jika dikuasakan)."
-                ]).map((req, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
-                    <CheckCircle2 className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
-                    <span>{req}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* YAYASAN / ORGANISASI */}
-        <Card className="border-l-4 border-l-blue-500 shadow-md">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Building2 className="h-6 w-6 text-blue-600" />
-              </div>
-              {pageContent.section_3_title || "Domisili Yayasan / Organisasi"}
-            </CardTitle>
-            <CardDescription>
-              {pageContent.section_3_desc || "Untuk legalitas badan usaha, yayasan sosial, atau ormas."}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-blue-50 p-5 rounded-xl border border-blue-100">
-              <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
-              <ul className="space-y-3">
-                {(pageContent.section_3_requirements ? JSON.parse(pageContent.section_3_requirements) : [
-                  "Surat Pengantar RT/RW setempat.",
-                  "Fotokopi KTP dan KK Ketua/Penanggung Jawab.",
-                  "Fotokopi Akta Pendirian dan SK Kemenkumham (jika ada).",
-                  "Daftar Susunan Pengurus (KTP & KK Pengurus).",
-                  "Surat Pernyataan Tempat Usaha/Sekretariat.",
-                  "SKDS (jika pengurus berdomisili luar wilayah)."
-                ]).map((req, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
-                    <CheckCircle2 className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
-                    <span>{req}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        ))}
 
       </div>
     </div>

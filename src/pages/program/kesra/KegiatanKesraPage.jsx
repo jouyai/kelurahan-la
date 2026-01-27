@@ -24,9 +24,9 @@ import {
   Info,
   Loader2
 } from 'lucide-react';
-import { usePageContent, useData } from "../../../hooks/useContent";
+import { useData } from "../../../hooks/useContent";
 
-const getKesraIconComponent = (iconName) => {
+const getIconComponent = (iconName) => {
   switch (iconName) {
     case 'Activity': return <Activity className="h-6 w-6 text-blue-600" />;
     case 'HandHeart': return <HandHeart className="h-6 w-6 text-red-600" />;
@@ -38,10 +38,9 @@ const getKesraIconComponent = (iconName) => {
 };
 
 export default function KegiatanKesraPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('kegiatan-kesra');
-  const { data: dbKegiatan, loading: kegiatanLoading } = useData('items', { type: 'kegiatan_kesra' });
+  const { data: dbKegiatan, loading } = useData('items', { type: 'kegiatan_kesra' });
 
-  const isLoading = contentLoading || kegiatanLoading;
+  const isLoading = loading;
 
   const kegiatanList = dbKegiatan.length > 0 ? dbKegiatan.map(k => ({
     id: k.id,
@@ -121,10 +120,10 @@ export default function KegiatanKesraPage() {
             Kesejahteraan Rakyat
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Kegiatan Sosial & Kesehatan"}
+            Kegiatan Sosial & Kesehatan
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Berbagai program untuk meningkatkan kualitas hidup, kesehatan, and kepedulian sosial warga."}
+            Berbagai program untuk meningkatkan kualitas hidup, kesehatan, and kepedulian sosial warga.
           </p>
         </div>
       </div>

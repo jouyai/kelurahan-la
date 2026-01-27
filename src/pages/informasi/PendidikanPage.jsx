@@ -17,14 +17,13 @@ import {
   MessageSquare,
   Loader2
 } from 'lucide-react';
-import { usePageContent, useData } from "../../hooks/useContent";
+import { useData } from "../../hooks/useContent";
 
 export default function PendidikanPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('pendidikan');
   const { data: dbSchools, loading: schoolsLoading } = useData('items', { type: 'pendidikan' });
   const [filter, setFilter] = useState("Semua");
 
-  const isLoading = contentLoading || schoolsLoading;
+  const isLoading = schoolsLoading;
 
   const schoolsList = dbSchools.length > 0 ? dbSchools.map(s => ({
     id: s.id,
@@ -70,10 +69,10 @@ export default function PendidikanPage() {
             Informasi Publik
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Sarana Pendidikan"}
+            Sarana Pendidikan
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Data sekolah and lembaga pendidikan formal maupun non-formal yang tersebar di wilayah Kelurahan Lenteng Agung."}
+            Data sekolah and lembaga pendidikan formal maupun non-formal yang tersebar di wilayah Kelurahan Lenteng Agung.
           </p>
         </div>
       </div>

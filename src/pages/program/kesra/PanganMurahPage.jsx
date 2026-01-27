@@ -18,15 +18,25 @@ import {
   MapPin,
   Tags,
   MessageSquare,
-  Info
+  Info,
+  Loader2
 } from 'lucide-react';
+import { useData } from "../../../hooks/useContent";
+
+const getIconComponent = (iconName) => {
+  switch (iconName) {
+    case 'Ticket': return <Ticket className="h-6 w-6 text-blue-600" />;
+    case 'Truck': return <Truck className="h-6 w-6 text-green-600" />;
+    case 'Store': return <Store className="h-6 w-6 text-orange-600" />;
+    default: return <ShoppingBag className="h-6 w-6 text-slate-600" />;
+  }
+};
 
 // Dummy Data Pangan Murah
 export default function PanganMurahPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('pangan-murah');
-  const { data: dbProgram, loading: programLoading } = useData('items', { type: 'pangan_murah' });
+  const { data: dbProgram, loading } = useData('items', { type: 'pangan_murah' });
 
-  const isLoading = contentLoading || programLoading;
+  const isLoading = loading;
 
   const programList = dbProgram.length > 0 ? dbProgram.map(p => ({
     id: p.id,
@@ -100,10 +110,10 @@ export default function PanganMurahPage() {
             Ketahanan Pangan
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Program Pangan Murah"}
+            Program Pangan Murah
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Menjaga stabilitas harga and ketersediaan kebutuhan pokok warga Kelurahan Lenteng Agung."}
+            Menjaga stabilitas harga and ketersediaan kebutuhan pokok warga Kelurahan Lenteng Agung.
           </p>
         </div>
       </div>

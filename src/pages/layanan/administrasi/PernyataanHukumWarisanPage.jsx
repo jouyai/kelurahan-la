@@ -9,25 +9,42 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
-// --- ICONS ---
 import {
   ShieldCheck,
-  Loader2
+  Loader2,
+  Scale,
+  ArrowLeft,
+  AlertCircle,
+  AlertTriangle,
+  CheckCircle2,
+  Info,
+  Building2,
+  Users,
+  Download
 } from 'lucide-react';
-import { usePageContent, useData } from "../../../hooks/useContent";
+import { useData } from "../../../hooks/useContent";
 
 export default function PernyataanHukumWarisanPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('layanan-waris');
   const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
 
-  const isLoading = contentLoading || layananLoading;
+  const isLoading = layananLoading;
 
   // Filter Data: Ambil hanya kategori "Pertanahan & Waris"
+  const getTemplatePath = (layananName) => {
+    const templates = {
+      "Surat Keterangan Waris (WNI Pribumi)": "Surat Pernyataan Ahli Waris.pdf",
+      "Surat Pengantar PM-1 Cerai Ghoib": "Permohonan Surat Pengantar PM-1 Cerai Ghoib .pdf",
+      "Surat Keterangan Bersih Diri Untuk Sekolah Kedinasan": "Surat Keterangan Bersih Diri Untuk Sekolah Kedinasan.pdf"
+    };
+    return templates[layananName] || null;
+  };
+
   const layananHukum = dbLayanan.length > 0
     ? dbLayanan.filter(item => item.data?.kategori === "Pertanahan & Waris").map(item => ({
       id: item.id.toString(),
       layanan: item.title,
-      syarat: item.data?.syarat || []
+      syarat: item.data?.syarat || [],
+      template: item.data?.template || getTemplatePath(item.title)
     }))
     : [];
 
@@ -40,7 +57,7 @@ export default function PernyataanHukumWarisanPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pt-24 pb-12">
+    <div className="min-h-screen bg-slate-50 font-sans pb-12">
 
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
@@ -54,10 +71,10 @@ export default function PernyataanHukumWarisanPage() {
             Legalisasi & Hukum
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Pernyataan Hukum & Warisan"}
+            Pernyataan Hukum & Warisan
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Panduan persyaratan administrasi untuk Surat Keterangan Waris, Pernyataan Gaib, and dokumen hukum lainnya."}
+            Panduan persyaratan administrasi untuk Surat Keterangan Waris, Pernyataan Gaib, and dokumen hukum lainnya.
           </p>
         </div>
       </div>
@@ -111,7 +128,7 @@ export default function PernyataanHukumWarisanPage() {
                         Dokumen yang wajib dilampirkan:
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="space-y-4">
                       <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
                         <ul className="space-y-3">
                           {item.syarat && item.syarat.map((req, idx) => (
@@ -122,6 +139,19 @@ export default function PernyataanHukumWarisanPage() {
                           ))}
                         </ul>
                       </div>
+
+                      {item.template && (
+                        <Button variant="outline" className="w-full flex items-center gap-2 border-amber-200 text-amber-700 hover:bg-amber-600 hover:text-white transition-all shadow-sm" asChild>
+                          <a
+                            href={item.template.startsWith('http') ? item.template : `/template/${item.template}`}
+                            download={!item.template.startsWith('http') ? item.template : undefined}
+                            target={item.template.startsWith('http') ? "_blank" : undefined}
+                            rel={item.template.startsWith('http') ? "noopener noreferrer" : undefined}
+                          >
+                            <Download className="h-4 w-4" /> Unduh Template Surat
+                          </a>
+                        </Button>
+                      )}
                     </CardContent>
                   </Card>
                 ))}

@@ -19,7 +19,7 @@ import {
   CheckCircle2,
   Loader2
 } from 'lucide-react';
-import { usePageContent, useData } from "../../../hooks/useContent";
+import { useData } from "../../../hooks/useContent";
 
 const getIconComponent = (iconName) => {
   switch (iconName) {
@@ -32,10 +32,9 @@ const getIconComponent = (iconName) => {
 };
 
 export default function DasawismaPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('dasawisma');
-  const { data: dbActivities, loading: activitiesLoading } = useData('items', { type: 'kegiatan_dasawisma' });
+  const { data: dbActivities, loading } = useData('items', { type: 'kegiatan_dasawisma' });
 
-  const isLoading = contentLoading || activitiesLoading;
+  const isLoading = loading;
 
   const activitiesList = dbActivities.length > 0 ? dbActivities.map(a => ({
     id: a.id,
@@ -96,10 +95,10 @@ export default function DasawismaPage() {
             Pemberdayaan Keluarga
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Kelompok Dasawisma"}
+            Kelompok Dasawisma
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Ujung tombak pemberdayaan kesejahteraan keluarga (PKK) di tingkat rukun tetangga."}
+            Ujung tombak pemberdayaan kesejahteraan keluarga (PKK) di tingkat rukun tetangga.
           </p>
         </div>
       </div>

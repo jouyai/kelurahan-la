@@ -12,36 +12,25 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import {
   Trees,
   CloudSun,
-  Loader2
+  Loader2,
+  Map,
+  ArrowLeft,
+  MapPin,
+  Compass,
+  Building
 } from 'lucide-react';
-import { usePageContent } from '../../hooks/useContent';
+
 
 const GeografisPage = () => {
-  const { content: pageContent, loading } = usePageContent('geografis');
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
-      </div>
-    );
-  }
+  const loading = false;
 
   // Parse Batas Wilayah from pageContent if it exists as a JSON string, otherwise use defaults
-  let batas = {
+  const batas = {
     utara: "Berbatasan dengan Kelurahan Tanjung Barat",
     selatan: "Berbatasan dengan Kelurahan Srengseng Sawah",
     barat: "Berbatasan dengan Kelurahan Jagakarsa",
     timur: "Berbatasan dengan Sungai Ciliwung (Kecamatan Pasar Rebo)"
   };
-
-  if (pageContent.batas_wilayah) {
-    try {
-      batas = JSON.parse(pageContent.batas_wilayah);
-    } catch (e) {
-      console.error("Error parsing boundary data", e);
-    }
-  }
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
 
@@ -57,10 +46,10 @@ const GeografisPage = () => {
             Profil Wilayah
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Kondisi Geografis"}
+            Kondisi Geografis
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Gambaran letak wilayah, batas administrasi, dan peta lingkungan Kelurahan Lenteng Agung."}
+            Gambaran letak wilayah, batas administrasi, dan peta lingkungan Kelurahan Lenteng Agung.
           </p>
         </div>
       </div>
@@ -88,7 +77,7 @@ const GeografisPage = () => {
             <div className="relative w-full h-[300px] md:h-[500px] bg-slate-200 group">
               {/* Menggunakan aset gambar yang ada di folder public */}
               <img
-                src={pageContent.map_image_url || "/peta1.png"}
+                src="/peta1.png"
                 alt="Peta Wilayah Lenteng Agung"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 onError={(e) => {
@@ -101,13 +90,13 @@ const GeografisPage = () => {
                   <MapPin className="h-4 w-4 text-red-500" /> Koordinat Kantor Kelurahan
                 </p>
                 <p className="text-xs text-slate-600 font-mono mt-1">
-                  {pageContent.coordinates || '6°20\'05.4"S 106°49\'51.2"E'}
+                  6°20'05.4"S 106°49'51.2"E
                 </p>
               </div>
             </div>
             <CardContent className="p-6">
               <p className="text-slate-600 leading-relaxed">
-                {pageContent.map_description || "Kelurahan Lenteng Agung memiliki posisi yang strategis di wilayah Jakarta Selatan, dilintasi oleh jalur kereta api Commuter Line (Jakarta-Bogor) and Sungai Ciliwung yang membelah wilayah menjadi dua bagian. Kontur tanah yang berbukit menjadikan wilayah ini memiliki area resapan air yang cukup baik."}
+                "Kelurahan Lenteng Agung memiliki posisi yang strategis di wilayah Jakarta Selatan, dilintasi oleh jalur kereta api Commuter Line (Jakarta-Bogor) and Sungai Ciliwung yang membelah wilayah menjadi dua bagian. Kontur tanah yang berbukit menjadikan wilayah ini memiliki area resapan air yang cukup baik."
               </p>
             </CardContent>
           </Card>
@@ -159,7 +148,7 @@ const GeografisPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-4xl font-extrabold mb-1">
-                  {pageContent.luas_wilayah_value || "228,8"} <span className="text-lg font-normal text-slate-300">Ha</span>
+                  "228,8" <span className="text-lg font-normal text-slate-300">Ha</span>
                 </div>
                 <p className="text-sm text-slate-300">Total luas area administratif.</p>
               </CardContent>
@@ -199,10 +188,10 @@ const GeografisPage = () => {
             <CardContent>
               <div className="grid md:grid-cols-2 gap-6 text-sm text-amber-900/80 leading-relaxed">
                 <p className="whitespace-pre-wrap">
-                  {pageContent.topografi_text || "Secara topografis, Kelurahan Lenteng Agung berada pada ketinggian rata-rata 25-50 meter di atas permukaan laut. Kontur tanah cenderung bergelombang dengan beberapa area cekungan di sekitar bantaran sungai."}
+                  "Secara topografis, Kelurahan Lenteng Agung berada pada ketinggian rata-rata 25-50 meter di atas permukaan laut. Kontur tanah cenderung bergelombang dengan beberapa area cekungan di sekitar bantaran sungai."
                 </p>
                 <p className="whitespace-pre-wrap">
-                  {pageContent.iklim_text || "Iklim di wilayah ini adalah tropis dengan curah hujan rata-rata 2.000 mm per tahun. Suhu udara berkisar antara 24°C hingga 33°C. Kondisi ini mendukung penghijauan di taman-taman kota and RPTRA yang tersebar di wilayah kelurahan."}
+                  "Iklim di wilayah ini adalah tropis dengan curah hujan rata-rata 2.000 mm per tahun. Suhu udara berkisar antara 24°C hingga 33°C. Kondisi ini mendukung penghijauan di taman-taman kota and RPTRA yang tersebar di wilayah kelurahan."
                 </p>
               </div>
             </CardContent>

@@ -18,13 +18,12 @@ import {
   Clock,
   Loader2
 } from 'lucide-react';
-import { usePageContent, useData } from "../../../hooks/useContent";
+import { useData } from "../../../hooks/useContent";
 
 export default function PenataanKawasanPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('penataan-kawasan');
-  const { data: dbProjects, loading: projectsLoading } = useData('items', { type: 'penataan_kawasan' });
+  const { data: dbProjects, loading } = useData('items', { type: 'penataan_kawasan' });
 
-  const isLoading = contentLoading || projectsLoading;
+  const isLoading = loading;
 
   const projectsList = dbProjects.length > 0 ? dbProjects.map(p => ({
     id: p.id,
@@ -89,10 +88,10 @@ export default function PenataanKawasanPage() {
             Lingkungan Hidup
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Penataan Kawasan Unggulan"}
+            Penataan Kawasan Unggulan
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Mengubah sudut-sudut wilayah yang kurang tertata menjadi ruang hijau yang asri and bermanfaat bagi warga."}
+            Mengubah sudut-sudut wilayah yang kurang tertata menjadi ruang hijau yang asri and bermanfaat bagi warga.
           </p>
         </div>
       </div>

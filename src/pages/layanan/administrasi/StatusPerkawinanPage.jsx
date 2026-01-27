@@ -9,26 +9,43 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
-// --- ICONS ---
 import {
   FileText,
   Info,
-  Loader2
+  Loader2,
+  Heart,
+  ArrowLeft,
+  AlertCircle,
+  CheckCircle2,
+  HeartHandshake,
+  FileCheck,
+  Download
 } from 'lucide-react';
-import { usePageContent, useData } from "../../../hooks/useContent";
+import { useData } from "../../../hooks/useContent";
 
 export default function StatusPerkawinanPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('layanan-nikah');
   const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
 
-  const isLoading = contentLoading || layananLoading;
+  const isLoading = layananLoading;
 
   // Filter Data: Ambil hanya kategori "Pernikahan"
+  const getTemplatePath = (layananName) => {
+    const templates = {
+      "Surat Pengantar Perkawinan Pertama (N1-N4)": "Permohonan Pencatatan Register Surat Pengantar Perkawinan Pertama.pdf",
+      "Surat Pengantar Perkawinan Kedua dan Seterusnya": "Surat Pengantar Perkawinan Kedua dan Seterusnya.pdf",
+      "Surat Keterangan Belum Menikah (Pensiun/Lainnya)": "Surat Keterangan Belum Menikah Lagi Untuk Pensiun Janda.pdf",
+      "Surat Keterangan Bersih Diri Untuk Izin Pernikahan": "Surat Keterangan Bersih Diri Untuk Izin Pernikahan.pdf",
+      "Surat Pengantar PM-1 Cerai Ghoib": "Permohonan Surat Pengantar PM-1 Cerai Ghoib .pdf"
+    };
+    return templates[layananName] || null;
+  };
+
   const layananNikah = dbLayanan.length > 0
     ? dbLayanan.filter(item => item.data?.kategori === "Pernikahan").map(item => ({
       id: item.id.toString(),
       layanan: item.title,
-      syarat: item.data?.syarat || []
+      syarat: item.data?.syarat || [],
+      template: item.data?.template || getTemplatePath(item.title)
     }))
     : [];
 
@@ -41,7 +58,7 @@ export default function StatusPerkawinanPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pt-24 pb-12">
+    <div className="min-h-screen bg-slate-50 font-sans pb-12">
 
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
@@ -55,10 +72,10 @@ export default function StatusPerkawinanPage() {
             Administrasi Sipil
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Layanan Status Perkawinan"}
+            Layanan Status Perkawinan
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Informasi lengkap persyaratan pengurusan surat pengantar nikah (N1-N4) and dokumen status sipil lainnya."}
+            Informasi lengkap persyaratan pengurusan surat pengantar nikah (N1-N4) and dokumen status sipil lainnya.
           </p>
         </div>
       </div>
@@ -112,7 +129,7 @@ export default function StatusPerkawinanPage() {
                         Dokumen yang wajib dilampirkan:
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="space-y-4">
                       <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
                         <ul className="space-y-3">
                           {item.syarat && item.syarat.map((req, idx) => (
@@ -123,6 +140,19 @@ export default function StatusPerkawinanPage() {
                           ))}
                         </ul>
                       </div>
+
+                      {item.template && (
+                        <Button variant="outline" className="w-full flex items-center gap-2 border-pink-200 text-pink-700 hover:bg-pink-600 hover:text-white transition-all shadow-sm" asChild>
+                          <a
+                            href={item.template.startsWith('http') ? item.template : `/template/${item.template}`}
+                            download={!item.template.startsWith('http') ? item.template : undefined}
+                            target={item.template.startsWith('http') ? "_blank" : undefined}
+                            rel={item.template.startsWith('http') ? "noopener noreferrer" : undefined}
+                          >
+                            <Download className="h-4 w-4" /> Unduh Template Surat
+                          </a>
+                        </Button>
+                      )}
                     </CardContent>
                   </Card>
                 ))}

@@ -12,21 +12,36 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 // --- ICONS ---
 import {
   ExternalLink,
-  Loader2
+  Loader2,
+  Landmark,
+  ArrowLeft,
+  CheckCircle2,
+  Wallet,
+  Building2,
+  Info,
+  Download
 } from 'lucide-react';
-import { usePageContent, useData } from "../../../hooks/useContent";
+import { useData } from "../../../hooks/useContent";
 
 export default function PajakAsetPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('layanan-pajak-aset');
   const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
 
-  const isLoading = contentLoading || layananLoading;
+  const isLoading = layananLoading;
 
   // Filter Data
+  const getTemplatePath = (layananName) => {
+    const templates = {
+      "Balik Nama SPPT PBB-P2": "Surat Permohonan PM 1 - Balik Nama PBB.pdf",
+      "Keringanan PBB": "Surat Permohonan PM1 - Keringanan  PBB.pdf"
+    };
+    return templates[layananName] || null;
+  };
+
   const layananPajak = dbLayanan.length > 0
     ? dbLayanan.filter(item => item.data?.kategori === "Pajak & Aset" || item.data?.kategori === "Pajak").map(item => ({
       layanan: item.title,
-      syarat: item.data?.syarat || []
+      syarat: item.data?.syarat || [],
+      template: item.data?.template || getTemplatePath(item.title)
     }))
     : [];
 
@@ -39,7 +54,7 @@ export default function PajakAsetPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pt-24 pb-12">
+    <div className="min-h-screen bg-slate-50 font-sans pb-12">
 
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
@@ -53,10 +68,10 @@ export default function PajakAsetPage() {
             Perpajakan Daerah
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Layanan Pajak & Aset"}
+            Layanan Pajak & Aset
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Informasi persyaratan administrasi PBB-P2, balik nama SPPT, and surat keterangan aset."}
+            Informasi persyaratan administrasi PBB-P2, balik nama SPPT, and surat keterangan aset.
           </p>
         </div>
       </div>
@@ -105,7 +120,7 @@ export default function PajakAsetPage() {
                         Berkas yang harus disiapkan:
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="space-y-4">
                       <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
                         <ul className="space-y-3">
                           {item.syarat && item.syarat.map((req, idx) => (
@@ -116,6 +131,19 @@ export default function PajakAsetPage() {
                           ))}
                         </ul>
                       </div>
+
+                      {item.template && (
+                        <Button variant="outline" className="w-full flex items-center gap-2 border-indigo-200 text-indigo-700 hover:bg-indigo-600 hover:text-white transition-all shadow-sm" asChild>
+                          <a
+                            href={item.template.startsWith('http') ? item.template : `/template/${item.template}`}
+                            download={!item.template.startsWith('http') ? item.template : undefined}
+                            target={item.template.startsWith('http') ? "_blank" : undefined}
+                            rel={item.template.startsWith('http') ? "noopener noreferrer" : undefined}
+                          >
+                            <Download className="h-4 w-4" /> Unduh Template Surat
+                          </a>
+                        </Button>
+                      )}
                     </CardContent>
                   </Card>
                 ))}

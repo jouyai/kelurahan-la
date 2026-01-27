@@ -21,7 +21,7 @@ import {
   Trees,
   Loader2
 } from "lucide-react";
-import { usePageContent, useData } from "../../hooks/useContent";
+import { useData } from "../../hooks/useContent";
 
 const getIconComponent = (iconName) => {
   switch (iconName) {
@@ -34,11 +34,10 @@ const getIconComponent = (iconName) => {
 };
 
 export default function DataBencanaPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('bencana');
   const { data: dbStats, loading: statsLoading } = useData('items', { type: 'bencana_stats' });
   const { data: dbRecent, loading: recentLoading } = useData('items', { type: 'bencana_riwayat' });
 
-  const isLoading = contentLoading || statsLoading || recentLoading;
+  const isLoading = statsLoading || recentLoading;
 
   // Dummy Data Statistik Bencana Fallback
   const statsList = dbStats.length > 0 ? dbStats.map(s => ({
@@ -143,10 +142,10 @@ export default function DataBencanaPage() {
             Siaga Bencana
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Data & Potensi Bencana"}
+            Data & Potensi Bencana
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Informasi terkini mengenai titik rawan, riwayat kejadian, and kesiapsiagaan bencana di lingkungan Kelurahan Lenteng Agung."}
+            Informasi terkini mengenai titik rawan, riwayat kejadian, and kesiapsiagaan bencana di lingkungan Kelurahan Lenteng Agung.
           </p>
         </div>
       </div>

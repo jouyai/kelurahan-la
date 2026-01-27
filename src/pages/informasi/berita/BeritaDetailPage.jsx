@@ -10,13 +10,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  CalendarDays, 
-  User, 
-  Share2, 
-  Facebook, 
-  Twitter, 
+import {
+  ArrowLeft,
+  CalendarDays,
+  User,
+  Share2,
+  Facebook,
+  Twitter,
   Linkedin,
   Clock,
   ChevronRight
@@ -51,7 +51,7 @@ const BeritaDetailPage = () => {
           .neq('id', id) // Jangan tampilkan berita yang sedang dibaca
           .order('created_at', { ascending: false })
           .limit(5);
-        
+
         setBeritaTerbaru(sidebarData || []);
 
       } catch (error) {
@@ -62,7 +62,7 @@ const BeritaDetailPage = () => {
     };
 
     fetchData();
-    
+
     // Scroll ke atas saat pindah berita
     window.scrollTo(0, 0);
   }, [id]);
@@ -83,7 +83,7 @@ const BeritaDetailPage = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
         <h2 className="text-2xl font-bold text-slate-800">Berita tidak ditemukan</h2>
         <Button variant="link" asChild className="mt-4 text-[#0B3D2E]">
-          <Link to="/informasi/berita"><ArrowLeft className="mr-2 h-4 w-4"/> Kembali ke Daftar Berita</Link>
+          <Link to="/informasi/berita"><ArrowLeft className="mr-2 h-4 w-4" /> Kembali ke Daftar Berita</Link>
         </Button>
       </div>
     );
@@ -91,7 +91,7 @@ const BeritaDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12 px-4 sm:px-6 lg:px-8">
-      
+
       {/* --- BREADCRUMB & BACK --- */}
       <div className="max-w-6xl mx-auto mb-6">
         <Button variant="ghost" asChild className="pl-0 text-slate-500 hover:text-[#0B3D2E] hover:bg-transparent">
@@ -102,14 +102,14 @@ const BeritaDetailPage = () => {
       </div>
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-10">
-        
+
         {/* === MAIN CONTENT (KOLOM KIRI) === */}
         <article className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          
+
           {/* Hero Image */}
           <div className="w-full h-[300px] sm:h-[400px] relative bg-slate-200">
-            <img 
-              src={berita.gambar_url || 'https://via.placeholder.com/800x400?text=Berita+Kelurahan'} 
+            <img
+              src={berita.gambar_url || 'https://via.placeholder.com/800x400?text=Berita+Kelurahan'}
               alt={berita.judul}
               className="w-full h-full object-cover"
               onError={(e) => e.target.src = 'https://via.placeholder.com/800x400?text=No+Image'}
@@ -139,12 +139,12 @@ const BeritaDetailPage = () => {
             </h1>
 
             {/* Content Body */}
-            <div 
+            <div
               className="prose prose-lg prose-slate max-w-none text-slate-700 leading-relaxed
                 prose-headings:font-bold prose-headings:text-[#0B3D2E]
                 prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
                 prose-img:rounded-xl prose-img:shadow-md"
-              dangerouslySetInnerHTML={{ __html: berita.isi }} 
+              dangerouslySetInnerHTML={{ __html: berita.isi }}
             />
 
             <Separator className="my-10" />
@@ -173,7 +173,7 @@ const BeritaDetailPage = () => {
 
         {/* === SIDEBAR WIDGET (KOLOM KANAN) === */}
         <div className="space-y-8">
-          
+
           {/* Widget 1: Berita Terbaru */}
           <Card className="border-slate-200 shadow-sm sticky top-28">
             <CardHeader className="pb-3 border-b border-slate-100">
@@ -189,7 +189,7 @@ const BeritaDetailPage = () => {
                       {item.judul}
                     </h4>
                     <span className="text-xs text-slate-400 mt-1 block">
-                      {new Date(item.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'})}
+                      {new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </span>
                     {/* Garis pemisah tipis antar item (kecuali item terakhir) */}
                     <div className="h-px bg-slate-100 mt-3 group-last:hidden"></div>
@@ -225,7 +225,7 @@ const BeritaDetailPage = () => {
 
 // Skeleton Loader Component
 const DetailSkeleton = () => (
-  <div className="min-h-screen pt-24 pb-12 px-4 max-w-6xl mx-auto">
+  <div className="min-h-screen pb-12 px-4 max-w-6xl mx-auto">
     <Skeleton className="h-8 w-48 mb-6" />
     <div className="grid lg:grid-cols-3 gap-10">
       <div className="lg:col-span-2 space-y-6">

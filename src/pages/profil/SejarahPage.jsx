@@ -17,13 +17,12 @@ import {
   ChevronRight,
   Loader2
 } from "lucide-react";
-import { usePageContent, useData } from "../../hooks/useContent";
+import { useData } from "../../hooks/useContent";
 
 const SejarahPage = () => {
-  const { content: pageContent, loading: contentLoading } = usePageContent('sejarah');
-  const { data: timelineData, loading: timelineLoading } = useData('items', { type: 'sejarah_timeline' });
+  const { data: timelineData, loading } = useData('items', { type: 'sejarah_timeline' });
 
-  const isLoading = contentLoading || timelineLoading;
+  const isLoading = loading;
 
   if (isLoading) {
     return (
@@ -55,10 +54,10 @@ const SejarahPage = () => {
             Profil Wilayah
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Sejarah & Asal Usul"}
+            Sejarah & Asal Usul
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto">
-            {pageContent.hero_description || "Menelusuri jejak langkah perjalanan Kelurahan Lenteng Agung dari masa ke masa hingga menjadi kawasan yang maju seperti sekarang."}
+            Menelusuri jejak langkah perjalanan Kelurahan Lenteng Agung dari masa ke masa hingga menjadi kawasan yang maju seperti sekarang.
           </p>
         </div>
       </div>
@@ -87,12 +86,12 @@ const SejarahPage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-2xl font-bold text-[#0B3D2E]">
                   <BookOpen className="h-6 w-6 text-amber-500" />
-                  {pageContent.asal_usul_title || 'Asal Usul Nama "Lenteng Agung"'}
+                  Asal Usul Nama "Lenteng Agung"
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
                 <p className="whitespace-pre-wrap">
-                  {pageContent.asal_usul_text || "Nama Lenteng Agung diyakini berasal dari kata \"Klenteng\" dan \"Agung\". Konon pada masa lampau, wilayah ini merupakan tempat persinggahan pedagang Tionghoa yang mendirikan sebuah tempat ibadah (Klenteng) yang cukup besar (Agung) di bantaran Sungai Ciliwung.\n\nVersi lain menyebutkan bahwa nama ini diambil dari karakter tanah dan kontur wilayah yang menyerupai \"Lenteng\" (lengkungan) sungai yang agung. Terlepas dari berbagai versi sejarah, wilayah ini telah menjadi pemukiman penting sejak era kolonial Belanda karena posisinya yang strategis di jalur menuju Depok dan Bogor."}
+                  "Nama Lenteng Agung diyakini berasal dari kata \"Klenteng\" dan \"Agung\". Konon pada masa lampau, wilayah ini merupakan tempat persinggahan pedagang Tionghoa yang mendirikan sebuah tempat ibadah (Klenteng) yang cukup besar (Agung) di bantaran Sungai Ciliwung.\n\nVersi lain menyebutkan bahwa nama ini diambil dari karakter tanah dan kontur wilayah yang menyerupai \"Lenteng\" (lengkungan) sungai yang agung. Terlepas dari berbagai versi sejarah, wilayah ini telah menjadi pemukiman penting sejak era kolonial Belanda karena posisinya yang strategis di jalur menuju Depok dan Bogor."
                 </p>
               </CardContent>
             </Card>
@@ -190,23 +189,23 @@ const SejarahPage = () => {
               <CardContent className="space-y-4 text-sm text-slate-600">
                 <div className="flex justify-between border-b border-slate-100 pb-2">
                   <span>Luas Wilayah</span>
-                  <span className="font-semibold text-[#0B3D2E]">{pageContent.luas_wilayah || "2.25 km²"}</span>
+                  <span className="font-semibold text-[#0B3D2E]">2.25 km²</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-100 pb-2">
                   <span>Kecamatan</span>
                   <span className="font-semibold text-[#0B3D2E]">
-                    {pageContent.kecamatan || "Jagakarsa"}
+                    Jagakarsa
                   </span>
                 </div>
                 <div className="flex justify-between border-b border-slate-100 pb-2">
                   <span>Kota Administrasi</span>
                   <span className="font-semibold text-[#0B3D2E]">
-                    {pageContent.kota_administrasi || "Jakarta Selatan"}
+                    Jakarta Selatan
                   </span>
                 </div>
                 <div className="flex justify-between pt-1">
                   <span>Kode Pos</span>
-                  <span className="font-semibold text-[#0B3D2E]">{pageContent.kode_pos || "12610"}</span>
+                  <span className="font-semibold text-[#0B3D2E]">12610</span>
                 </div>
               </CardContent>
             </Card>
@@ -235,7 +234,7 @@ const SejarahPage = () => {
                   asChild
                 >
                   <Link to="/struktur-organisasi">
-                    Struktur Organisasi <ChevronRight className="h-4 w-4" />
+                    Struktur Kelurahan <ChevronRight className="h-4 w-4" />
                   </Link>
                 </Button>
                 <Separator />

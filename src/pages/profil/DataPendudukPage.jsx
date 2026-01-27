@@ -21,24 +21,23 @@ import {
   TrendingUp,
   Loader2
 } from 'lucide-react';
-import { usePageContent, useData } from '../../hooks/useContent';
+import { useData } from '../../hooks/useContent';
 
 const DataPendudukPage = () => {
-  const { content: pageContent, loading: contentLoading } = usePageContent('data-penduduk');
   const { data: dbStats, loading: statsLoading } = useData('items', { type: 'penduduk_stats' });
   const { data: dbAgeData, loading: ageLoading } = useData('items', { type: 'penduduk_usia' });
   const { data: dbWorkData, loading: workLoading } = useData('items', { type: 'penduduk_pekerjaan' });
   const { data: dbEduData, loading: eduLoading } = useData('items', { type: 'penduduk_pendidikan' });
   const { data: dbRegionData, loading: regionLoading } = useData('items', { type: 'penduduk_wilayah' });
 
-  const isLoading = contentLoading || statsLoading || ageLoading || workLoading || eduLoading || regionLoading;
+  const isLoading = statsLoading || ageLoading || workLoading || eduLoading || regionLoading;
 
   // DATA DUMMY STATISTIK FALLBACK
   const stats = {
-    totalPenduduk: parseInt(pageContent.total_penduduk) || 12540,
-    kepalaKeluarga: parseInt(pageContent.kepala_keluarga) || 3450,
-    lakiLaki: parseInt(pageContent.laki_laki) || 6200,
-    perempuan: parseInt(pageContent.perempuan) || 6340,
+    totalPenduduk: 12540,
+    kepalaKeluarga: 3450,
+    lakiLaki: 6200,
+    perempuan: 6340,
   };
 
   const usiaData = dbAgeData.length > 0 ? dbAgeData.map(d => ({
@@ -104,10 +103,10 @@ const DataPendudukPage = () => {
             Transparansi Data
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Statistik Kependudukan"}
+            Statistik Kependudukan
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Data demografi terbaru Kelurahan Lenteng Agung sebagai acuan perencanaan pembangunan dan pelayanan publik."}
+            Data demografi terbaru Kelurahan Lenteng Agung sebagai acuan perencanaan pembangunan dan pelayanan publik.
           </p>
         </div>
       </div>

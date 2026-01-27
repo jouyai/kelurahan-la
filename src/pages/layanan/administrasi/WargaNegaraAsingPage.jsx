@@ -8,24 +8,38 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
-// --- ICONS ---
 import {
   CreditCard,
-  Loader2
+  Loader2,
+  Globe2,
+  ArrowLeft,
+  AlertCircle,
+  FileBadge,
+  CheckCircle2,
+  Info,
+  Plane,
+  Download
 } from 'lucide-react';
-import { usePageContent, useData } from "../../../hooks/useContent";
+import { useData } from "../../../hooks/useContent";
 
 export default function WargaNegaraAsingPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('layanan-wna');
   const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
 
-  const isLoading = contentLoading || layananLoading;
+  const isLoading = layananLoading;
 
   // Filter Data: Ambil hanya kategori "Warga Negara Asing"
+  const getTemplatePath = (layananName) => {
+    const templates = {
+      "Surat Keterangan Tempat Tinggal (SKTT)": "Surat Permohonan Izin Tinggal Sementara atau Tetap Bagi Warga Asing.pdf"
+    };
+    return templates[layananName] || null;
+  };
+
   const layananWNA = dbLayanan.length > 0
     ? dbLayanan.filter(item => item.data?.kategori === "Warga Negara Asing" || item.data?.kategori === "WNA").map(item => ({
       layanan: item.title,
-      syarat: item.data?.syarat || []
+      syarat: item.data?.syarat || [],
+      template: item.data?.template || getTemplatePath(item.title)
     }))
     : [];
 
@@ -38,7 +52,7 @@ export default function WargaNegaraAsingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pt-24 pb-12">
+    <div className="min-h-screen bg-slate-50 font-sans pb-12">
 
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
@@ -52,10 +66,10 @@ export default function WargaNegaraAsingPage() {
             Layanan Internasional
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Layanan Warga Negara Asing"}
+            Layanan Warga Negara Asing
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Informasi persyaratan administrasi kependudukan bagi WNA (SKTT, SKSKPS, dll) di wilayah Kelurahan Lenteng Agung."}
+            Informasi persyaratan administrasi kependudukan bagi WNA (SKTT, SKSKPS, dll) di wilayah Kelurahan Lenteng Agung.
           </p>
         </div>
       </div>
@@ -104,7 +118,7 @@ export default function WargaNegaraAsingPage() {
                         Persyaratan dokumen yang harus dilampirkan:
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="space-y-4">
                       <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
                         <ul className="space-y-3">
                           {item.syarat && item.syarat.map((req, idx) => (
@@ -115,6 +129,19 @@ export default function WargaNegaraAsingPage() {
                           ))}
                         </ul>
                       </div>
+
+                      {item.template && (
+                        <Button variant="outline" className="w-full flex items-center gap-2 border-purple-200 text-purple-700 hover:bg-purple-600 hover:text-white transition-all shadow-sm" asChild>
+                          <a
+                            href={item.template.startsWith('http') ? item.template : `/template/${item.template}`}
+                            download={!item.template.startsWith('http') ? item.template : undefined}
+                            target={item.template.startsWith('http') ? "_blank" : undefined}
+                            rel={item.template.startsWith('http') ? "noopener noreferrer" : undefined}
+                          >
+                            <Download className="h-4 w-4" /> Unduh Template Surat
+                          </a>
+                        </Button>
+                      )}
                     </CardContent>
                   </Card>
                 ))}

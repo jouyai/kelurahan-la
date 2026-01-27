@@ -19,30 +19,28 @@ import {
   CheckCircle2,
   Loader2
 } from 'lucide-react';
-import { usePageContent, useData } from '../../../hooks/useContent';
+import { useData } from '../../../hooks/useContent';
 
-const getIconComponent = (iconName) => {
-  switch (iconName) {
-    case 'Briefcase': return <Briefcase className="h-6 w-6 text-amber-500" />;
-    case 'MapPin': return <MapPin className="h-6 w-6 text-amber-500" />;
-    case 'FileText': return <FileText className="h-6 w-6 text-amber-500" />;
-    case 'AlertCircle': return <AlertCircle className="h-6 w-6 text-amber-500" />;
-    default: return <FileText className="h-6 w-6 text-amber-500" />;
-  }
-};
+import { getServiceTheme } from "../../../lib/serviceUtils";
 
-const PelayananUmumPage = () => {
-  const { content: pageContent, loading: contentLoading } = usePageContent('pelayanan-umum');
-  const { data: dbServices, loading: servicesLoading } = useData('layanan', { category: 'umum' });
+export default function PelayananUmumPage({ onConnectStaff }) {
+  const { data: dbLayanan, loading: servicesLoading } = useData('items', { type: 'layanan' });
 
-  const isLoading = contentLoading || servicesLoading;
+  const isLoading = servicesLoading;
+
+  // Filter services for "Pelayanan Umum" sector
+  const umumCategories = ["Pelayanan Umum", "Pekerjaan & Usaha"];
+  const dynamicServices = dbLayanan.filter(s => umumCategories.includes(s.data?.kategori));
 
   // Data Layanan Fallback
-  const servicesList = dbServices.length > 0 ? dbServices.map(s => ({
-    ...s,
-    icon: getIconComponent(s.icon_name),
-    link: `/layanan/umum/${s.slug}`
-  })) : [
+  const servicesList = dynamicServices.length > 0 ? dynamicServices.map(s => {
+    const theme = getServiceTheme(s.data?.kategori);
+    return {
+      ...s,
+      icon: theme.icon,
+      link: `/layanan/umum/${s.id}`
+    };
+  }) : [
     {
       title: "Surat Keterangan Usaha (SKU)",
       description: "Dokumen resmi untuk menerangkan usaha warga yang berdomisili di kelurahan.",
@@ -64,7 +62,7 @@ const PelayananUmumPage = () => {
         "Surat Pengantar RT/RW",
         "Pas foto 3x4 (2 lembar)"
       ],
-      link: "/layanan/umum/pekerjaan"
+      link: "/layanan/kependudukan/domisili"
     },
     {
       title: "Surat Pengantar Nikah (N1-N4)",
@@ -76,7 +74,7 @@ const PelayananUmumPage = () => {
         "Surat Pernyataan Belum Menikah",
         "Imunisasi TT (Bagi Wanita)"
       ],
-      link: "/layanan/umum/pekerjaan"
+      link: "/layanan/administrasi/status-perkawinan"
     },
     {
       title: "Surat Keterangan Tidak Mampu (SKTM)",
@@ -87,7 +85,7 @@ const PelayananUmumPage = () => {
         "Surat Pengantar RT/RW",
         "Foto rumah (tampak depan & dalam)"
       ],
-      link: "/layanan/umum/pekerjaan"
+      link: "/layanan/kependudukan/keterangan"
     }
   ];
 
@@ -114,10 +112,10 @@ const PelayananUmumPage = () => {
             Layanan Publik
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Administrasi Umum"}
+            Administrasi Umum
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Layanan pengurusan surat-menyurat and administrasi kependudukan yang cepat, mudah, and transparan."}
+            Layanan pengurusan surat-menyurat and administrasi kependudukan yang cepat, mudah, and transparan.
           </p>
         </div>
       </div>
@@ -160,10 +158,7 @@ const PelayananUmumPage = () => {
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="p-3 bg-[#0B3D2E]/5 rounded-xl group-hover:bg-[#0B3D2E] group-hover:text-white transition-colors">
-                      {/* Clone icon agar bisa ganti warna saat hover */}
-                      {React.cloneElement(service.icon, {
-                        className: "h-6 w-6 text-amber-500 group-hover:text-amber-400"
-                      })}
+                      {service.icon}
                     </div>
                     <Badge variant="secondary" className="bg-slate-100 text-slate-600">Terpadu</Badge>
                   </div>
@@ -181,7 +176,7 @@ const PelayananUmumPage = () => {
                     <FileText className="h-4 w-4" /> Persyaratan:
                   </h4>
                   <ul className="space-y-2">
-                    {(service.requirements || []).map((req, i) => (
+                    {(service.requirements || service.data?.syarat || []).map((req, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-slate-500">
                         <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
                         <span>{req}</span>
@@ -221,6 +216,4 @@ const PelayananUmumPage = () => {
       </div>
     </div>
   );
-};
-
-export default PelayananUmumPage;
+}

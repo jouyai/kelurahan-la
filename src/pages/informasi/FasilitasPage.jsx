@@ -23,7 +23,7 @@ import {
   Moon,
   Loader2
 } from 'lucide-react';
-import { usePageContent, useData } from "../../hooks/useContent";
+import { useData } from "../../hooks/useContent";
 
 const getIconComponent = (iconName) => {
   switch (iconName) {
@@ -37,11 +37,10 @@ const getIconComponent = (iconName) => {
 };
 
 export default function FasilitasPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('fasilitas');
   const { data: dbFacilities, loading: facilitiesLoading } = useData('items', { type: 'fasilitas' });
   const [searchTerm, setSearchTerm] = useState("");
 
-  const isLoading = contentLoading || facilitiesLoading;
+  const isLoading = facilitiesLoading;
 
   const facilitiesList = dbFacilities.length > 0 ? dbFacilities.map(f => ({
     id: f.id,
@@ -138,10 +137,10 @@ export default function FasilitasPage() {
             Sarana Publik
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Fasilitas Umum"}
+            Fasilitas Umum
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Daftar sarana and prasarana publik yang tersedia di Kelurahan Lenteng Agung untuk mendukung aktivitas warga."}
+            Daftar sarana and prasarana publik yang tersedia di Kelurahan Lenteng Agung untuk mendukung aktivitas warga.
           </p>
         </div>
       </div>

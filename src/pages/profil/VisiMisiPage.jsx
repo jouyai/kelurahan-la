@@ -18,14 +18,13 @@ import {
   Leaf,
   Loader2
 } from 'lucide-react';
-import { usePageContent, useData } from '../../hooks/useContent';
+import { useData } from '../../hooks/useContent';
 
 const VisiMisiPage = () => {
-  const { content: pageContent, loading: contentLoading } = usePageContent('visi-misi');
   const { data: misiList, loading: misiLoading } = useData('items', { type: 'misi' });
   const { data: coreValues, loading: valuesLoading } = useData('items', { type: 'core_value' });
 
-  const isLoading = contentLoading || misiLoading || valuesLoading;
+  const isLoading = misiLoading || valuesLoading;
 
   if (isLoading) {
     return (
@@ -50,10 +49,10 @@ const VisiMisiPage = () => {
             Profil Kelurahan
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Visi & Misi"}
+            Visi & Misi
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Komitmen kami dalam membangun tata kelola pemerintahan yang transparan dan melayani masyarakat dengan sepenuh hati."}
+            Komitmen kami dalam membangun tata kelola pemerintahan yang transparan dan melayani masyarakat dengan sepenuh hati.
           </p>
         </div>
       </div>
@@ -80,7 +79,7 @@ const VisiMisiPage = () => {
           <div className="relative max-w-4xl mx-auto">
             <Quote className="absolute top-0 left-0 w-8 h-8 text-amber-200 -translate-x-4 -translate-y-4 opacity-50" />
             <h3 className="text-2xl md:text-4xl font-serif font-medium text-slate-800 leading-snug px-6 py-4">
-              {pageContent.visi_text ? `"${pageContent.visi_text}"` : '"Terwujudnya Kelurahan Lenteng Agung yang Maju, Lestari, dan Berbudaya menuju Masyarakat Sejahtera."'}
+              "Terwujudnya Kelurahan Lenteng Agung yang Maju, Lestari, dan Berbudaya menuju Masyarakat Sejahtera."
             </h3>
             <Quote className="absolute bottom-0 right-0 w-8 h-8 text-amber-200 translate-x-4 translate-y-4 rotate-180 opacity-50" />
           </div>
@@ -98,11 +97,11 @@ const VisiMisiPage = () => {
               <h2 className="text-2xl font-bold text-slate-900">Misi Pembangunan</h2>
             </div>
             <p className="text-slate-600 leading-relaxed">
-              {pageContent.misi_intro || "Untuk mencapai visi tersebut, Kelurahan Lenteng Agung menetapkan langkah-langkah strategis yang terukur dan berorientasi pada hasil nyata bagi masyarakat."}
+              Untuk mencapai visi tersebut, Kelurahan Lenteng Agung menetapkan langkah-langkah strategis yang terukur dan berorientasi pada hasil nyata bagi masyarakat.
             </p>
             <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg mt-4">
               <p className="text-sm text-slate-700 italic">
-                {pageContent.misi_quote || '"Misi adalah kompas yang menuntun setiap kebijakan dan program kerja kami setiap harinya."'}
+                "Misi adalah kompas yang menuntun setiap kebijakan dan program kerja kami setiap harinya."
               </p>
             </div>
           </div>

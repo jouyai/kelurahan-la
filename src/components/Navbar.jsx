@@ -39,7 +39,7 @@ const menuItems = [
       { label: "Sejarah", href: "/sejarah" },
       { label: "Visi & Misi", href: "/visi-misi" },
       { label: "Geografis", href: "/geografis" },
-      { label: "Struktur Organisasi", href: "/struktur-organisasi" },
+      { label: "Struktur Kelurahan", href: "/struktur-organisasi" },
       { label: "Data Penduduk", href: "/data-penduduk" },
       { label: "RT & RW", href: "/pemerintahan/rt-rw", group: "Kelembagaan" },
       { label: "LMK", href: "/pemerintahan/lmk", group: "Kelembagaan" },
@@ -51,7 +51,7 @@ const menuItems = [
     items: [
       { label: "Pelayanan Administrasi", href: "/layanan/administrasi" },
       { label: "Pelayanan Kependudukan", href: "/layanan/kependudukan" },
-      { label: "Pelayanan Umum", href: "/layanan/pelayanan-umum" },
+      { label: "Pelayanan Umum", href: "/layanan/umum" },
     ],
   },
   {
@@ -85,7 +85,7 @@ export default function Navbar() {
   return (
     <nav className="w-full bg-[#0B3D2E] text-white border-b border-white/10 sticky top-0 z-50">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        
+
         {/* LOGO */}
         <Link to="/" className="flex items-center gap-3 shrink-0">
           <div className="flex h-10 w-10 items-center justify-center p-1">
@@ -105,7 +105,7 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-2">
           <NavigationMenu>
             <NavigationMenuList>
-              
+
               {/* HOME LINK (Tanpa Dropdown) */}
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
@@ -156,11 +156,11 @@ export default function Navbar() {
                   Menu Navigasi
                 </SheetTitle>
               </SheetHeader>
-              
+
               <ScrollArea className="h-[calc(100vh-80px)] p-4">
                 <div className="flex flex-col space-y-2">
-                  <Link 
-                    to="/" 
+                  <Link
+                    to="/"
                     className="px-4 py-3 text-sm font-medium hover:bg-white/10 rounded-md transition-colors"
                     onClick={() => setIsOpen(false)}
                   >

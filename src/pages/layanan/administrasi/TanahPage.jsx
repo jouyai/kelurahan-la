@@ -9,25 +9,42 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-// --- ICONS ---
 import {
   Phone,
   FileText,
-  Loader2
+  Loader2,
+  Map,
+  ArrowLeft,
+  CheckCircle2,
+  Info,
+  FileCheck,
+  Download
 } from 'lucide-react';
-import { usePageContent, useData } from "../../../hooks/useContent";
+import { useData } from "../../../hooks/useContent";
 
 export default function TanahPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('layanan-tanah');
   const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
 
-  const isLoading = contentLoading || layananLoading;
+  const isLoading = layananLoading;
 
   // Filter data khusus kategori Tanah
+  const getTemplatePath = (layananName) => {
+    const templates = {
+      "Surat Keterangan Riwayat Tanah / PM1": "Surat Keterangan Riwayat Tanah.pdf",
+      "Laporan Bukti Kepemilikan Tanah yang Hilang": "Permohonan Pengantar Laporan Bukti Kepemilikan Tanah yang Hilang.pdf",
+      "Balik Sertifikat": "Surat Permohonan PM 1-Balik Sertifikat.pdf",
+      "Pengaktifan kembali HGB Yang Expired": "Surat Permohonan Pengaktifan kembali HGB Yang Expired.pdf",
+      "Peningkatan Hak HGB Ke Hak Milik": "Surat Permohonan Peningkatan Hak HGB Ke Hak Milik.pdf",
+      "Rekomendasi Permohonan Hak Atas Tanah": "Surat Rekomendasi Permohonan Hak Atas Tanah.pdf"
+    };
+    return templates[layananName] || null;
+  };
+
   const layananTanah = dbLayanan.length > 0
     ? dbLayanan.filter(item => item.data?.kategori === "Pertanahan & Waris").map(item => ({
       layanan: item.title,
-      syarat: item.data?.syarat || []
+      syarat: item.data?.syarat || [],
+      template: item.data?.template || getTemplatePath(item.title)
     }))
     : [];
 
@@ -40,7 +57,7 @@ export default function TanahPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pt-24 pb-12">
+    <div className="min-h-screen bg-slate-50 font-sans pb-12">
 
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
@@ -54,10 +71,10 @@ export default function TanahPage() {
             Administrasi
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Layanan Pertanahan"}
+            Layanan Pertanahan
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Informasi persyaratan pengurusan surat tanah, PM1, and administrasi agraria lainnya di Kelurahan Lenteng Agung."}
+            Informasi persyaratan pengurusan surat tanah, PM1, and administrasi agraria lainnya di Kelurahan Lenteng Agung.
           </p>
         </div>
       </div>
@@ -97,7 +114,7 @@ export default function TanahPage() {
                         Persyaratan lengkap untuk pengajuan dokumen ini:
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="space-y-4">
                       <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
                         <ul className="space-y-3">
                           {item.syarat && item.syarat.map((req, idx) => (
@@ -108,6 +125,19 @@ export default function TanahPage() {
                           ))}
                         </ul>
                       </div>
+
+                      {item.template && (
+                        <Button variant="outline" className="w-full flex items-center gap-2 border-[#0B3D2E] text-[#0B3D2E] hover:bg-[#0B3D2E] hover:text-white transition-all shadow-sm" asChild>
+                          <a
+                            href={item.template.startsWith('http') ? item.template : `/template/${item.template}`}
+                            download={!item.template.startsWith('http') ? item.template : undefined}
+                            target={item.template.startsWith('http') ? "_blank" : undefined}
+                            rel={item.template.startsWith('http') ? "noopener noreferrer" : undefined}
+                          >
+                            <Download className="h-4 w-4" /> Unduh Template Surat
+                          </a>
+                        </Button>
+                      )}
                     </CardContent>
                   </Card>
                 ))}

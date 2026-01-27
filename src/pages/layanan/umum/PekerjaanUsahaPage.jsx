@@ -7,24 +7,55 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
-// --- ICONS ---
 import {
   Wallet,
   Info,
-  Loader2
+  Loader2,
+  Briefcase,
+  ArrowLeft,
+  CheckCircle2,
+  Building2,
+  Globe2,
+  Download
 } from 'lucide-react';
-import { usePageContent } from "../../../hooks/useContent";
+import { useData } from "../../../hooks/useContent";
 
 export default function PekerjaanUsahaPage() {
-  const { content: pageContent, loading } = usePageContent('layanan-usaha');
+  const { data: dbLayanan, loading: servicesLoading } = useData('items', { type: 'layanan' });
 
-  if (loading) {
+  const isLoading = servicesLoading;
+
+  // Filter dynamic services for "Pekerjaan & Usaha"
+  const dynamicServices = dbLayanan.filter(s => s.data?.kategori === "Pekerjaan & Usaha").map(s => ({
+    title: s.title,
+    description: s.description,
+    requirements: s.data?.syarat || [],
+    template: s.data?.template || null,
+    icon: s.data?.icon_name === 'Building2' ? <Building2 className="h-6 w-6 text-[#0B3D2E]" /> :
+      s.data?.icon_name === 'Briefcase' ? <Briefcase className="h-6 w-6 text-amber-600" /> :
+        <Wallet className="h-6 w-6 text-blue-600" />,
+    color: s.data?.icon_name === 'Building2' ? "border-l-[#0B3D2E]" :
+      s.data?.icon_name === 'Briefcase' ? "border-l-amber-500" :
+        "border-l-blue-500",
+    bgColor: s.data?.icon_name === 'Building2' ? "bg-[#0B3D2E]/10" :
+      s.data?.icon_name === 'Briefcase' ? "bg-amber-100" :
+        "bg-blue-100",
+    listBg: s.data?.icon_name === 'Building2' ? "bg-slate-50" :
+      s.data?.icon_name === 'Briefcase' ? "bg-amber-50" :
+        "bg-blue-50",
+    checkColor: s.data?.icon_name === 'Building2' ? "text-green-600" :
+      s.data?.icon_name === 'Briefcase' ? "text-amber-600" :
+        "text-blue-600"
+  }));
+
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <Loader2 className="w-10 h-10 text-[#0B3D2E] animate-spin" />
       </div>
     );
   }
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
 
@@ -39,10 +70,10 @@ export default function PekerjaanUsahaPage() {
             Administrasi Umum
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Layanan Pekerjaan & Usaha"}
+            Layanan Pekerjaan & Usaha
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Panduan persyaratan pengurusan Surat Keterangan Usaha (SKU) and dokumen ketenagakerjaan lainnya."}
+            Panduan persyaratan pengurusan Surat Keterangan Usaha (SKU) and dokumen ketenagakerjaan lainnya.
           </p>
         </div>
       </div>
@@ -59,113 +90,58 @@ export default function PekerjaanUsahaPage() {
       {/* --- CONTENT SECTION --- */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-        {/* SURAT KETERANGAN USAHA (SKU) */}
-        <Card className="border-l-4 border-l-[#0B3D2E] shadow-md">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
-              <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
-                <Building2 className="h-6 w-6 text-[#0B3D2E]" />
+        {servicesList.map((item, index) => (
+          <Card key={index} className={`border-l-4 shadow-md ${item.color}`}>
+            <CardHeader>
+              <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${item.bgColor}`}>
+                  {item.icon}
+                </div>
+                {item.title}
+              </CardTitle>
+              <CardDescription>
+                {item.description}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className={`p-5 rounded-xl border border-slate-100 ${item.listBg}`}>
+                <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
+                <ul className="space-y-3">
+                  {item.requirements.map((req, idx) => (
+                    <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
+                      <CheckCircle2 className={`h-5 w-5 shrink-0 mt-0.5 ${item.checkColor}`} />
+                      <span>{req}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              {pageContent.section_1_title || "Surat Keterangan Usaha (SKU)"}
-            </CardTitle>
-            <CardDescription>
-              {pageContent.section_1_desc || "Dokumen legalitas untuk UMKM atau usaha rumahan, biasanya untuk syarat pinjaman bank atau bantuan."}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-slate-50 p-5 rounded-xl border border-slate-100">
-              <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
-              <ul className="space-y-3">
-                {(pageContent.section_1_requirements ? JSON.parse(pageContent.section_1_requirements) : [
-                  "Surat Pengantar RT/RW yang mencantumkan jenis usaha.",
-                  "Fotokopi KTP and KK Pemohon (Asli diperlihatkan).",
-                  "Foto lokasi usaha atau produk usaha (dicetak).",
-                  "Surat Pernyataan Tidak Keberatan dari tetangga (jika diperlukan untuk usaha tertentu)."
-                ]).map((req, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                    <span>{req}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* PENCATATAN PENCARI KERJA */}
-        <Card className="border-l-4 border-l-amber-500 shadow-md">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
-              <div className="p-2 bg-amber-100 rounded-lg">
-                <Briefcase className="h-6 w-6 text-amber-600" />
-              </div>
-              {pageContent.section_2_title || "Keterangan Tidak Bekerja / Pencari Kerja"}
-            </CardTitle>
-            <CardDescription>
-              {pageContent.section_2_desc || "Untuk keperluan beasiswa, keringanan biaya, atau administrasi lamaran kerja."}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-amber-50 p-5 rounded-xl border border-amber-100">
-              <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
-              <ul className="space-y-3">
-                {(pageContent.section_2_requirements ? JSON.parse(pageContent.section_2_requirements) : [
-                  "Surat Pengantar RT/RW setempat.",
-                  "Fotokopi KTP and Kartu Keluarga (KK).",
-                  "Surat Pernyataan Belum/Tidak Bekerja bermaterai 10.000.",
-                  "Fotokopi Ijazah Terakhir (jika diperlukan)."
-                ]).map((req, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
-                    <CheckCircle2 className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
-                    <span>{req}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
+              {item.template && (
+                <Button variant="outline" className="w-full flex items-center gap-2 border-slate-200 text-slate-700 hover:bg-[#0B3D2E] hover:text-white transition-all shadow-sm" asChild>
+                  <a
+                    href={item.template.startsWith('http') ? item.template : `/template/${item.template}`}
+                    download={!item.template.startsWith('http') ? item.template : undefined}
+                    target={item.template.startsWith('http') ? "_blank" : undefined}
+                    rel={item.template.startsWith('http') ? "noopener noreferrer" : undefined}
+                  >
+                    <Download className="h-4 w-4" /> Unduh Template Surat
+                  </a>
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        ))}
 
-        {/* KETERANGAN PENGHASILAN */}
-        <Card className="border-l-4 border-l-blue-500 shadow-md">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Wallet className="h-6 w-6 text-blue-600" />
-              </div>
-              {pageContent.section_3_title || "Surat Keterangan Penghasilan"}
-            </CardTitle>
-            <CardDescription>
-              {pageContent.section_3_desc || "Bagi pekerja sektor informal (tidak memiliki slip gaji) untuk keperluan administrasi sekolah anak atau bank."}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-blue-50 p-5 rounded-xl border border-blue-100">
-              <h4 className="font-semibold text-slate-700 mb-3 text-sm">Persyaratan Berkas:</h4>
-              <ul className="space-y-3">
-                {(pageContent.section_3_requirements ? JSON.parse(pageContent.section_3_requirements) : [
-                  "Surat Pengantar RT/RW yang menyebutkan nominal rata-rata penghasilan per bulan.",
-                  "Fotokopi KTP and Kartu Keluarga (KK).",
-                  "Surat Pernyataan Penghasilan bermaterai yang diketahui RT/RW."
-                ]).map((req, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-600">
-                    <CheckCircle2 className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
-                    <span>{req}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* INFO TAMBAHAN */}
         <div className="bg-slate-100 p-4 rounded-lg flex gap-3 items-start border border-slate-200">
           <Info className="h-5 w-5 text-slate-500 shrink-0 mt-0.5" />
           <p className="text-sm text-slate-600">
-            <strong>Catatan:</strong> {pageContent.footer_note || "Pelayanan Surat Keterangan Usaha (SKU) juga dapat diajukan secara online melalui aplikasi JAKEVO (untuk izin mikro) atau datang langsung ke PTSP Kelurahan."}
+            <strong>Catatan:</strong> Pelayanan Surat Keterangan Usaha (SKU) juga dapat diajukan secara online melalui aplikasi JAKEVO (untuk izin mikro) atau datang langsung ke PTSP Kelurahan.
           </p>
         </div>
 
       </div>
-    </div>
+    </div >
   );
 }

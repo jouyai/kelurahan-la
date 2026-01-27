@@ -12,15 +12,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Briefcase,
   ChevronRight,
-  Loader2
+  Loader2,
+  ArrowLeft,
+  Network,
+  Users
 } from 'lucide-react';
-import { usePageContent, useData } from '../../hooks/useContent';
+import { useData } from '../../hooks/useContent';
 
 const StrukturOrganisasiPage = () => {
-  const { content: pageContent, loading: contentLoading } = usePageContent('struktur-organisasi');
-  const { data: staffList, loading: staffLoading } = useData('staff');
+  const { data: staffList, loading } = useData('staff');
 
-  const isLoading = contentLoading || staffLoading;
+  const isLoading = loading;
 
   // Data Dummy Pejabat Fallback
   const officials = staffList.length > 0 ? staffList.map(s => ({
@@ -91,10 +93,10 @@ const StrukturOrganisasiPage = () => {
             Profil Kelurahan
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Struktur Organisasi"}
+            Struktur Kelurahan
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Mengenal jajaran pimpinan dan staf yang berdedikasi melayani masyarakat Kelurahan Lenteng Agung."}
+            Mengenal jajaran pimpinan dan staf yang berdedikasi melayani masyarakat Kelurahan Lenteng Agung.
           </p>
         </div>
       </div>
@@ -116,13 +118,13 @@ const StrukturOrganisasiPage = () => {
           <div className="inline-flex items-center justify-center p-3 bg-[#0B3D2E]/10 rounded-full mb-4">
             <Network className="w-8 h-8 text-[#0B3D2E]" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 mb-6">Bagan Struktur Organisasi</h2>
+          <h2 className="text-2xl font-bold text-slate-900 mb-6">Bagan Struktur Kelurahan</h2>
 
           <div className="relative overflow-hidden rounded-xl border-2 border-slate-100 bg-slate-50">
             {/* Ganti src dengan gambar struktur_kel.png yang ada di folder public */}
             <img
-              src={pageContent.bagan_image_url || "/struktur_kel.png"}
-              alt="Bagan Struktur Organisasi"
+              src="/struktur_kel.png"
+              alt="Bagan Struktur Kelurahan"
               className="w-full h-auto object-contain mx-auto hover:scale-105 transition-transform duration-500 cursor-zoom-in"
               onError={(e) => {
                 e.target.style.display = 'none'; // Sembunyikan jika error
@@ -188,7 +190,7 @@ const StrukturOrganisasiPage = () => {
                 Kelurahan bertugas menyelenggarakan urusan pemerintahan, pemberdayaan masyarakat, dan pemeliharaan ketentraman serta ketertiban umum.
               </p>
               <Button variant="secondary" className="bg-amber-500 text-[#0B3D2E] hover:bg-amber-400 font-bold" asChild>
-                <Link to="/layanan/pelayanan-umum">
+                <Link to="/layanan/umum">
                   Lihat Layanan Kami <ChevronRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -198,15 +200,15 @@ const StrukturOrganisasiPage = () => {
               <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10 flex gap-4 items-start">
                 <Briefcase className="w-6 h-6 text-amber-400 shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-bold text-lg mb-1">{pageContent.tugas_title_1 || "Pelaksanaan Pemerintahan"}</h4>
-                  <p className="text-sm text-slate-300">{pageContent.tugas_desc_1 || "Melaksanakan putusan tingkat kecamatan and kota serta pelayanan administrasi."}</p>
+                  <h4 className="font-bold text-lg mb-1">Pelaksanaan Pemerintahan</h4>
+                  <p className="text-sm text-slate-300">Melaksanakan putusan tingkat kecamatan and kota serta pelayanan administrasi.</p>
                 </div>
               </div>
               <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10 flex gap-4 items-start">
                 <Users className="w-6 h-6 text-amber-400 shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-bold text-lg mb-1">{pageContent.tugas_title_2 || "Pemberdayaan Masyarakat"}</h4>
-                  <p className="text-sm text-slate-300">{pageContent.tugas_desc_2 || "Mendorong partisipasi warga dalam pembangunan fisik and sosial."}</p>
+                  <h4 className="font-bold text-lg mb-1">Pemberdayaan Masyarakat</h4>
+                  <p className="text-sm text-slate-300">Mendorong partisipasi warga dalam pembangunan fisik and sosial.</p>
                 </div>
               </div>
             </div>

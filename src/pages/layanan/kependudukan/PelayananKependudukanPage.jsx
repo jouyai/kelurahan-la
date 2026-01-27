@@ -15,42 +15,31 @@ import {
   Baby,
   FileText,
   ChevronRight,
-  Loader2
+  Loader2,
+  Clock,
+  Info
 } from "lucide-react";
-import { usePageContent, useData } from "../../../hooks/useContent";
+import { useData } from "../../../hooks/useContent";
 
-const getIconComponent = (iconName) => {
-  switch (iconName) {
-    case 'CreditCard': return <CreditCard className="h-6 w-6 text-blue-600" />;
-    case 'Users': return <Users className="h-6 w-6 text-green-600" />;
-    case 'Truck': return <Truck className="h-6 w-6 text-orange-600" />;
-    case 'Baby': return <Baby className="h-6 w-6 text-pink-600" />;
-    default: return <FileText className="h-6 w-6 text-purple-600" />;
-  }
-};
-
-const getStyleClasses = (iconName) => {
-  switch (iconName) {
-    case 'CreditCard': return "bg-blue-50 border-blue-100";
-    case 'Users': return "bg-green-50 border-green-100";
-    case 'Truck': return "bg-orange-50 border-orange-100";
-    case 'Baby': return "bg-pink-50 border-pink-100";
-    default: return "bg-purple-50 border-purple-100";
-  }
-};
+import { getServiceTheme } from "../../../lib/serviceUtils";
 
 export default function PelayananKependudukanPage({ onConnectStaff }) {
-  const { content: pageContent, loading: contentLoading } = usePageContent('kependudukan');
-  const { data: dbServices, loading: servicesLoading } = useData('layanan', { category: 'kependudukan' });
+  const { data: dbLayanan, loading: servicesLoading } = useData('items', { type: 'layanan' });
 
-  const isLoading = contentLoading || servicesLoading;
+  const isLoading = servicesLoading;
 
-  const servicesList = dbServices.length > 0 ? dbServices.map(s => ({
-    ...s,
-    icon: getIconComponent(s.icon_name),
-    color: getStyleClasses(s.icon_name),
-    link: `/layanan/kependudukan/${s.slug}`
-  })) : [
+  const kependudukanCategories = ['Kependudukan', 'Perpindahan Penduduk'];
+  const dbServices = dbLayanan.filter(s => kependudukanCategories.includes(s.data?.kategori));
+
+  const servicesList = dbServices.length > 0 ? dbServices.map(s => {
+    const theme = getServiceTheme(s.data?.kategori);
+    return {
+      ...s,
+      icon: theme.icon,
+      color: theme.color,
+      link: `/layanan/kependudukan/${s.id}`
+    };
+  }) : [
     {
       id: 1,
       title: "KTP Elektronik (KTP-el)",
@@ -86,7 +75,7 @@ export default function PelayananKependudukanPage({ onConnectStaff }) {
     {
       id: 5,
       title: "Surat Keterangan Kependudukan",
-      description: "Surat keterangan domisili warga, domisili lembaga/yayasan, dan keterangan kelahiran/kematian.",
+      description: "Surat keterangan domisili warga, domisili lembaga/yayasan, and keterangan kelahiran/kematian.",
       link: "/layanan/kependudukan/keterangan",
       icon: <FileText className="h-6 w-6 text-purple-600" />,
       color: "bg-purple-50 border-purple-100",
@@ -101,7 +90,7 @@ export default function PelayananKependudukanPage({ onConnectStaff }) {
     );
   }
   return (
-    // Container Utama (Tanpa pt-24 agar menempel dengan Navbar)
+    // Container Utama
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
@@ -118,10 +107,10 @@ export default function PelayananKependudukanPage({ onConnectStaff }) {
             Layanan Publik
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Pelayanan Kependudukan"}
+            Pelayanan Kependudukan
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Layanan resmi penerbitan dokumen identitas warga negara, pemutakhiran data keluarga, dan administrasi kependudukan lainnya."}
+            Layanan resmi penerbitan dokumen identitas warga negara, pemutakhiran data keluarga, dan administrasi kependudukan lainnya.
           </p>
         </div>
       </div>

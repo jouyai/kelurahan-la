@@ -31,10 +31,10 @@ import {
   Loader2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { usePageContent } from '../hooks/useContent';
+
 
 const PengaduanPage = () => {
-  const { content: pageContent, loading: contentLoading } = usePageContent('pengaduan');
+  const contentLoading = false;
   // State Utama
   const [loading, setLoading] = useState(false);
   const [riwayat, setRiwayat] = useState([]);
@@ -188,10 +188,10 @@ const PengaduanPage = () => {
             Layanan Warga
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Pusat Pengaduan & Aspirasi"}
+            Pusat Pengaduan & Aspirasi
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Sampaikan keluhan, saran, atau laporan Anda untuk kemajuan Kelurahan Lenteng Agung. Kami siap mendengar and menindaklanjuti."}
+            Sampaikan keluhan, saran, atau laporan Anda untuk kemajuan Kelurahan Lenteng Agung. Kami siap mendengar and menindaklanjuti.
           </p>
         </div>
       </div>
@@ -393,7 +393,7 @@ const PengaduanPage = () => {
 
       {/* --- MODAL SUKSES (SHADCN DIALOG) --- */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md" aria-describedby={undefined}>
           <DialogHeader>
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 mb-4">
               <CheckCircle2 className="h-8 w-8 text-green-600" />

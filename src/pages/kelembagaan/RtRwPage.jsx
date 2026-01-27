@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // --- ICONS ---
 import {
@@ -15,22 +16,22 @@ import {
   MessageSquare,
   Loader2
 } from 'lucide-react';
-import { usePageContent, useData } from "../../hooks/useContent";
+import { useData } from "../../hooks/useContent";
 
 // Dummy Data RW & RT
 export default function RtRwPage({ onConnectStaff }) {
-  const { content: pageContent, loading: contentLoading } = usePageContent('rt-rw');
   const { data: dbRW, loading: rwLoading } = useData('items', { type: 'rw' });
 
-  const isLoading = contentLoading || rwLoading;
+  const isLoading = rwLoading;
 
   const listRW = dbRW.length > 0 ? dbRW.map((r, idx) => ({
     id: r.id,
     display_id: idx + 1,
     name: r.data?.jabatan || r.title,
-    rt_count: parseInt(r.data?.rt_count) || 0,
+    image_url: r.image_url,
+    rt_count: parseInt(r.data?.rt_count) || parseInt(r.description) || 0,
     ketua: r.data?.jabatan ? r.title : "",
-    lokasi: r.data?.wilayah || r.data?.lokasi || "",
+    lokasi: r.data?.wilayah || "",
   })) : [
     { id: 1, name: "RW 01", rt_count: 12, ketua: "Bapak Ahmad", lokasi: "Jl. Agung Raya" },
     { id: 2, name: "RW 02", rt_count: 9, ketua: "Bapak Budi", lokasi: "Jl. Joe" },
@@ -52,7 +53,7 @@ export default function RtRwPage({ onConnectStaff }) {
     );
   }
   return (
-    // Container Utama (Tanpa pt-24 agar menempel dengan Navbar)
+    // Container Utama
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
 
       {/* --- HERO SECTION --- */}
@@ -67,10 +68,10 @@ export default function RtRwPage({ onConnectStaff }) {
             Kelembagaan Wilayah
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Rukun Tetangga & Rukun Warga"}
+            Rukun Tetangga & Rukun Warga
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Daftar pengurus wilayah yang menjadi ujung tombak pelayanan and kerukunan warga Kelurahan Lenteng Agung."}
+            Daftar pengurus wilayah yang menjadi ujung tombak pelayanan and kerukunan warga Kelurahan Lenteng Agung.
           </p>
         </div>
       </div>
@@ -104,9 +105,12 @@ export default function RtRwPage({ onConnectStaff }) {
               {listRW.map((rw) => (
                 <Card key={rw.id} className="border-slate-200 shadow-sm hover:shadow-md transition-all group">
                   <CardContent className="p-5 flex items-start gap-4">
-                    <div className="shrink-0 w-12 h-12 rounded-full bg-[#0B3D2E]/5 flex items-center justify-center font-bold text-[#0B3D2E] text-lg group-hover:bg-[#0B3D2E] group-hover:text-white transition-colors duration-300">
-                      {rw.display_id}
-                    </div>
+                    <Avatar className="shrink-0 w-14 h-14 border-2 border-slate-100 shadow-sm group-hover:scale-105 transition-transform duration-300">
+                      <AvatarImage src={rw.image_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${rw.ketua || rw.name}`} />
+                      <AvatarFallback className="bg-[#0B3D2E] text-white">
+                        {rw.ketua ? rw.ketua.charAt(0) : rw.name.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
 
                     <div className="flex-1">
                       <div className="flex justify-between items-start mb-1">

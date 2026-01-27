@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 // COMPONENTS
 import Navbar from './components/Navbar';
@@ -34,6 +34,7 @@ import KeteranganKependudukanPage from './pages/layanan/kependudukan/KeteranganK
 // PAGES - LAYANAN UMUM
 import PelayananUmumPage from './pages/layanan/umum/PelayananUmumPage';
 import PekerjaanUsahaPage from './pages/layanan/umum/PekerjaanUsahaPage';
+import ServiceDetailPage from './pages/layanan/ServiceDetailPage';
 
 // PAGES - PROGRAM KERJA (KESRA & EKBANG)
 import KegiatanKesraPage from './pages/program/kesra/KegiatanKesraPage';
@@ -91,15 +92,22 @@ function App() {
         <Route path="/layanan/administrasi/pernyataan-hukum-warisan" element={<PernyataanHukumWarisanPage />} />
         <Route path="/layanan/administrasi/pajak-aset" element={<PajakAsetPage />} />
         <Route path="/layanan/administrasi/warga-negara-asing" element={<WargaNegaraAsingPage />} />
+        <Route path="/layanan/administrasi/:id" element={<ServiceDetailPage />} />
 
         {/* LAYANAN - KEPENDUDUKAN */}
         <Route path="/layanan/kependudukan" element={<PelayananKependudukanPage />} />
         <Route path="/layanan/kependudukan/domisili" element={<DomisiliWargaLembagaPage />} />
         <Route path="/layanan/kependudukan/keterangan" element={<KeteranganKependudukanPage />} />
+        <Route path="/layanan/kependudukan/:id" element={<ServiceDetailPage />} />
 
         {/* LAYANAN - UMUM */}
-        <Route path="/layanan/pelayanan-umum" element={<PelayananUmumPage />} />
-        <Route path="/layanan/umum/pekerjaan-usaha" element={<PekerjaanUsahaPage />} />
+        <Route path="/layanan/umum" element={<PelayananUmumPage />} />
+        <Route path="/layanan/umum/pekerjaan" element={<PekerjaanUsahaPage />} />
+        <Route path="/layanan/umum/:id" element={<ServiceDetailPage />} />
+
+        {/* COMPATIBILITY REDIRECTS */}
+        <Route path="/layanan/pelayanan-umum" element={<Navigate to="/layanan/umum" replace />} />
+        <Route path="/layanan/umum/pekerjaan-usaha" element={<Navigate to="/layanan/umum/pekerjaan" replace />} />
 
         {/* PROGRAM - KESRA */}
         <Route path="/kesejahteraan/kegiatan-kesra" element={<KegiatanKesraPage />} />

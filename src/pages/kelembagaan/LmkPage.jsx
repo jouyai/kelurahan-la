@@ -16,20 +16,20 @@ import {
   MessageSquare,
   Loader2
 } from 'lucide-react';
-import { usePageContent, useData } from "../../hooks/useContent";
+import { useData } from "../../hooks/useContent";
 
 // Dummy Data Anggota LMK
 export default function LmkPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('lmk');
   const { data: dbLMK, loading: lmkLoading } = useData('items', { type: 'lmk' });
 
-  const isLoading = contentLoading || lmkLoading;
+  const isLoading = lmkLoading;
 
   const listLMK = dbLMK.length > 0 ? dbLMK.map(l => ({
     id: l.id,
     name: l.title,
+    image_url: l.image_url,
     jabatan: l.data?.jabatan || "Anggota",
-    wilayah: l.description || "",
+    wilayah: l.data?.wilayah || l.description || "",
   })) : [
     { id: 1, name: "Bapak Sutrisno", jabatan: "Ketua LMK", wilayah: "Kelurahan Lenteng Agung", color: "bg-blue-100 text-blue-700" },
     { id: 2, name: "Ibu Nurhayati", jabatan: "Wakil Ketua", wilayah: "Kelurahan Lenteng Agung", color: "bg-purple-100 text-purple-700" },
@@ -62,10 +62,10 @@ export default function LmkPage() {
             Lembaga Kemasyarakatan
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Lembaga Musyawarah Kelurahan"}
+            Lembaga Musyawarah Kelurahan
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Mitra strategis Lurah dalam menampung and menyalurkan aspirasi masyarakat serta meningkatkan partisipasi pembangunan."}
+            Mitra strategis Lurah dalam menampung and menyalurkan aspirasi masyarakat serta meningkatkan partisipasi pembangunan.
           </p>
         </div>
       </div>
@@ -97,7 +97,7 @@ export default function LmkPage() {
                 <Card key={member.id} className="border-slate-200 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 duration-300 group">
                   <CardContent className="p-6 flex flex-col items-center text-center">
                     <Avatar className="w-20 h-20 mb-4 border-4 border-slate-50 shadow-sm group-hover:scale-110 transition-transform">
-                      <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${member.name}`} />
+                      <AvatarImage src={member.image_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${member.name}`} />
                       <AvatarFallback className="bg-[#0B3D2E] text-white text-xl">
                         {member.name.charAt(0)}
                       </AvatarFallback>

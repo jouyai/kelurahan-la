@@ -18,7 +18,7 @@ import {
   Hammer,
   Loader2
 } from 'lucide-react';
-import { usePageContent, useData } from "../../../hooks/useContent";
+import { useData } from "../../../hooks/useContent";
 
 const getIconComponent = (iconName) => {
   switch (iconName) {
@@ -32,10 +32,9 @@ const getIconComponent = (iconName) => {
 };
 
 export default function KegiatanEkbangPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('kegiatan-ekbang');
-  const { data: dbKegiatan, loading: kegiatanLoading } = useData('items', { type: 'kegiatan_ekbang' });
+  const { data: dbKegiatan, loading } = useData('items', { type: 'kegiatan_ekbang' });
 
-  const isLoading = contentLoading || kegiatanLoading;
+  const isLoading = loading;
 
   const kegiatanList = dbKegiatan.length > 0 ? dbKegiatan.map(k => ({
     id: k.id,
@@ -103,10 +102,10 @@ export default function KegiatanEkbangPage() {
             Ekonomi & Pembangunan
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Kegiatan Pembangunan"}
+            Kegiatan Pembangunan
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Mewujudkan infrastruktur yang handal and ekonomi warga yang mandiri melalui berbagai program strategis."}
+            Mewujudkan infrastruktur yang handal and ekonomi warga yang mandiri melalui berbagai program strategis.
           </p>
         </div>
       </div>

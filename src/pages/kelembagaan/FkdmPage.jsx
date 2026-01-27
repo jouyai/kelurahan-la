@@ -14,22 +14,24 @@ import {
   Loader2,
   ShieldAlert,
   Eye,
-  AlertTriangle
+  AlertTriangle,
+  ShieldCheck,
+  ArrowLeft
 } from 'lucide-react';
-import { usePageContent, useData } from "../../hooks/useContent";
+import { useData } from "../../hooks/useContent";
 
 // Dummy Data Anggota FKDM
 export default function FkdmPage() {
-  const { content: pageContent, loading: contentLoading } = usePageContent('fkdm');
   const { data: dbFKDM, loading: fkdmLoading } = useData('items', { type: 'fkdm' });
 
-  const isLoading = contentLoading || fkdmLoading;
+  const isLoading = fkdmLoading;
 
   const listFKDM = dbFKDM.length > 0 ? dbFKDM.map(f => ({
     id: f.id,
     name: f.title,
+    image_url: f.image_url,
     jabatan: f.data?.jabatan || "Anggota",
-    wilayah: f.description || "",
+    wilayah: f.data?.wilayah || f.description || "",
   })) : [
     { id: 1, name: "Bapak H. Zamroni", jabatan: "Ketua FKDM", wilayah: "Kelurahan Lenteng Agung", color: "bg-red-100 text-red-700" },
     { id: 2, name: "Bapak Dedi Suryadi", jabatan: "Wakil Ketua", wilayah: "Kelurahan Lenteng Agung", color: "bg-orange-100 text-orange-700" },
@@ -54,7 +56,7 @@ export default function FkdmPage() {
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         {/* Pattern Shield */}
         <div className="absolute top-0 right-0 p-8 opacity-10">
-          <ShieldAlert className="w-64 h-64 text-white" />
+          <ShieldCheck className="w-64 h-64 text-white" />
         </div>
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
@@ -62,10 +64,10 @@ export default function FkdmPage() {
             Keamanan & Ketertiban
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {pageContent.hero_title || "Forum Kewaspadaan Dini Masyarakat"}
+            Forum Kewaspadaan Dini Masyarakat
           </h1>
           <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            {pageContent.hero_description || "Mendeteksi potensi ancaman, tantangan, hambatan, and gangguan di lingkungan masyarakat sejak dini."}
+            Mendeteksi potensi ancaman, tantangan, hambatan, and gangguan di lingkungan masyarakat sejak dini.
           </p>
         </div>
       </div>
@@ -97,7 +99,7 @@ export default function FkdmPage() {
                 <Card key={member.id} className="border-l-4 border-l-red-500 shadow-sm hover:shadow-md transition-all duration-300 group">
                   <CardContent className="p-6 flex flex-col items-center text-center">
                     <Avatar className="w-20 h-20 mb-4 border-4 border-slate-50 shadow-sm">
-                      <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${member.name}`} />
+                      <AvatarImage src={member.image_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${member.name}`} />
                       <AvatarFallback className="bg-red-600 text-white text-xl">
                         {member.name.charAt(0)}
                       </AvatarFallback>
