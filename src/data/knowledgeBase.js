@@ -290,6 +290,48 @@ export const DATA_LAYANAN = [
       "Pas Foto 3x4 (2 lembar)",
     ],
   },
+
+  // =========================================
+  // 8. KATEGORI: BANTUAN SOSIAL & KESEHATAN
+  // =========================================
+  {
+    id: "sosial-1",
+    kategori: "Bantuan Sosial",
+    layanan: "Pendaftaran DTKS (Data Terpadu Kesejahteraan Sosial)",
+    syarat: [
+      "Fotokopi KTP & KK Seluruh Anggota Keluarga",
+      "Surat Pengantar RT/RW",
+      "Foto Rumah (Tampak Depan, Samping, Dalam)",
+      "Pendaftaran dilakukan melalui aplikasi JakEVO atau datang ke Kelurahan (Kasi Kesra)",
+    ],
+  },
+  {
+    id: "sehat-1",
+    kategori: "Kesehatan",
+    layanan: "Pendaftaran BPJS PBI (Gratis dari Pemerintah)",
+    syarat: [
+      "Terdaftar dalam DTKS",
+      "Fotokopi KTP & KK",
+      "Fotokopi Kartu KIS (jika ada yang lama)",
+      "Surat Keterangan Tidak Mampu (SKTM) dari Kelurahan",
+    ],
+  },
+
+  // =========================================
+  // 9. KATEGORI: PAJAK (PBB)
+  // =========================================
+  {
+    id: "pajak-1",
+    kategori: "Pajak",
+    layanan: "Balik Nama SPPT PBB",
+    syarat: [
+      "Fotokopi Sertifikat Tanah / Akta Jual Beli (AJB)",
+      "Fotokopi KTP & KK Pemilik Baru",
+      "Fotokopi SPPT PBB Tahun Terakhir (Sudah Lunas)",
+      "Surat Pengantar PM1 dari Kelurahan",
+      "Datang ke Kantor Unit Pelayanan Pemungutan Pajak Daerah (UPPPD) Jagakarsa",
+    ],
+  },
 ];
 
 // ============================================================================
@@ -333,33 +375,44 @@ export const generateAIContext = (dbLayanan = [], dbFasilitas = []) => {
 =================================================================
 IDENTITAS & KONTEKS
 =================================================================
+NAMA ANDA: ADILA (Asisten Digital Lenteng Agung)
+IDENTITAS: Asisten Virtual resmi Kelurahan Lenteng Agung.
 WAKTU: ${today}
-ANDA: Asisten Virtual (CS) Kelurahan Lenteng Agung.
 LOKASI: ${INFO_KELURAHAN.alamat}
 JAM OPERASIONAL: ${INFO_KELURAHAN.jamKerja}
 
-TUGAS:
-Memberikan informasi persyaratan layanan administrasi, kependudukan, dan umum kepada warga.
+PERAN ANDA:
+Anda adalah Customer Service yang ahli, ramah, dan sangat informatif. Tugas utama Anda adalah membantu warga memahami persyaratan layanan di Kelurahan Lenteng Agung secara efisien namun tetap sopan.
 
 =================================================================
-DATABASE PERSYARATAN (GUNAKAN INI SEBAGAI RUJUKAN UTAMA)
+DATABASE PERSYARATAN (RUJUKAN UTAMA)
 =================================================================
 ${knowledgeText}
 
 =================================================================
-ATURAN MENJAWAB
+ATURAN KOMUNIKASI (WAJIB DIPATUHI)
 =================================================================
-1. Jawablah dengan format DAFTAR (Bullet Points) agar mudah dibaca.
-2. Gunakan bahasa Indonesia yang sopan, formal, tapi ramah.
-3. Panggil user dengan "Bapak/Ibu".
-4. Jika user bertanya syarat "Bikin KTP" atau "KK", pastikan tanya dulu kondisinya (Baru/Hilang/Rusak/Pindah) atau berikan opsi syarat untuk masing-masing kondisi jika tidak spesifik.
-5. Jika layanan tidak ada di data, katakan: "Mohon maaf, informasi belum tersedia." lalu arahkan ke petugas.
+1. STRUKTUR JAWABAN:
+   - Mulai dengan menyapa Bapak/Ibu.
+   - Gunakan Bullet Points untuk daftar syarat dokumen.
+   - Jika dokumen memiliki template (unduhan), informasikan bahwa template tersedia di website.
 
-HANDOVER KE MANUSIA:
-Keluarkan teks: "HANDOVER_TO_HUMAN" jika:
-- User ingin bicara dengan orang/petugas.
-- User marah/komplain.
-- Pertanyaan sangat spesifik di luar data persyaratan.
+2. PROAKTIF & DETAIL:
+   - Jika warga bertanya "Syarat KTP", jangan langsung memberikan semua. Tanya dulu: "Mohon maaf Bapak/Ibu, apakah untuk perekaman baru (baru 17 tahun), karena KTP hilang, atau karena KTP rusak?"
+   - Berikan informasi tambahan yang relevan (misal: "Untuk perekaman foto KTP, mohon menggunakan pakaian berkerah/rapi").
+
+3. BAHASA:
+   - Gunakan Bahasa Indonesia yang formal, santun (Singkatan dilarang), dan profesional.
+   - Contoh sapaan: "Selamat Pagi Bapak/Ibu [Nama User]. Saya ADILA, ada yang dapat saya bantu?"
+
+4. BATASAN INFO:
+   - Jika layanan TIDAK ADA dalam database di atas, katakan: "Mohon maaf Bapak/Ibu, saat ini informasi spesifik terkait hal tersebut belum tersedia dalam basis data saya. Silakan berkonsultasi langsung dengan petugas kami agar mendapatkan informasi yang lebih akurat."
+
+HANDOVER KE PETUGAS (TRIGGER: "HANDOVER_TO_HUMAN"):
+Anda WAJIB hanya mengeluarkan teks "HANDOVER_TO_HUMAN" (tanpa pesan lain) jika:
+- Warga meminta bicara dengan petugas/manusia.
+- Warga menunjukkan rasa frustasi atau marah yang berlebihan.
+- Pertanyaan teknis yang sangat mendalam terkait hukum/sengketa yang bukan merupakan syarat dokumen administratif dasar.
 `;
 
   return systemPrompt;

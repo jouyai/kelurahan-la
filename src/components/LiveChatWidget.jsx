@@ -383,13 +383,12 @@ export default function LiveChatWidget() {
 
       const prompt = `
         ${contextData}
-        KAMU ADALAH BOT CS KELURAHAN LENTENG AGUNG.
-        Waktu: ${greeting}. User: ${userIdentity.name || "Warga"}.
-        ATURAN:
-        1. Anda memberikan info persyaratan layanan (KTP, KK, Tanah, dll) DAN fasilitas umum (RPTRA, Puskesmas, dll).
-        2. Jika user bertanya di luar konteks (misal: resep masakan, politik nasional) atau minta bicara dengan orang asli, JAWAB: "HANDOVER_TO_HUMAN".
-        3. Jawab sopan & formal.
-        PERTANYAAN: ${userText}
+        
+        DATA PERCAKAPAN SAAT INI:
+        Nama Warga: ${userIdentity.name || "Warga"}
+        Input Warga: "${userText}"
+        
+        Bantu warga tersebut sesuai dengan Database Persyaratan dan Aturan Komunikasi yang telah ditetapkan di atas.
       `;
 
       const result = await model.generateContent(prompt);
@@ -432,10 +431,10 @@ export default function LiveChatWidget() {
               </div>
               <div>
                 <h4 className="font-bold text-sm">
-                  {showIdentityForm ? "Selamat Datang" : isHumanMode ? "Petugas Kelurahan" : "Asisten Virtual"}
+                  {showIdentityForm ? "Layanan Konsultasi" : isHumanMode ? "Petugas Kelurahan" : "Asisten Digital (ADILA)"}
                 </h4>
                 <p className="text-xs text-green-100 flex items-center gap-1">
-                  {showIdentityForm ? "Layanan Warga" : isHumanMode ? "Online" : "Menjawab otomatis"}
+                  {showIdentityForm ? "PTSP Lenteng Agung" : isHumanMode ? "Online" : "AI Assistant (Online)"}
                 </p>
               </div>
             </div>
@@ -454,8 +453,8 @@ export default function LiveChatWidget() {
                   <div className="w-16 h-16 bg-[#0B3D2E]/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <User className="h-8 w-8 text-[#0B3D2E]" />
                   </div>
-                  <h3 className="font-bold text-slate-800 text-lg">Isi Data Diri</h3>
-                  <p className="text-xs text-slate-500 mt-1">Agar petugas kami dapat melayani Anda dengan baik.</p>
+                  <h3 className="font-bold text-slate-800 text-lg">Konsultasi Layanan</h3>
+                  <p className="text-xs text-slate-500 mt-1">Mohon isi identitas singkat untuk memulai bantuan layanan yang akurat.</p>
                 </div>
 
                 <form onSubmit={handleStartChat} className="space-y-4">
@@ -501,7 +500,7 @@ export default function LiveChatWidget() {
                     </Avatar>
                     <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 text-sm text-slate-700 max-w-[85%]">
                       <Typewriter
-                        text={`${greeting}, Kak ${userIdentity.name || "Warga"}! 👋\nSaya Asisten Virtual Kelurahan.\n\nAda yang bisa saya bantu?`}
+                        text={`${greeting}, Bapak/Ibu ${userIdentity.name || "Warga"}! 👋\nSaya ADILA (Asisten Digital Lenteng Agung).\n\nAda yang dapat saya bantu mengenai layanan kelurahan?`}
                         speed={10}
                       />
                     </div>
