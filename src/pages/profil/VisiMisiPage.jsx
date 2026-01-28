@@ -49,10 +49,10 @@ const VisiMisiPage = () => {
             Profil Kelurahan
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Visi & Misi
+            Visi & Misi Strategis
           </h1>
-          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Komitmen kami dalam membangun tata kelola pemerintahan yang transparan dan melayani masyarakat dengan sepenuh hati.
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light text-justify md:text-center">
+            Landasan komitmen kami dalam membangun tata kelola pemerintahan yang transparan, akuntabel, serta melayani masyarakat dengan integritas tinggi demi kemajuan bersama.
           </p>
         </div>
       </div>
@@ -94,14 +94,14 @@ const VisiMisiPage = () => {
               <div className="p-2 bg-[#0B3D2E]/10 rounded-lg">
                 <Compass className="w-6 h-6 text-[#0B3D2E]" />
               </div>
-              <h2 className="text-2xl font-bold text-slate-900">Misi Pembangunan</h2>
+              <h2 className="text-2xl font-bold text-slate-900">Misi Pembangunan Berkelanjutan</h2>
             </div>
-            <p className="text-slate-600 leading-relaxed">
-              Untuk mencapai visi tersebut, Kelurahan Lenteng Agung menetapkan langkah-langkah strategis yang terukur dan berorientasi pada hasil nyata bagi masyarakat.
+            <p className="text-slate-600 leading-relaxed text-justify">
+              Untuk merealisasikan visi tersebut, Kelurahan Lenteng Agung merumuskan langkah-langkah strategis yang terukur, berkesinambungan, dan berorientasi pada peningkatan kualitas hidup masyarakat secara menyeluruh.
             </p>
             <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg mt-4">
-              <p className="text-sm text-slate-700 italic">
-                "Misi adalah kompas yang menuntun setiap kebijakan dan program kerja kami setiap harinya."
+              <p className="text-sm text-slate-700 italic text-justify">
+                "Misi adalah penunjuk arah yang memastikan setiap kebijakan dan program kerja kami selaras dengan cita-cita kesejahteraan warga."
               </p>
             </div>
           </div>
@@ -199,7 +199,7 @@ const ValueItem = ({ icon, title, desc }) => (
       {icon}
     </div>
     <h3 className="text-lg font-bold text-slate-900 mb-2">{title}</h3>
-    <p className="text-sm text-slate-500 max-w-xs">{desc}</p>
+    <p className="text-sm text-slate-500 max-w-xs text-center">{desc}</p>
   </div>
 );
 

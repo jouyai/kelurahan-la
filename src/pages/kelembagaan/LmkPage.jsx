@@ -16,10 +16,12 @@ import {
   MessageSquare,
   Loader2
 } from 'lucide-react';
+import { useLiveChat } from "../../context/LiveChatContext";
 import { useData } from "../../hooks/useContent";
 
 // Dummy Data Anggota LMK
 export default function LmkPage() {
+  const { openChat } = useLiveChat();
   const { data: dbLMK, loading: lmkLoading } = useData('items', { type: 'lmk' });
 
   const isLoading = lmkLoading;
@@ -150,10 +152,11 @@ export default function LmkPage() {
                   <p className="text-xs text-slate-600 mb-4">
                     Sampaikan masukan Anda untuk pembangunan wilayah kepada anggota LMK.
                   </p>
-                  <Button className="w-full bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 text-white font-bold" asChild>
-                    <Link to="/pengaduan">
-                      Sampaikan Aspirasi
-                    </Link>
+                  <Button
+                    className="w-full bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 text-white font-bold"
+                    onClick={() => openChat("Aspirasi Warga (LMK)", true)}
+                  >
+                    Sampaikan Aspirasi
                   </Button>
                 </div>
               </CardContent>

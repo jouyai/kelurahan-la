@@ -54,10 +54,10 @@ const SejarahPage = () => {
             Profil Wilayah
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Sejarah & Asal Usul
+            Sejarah & Asal Usul Wilayah
           </h1>
-          <p className="text-slate-200 text-lg max-w-2xl mx-auto">
-            Menelusuri jejak langkah perjalanan Kelurahan Lenteng Agung dari masa ke masa hingga menjadi kawasan yang maju seperti sekarang.
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light text-justify md:text-center">
+            Menelusuri jejak perjalanan panjang Kelurahan Lenteng Agung, dari masa lampau hingga transformasinya menjadi kawasan strategis yang maju dan dinamis seperti saat ini.
           </p>
         </div>
       </div>
@@ -89,9 +89,11 @@ const SejarahPage = () => {
                   Asal Usul Nama "Lenteng Agung"
                 </CardTitle>
               </CardHeader>
-              <CardContent className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
+              <CardContent className="prose prose-slate max-w-none text-slate-600 leading-relaxed text-justify">
                 <p className="whitespace-pre-wrap">
-                  "Nama Lenteng Agung diyakini berasal dari kata \"Klenteng\" dan \"Agung\". Konon pada masa lampau, wilayah ini merupakan tempat persinggahan pedagang Tionghoa yang mendirikan sebuah tempat ibadah (Klenteng) yang cukup besar (Agung) di bantaran Sungai Ciliwung.\n\nVersi lain menyebutkan bahwa nama ini diambil dari karakter tanah dan kontur wilayah yang menyerupai \"Lenteng\" (lengkungan) sungai yang agung. Terlepas dari berbagai versi sejarah, wilayah ini telah menjadi pemukiman penting sejak era kolonial Belanda karena posisinya yang strategis di jalur menuju Depok dan Bogor."
+                  "Nama <strong>Lenteng Agung</strong> memiliki akar sejarah yang unik. Diyakini berasal dari gabungan kata "Klenteng" dan "Agung", yang merujuk pada keberadaan tempat ibadah bersejarah di bantaran Sungai Ciliwung pada masa lampau, yang menjadi pusat interaksi perdagangan dan budaya..
+
+                  Versi lain menyebutkan bahwa nama ini terinspirasi dari kontur topografi wilayah yang menyerupai "Lenteng" (lekukan/lengkungan) sungai yang besar (agung). Terlepas dari ragam versi tersebut, wilayah ini telah lama tercatat sebagai kawasan pemukiman strategis sejak era kolonial, menghubungkan Jakarta dengan wilayah penyangga di selatannya."
                 </p>
               </CardContent>
             </Card>

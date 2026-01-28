@@ -22,8 +22,10 @@ import {
   Download
 } from 'lucide-react';
 import { useData } from "../../../hooks/useContent";
+import { useLiveChat } from "../../../context/LiveChatContext";
 
 export default function StatusPerkawinanPage() {
+  const { openChat } = useLiveChat();
   const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
 
   const isLoading = layananLoading;
@@ -202,11 +204,9 @@ export default function StatusPerkawinanPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full justify-start gap-3 bg-[#0B3D2E] hover:bg-[#0B3D2E]/90" asChild>
-                  <Link to="/pengaduan">
-                    <FileCheck className="h-4 w-4" />
-                    Konsultasi Petugas
-                  </Link>
+                <Button className="w-full justify-start gap-3 bg-[#0B3D2E] hover:bg-[#0B3D2E]/90" onClick={() => openChat("Layanan Pernikahan", true)}>
+                  <FileCheck className="h-4 w-4" />
+                  Konsultasi Petugas
                 </Button>
               </CardContent>
             </Card>

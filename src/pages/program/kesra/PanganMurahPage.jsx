@@ -22,6 +22,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { useData } from "../../../hooks/useContent";
+import { useLiveChat } from "../../../context/LiveChatContext";
 
 const getIconComponent = (iconName) => {
   switch (iconName) {
@@ -34,6 +35,7 @@ const getIconComponent = (iconName) => {
 
 // Dummy Data Pangan Murah
 export default function PanganMurahPage() {
+  const { openChat } = useLiveChat();
   const { data: dbProgram, loading } = useData('items', { type: 'pangan_murah' });
 
   const isLoading = loading;
@@ -110,10 +112,10 @@ export default function PanganMurahPage() {
             Ketahanan Pangan
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Program Pangan Murah
+            Program Ketahanan Pangan
           </h1>
-          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Menjaga stabilitas harga and ketersediaan kebutuhan pokok warga Kelurahan Lenteng Agung.
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light text-justify md:text-center">
+            Upaya berkelanjutan dalam menjaga stabilitas harga, keterjangkauan, dan ketersediaan bahan pokok berkualitas bagi seluruh lapisan masyarakat.
           </p>
         </div>
       </div>
@@ -162,7 +164,7 @@ export default function PanganMurahPage() {
                         </Badge>
                       </div>
 
-                      <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+                      <p className="text-sm text-slate-600 mb-4 leading-relaxed text-justify md:text-left">
                         {item.desc}
                       </p>
 
@@ -222,10 +224,8 @@ export default function PanganMurahPage() {
                   <p className="text-xs text-slate-300 mb-4">
                     Tanyakan ketersediaan stok sembako murah kepada petugas.
                   </p>
-                  <Button className="w-full bg-amber-500 hover:bg-amber-600 text-[#0B3D2E] font-bold border-none" asChild>
-                    <Link to="/pengaduan">
-                      Chat Petugas
-                    </Link>
+                  <Button className="w-full bg-amber-500 hover:bg-amber-600 text-[#0B3D2E] font-bold border-none" onClick={() => openChat("Stok Pangan Murah", true)}>
+                    Chat Petugas
                   </Button>
                 </div>
               </CardContent>

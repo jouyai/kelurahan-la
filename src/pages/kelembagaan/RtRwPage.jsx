@@ -16,10 +16,12 @@ import {
   MessageSquare,
   Loader2
 } from 'lucide-react';
+import { useLiveChat } from "../../context/LiveChatContext";
 import { useData } from "../../hooks/useContent";
 
 // Dummy Data RW & RT
-export default function RtRwPage({ onConnectStaff }) {
+export default function RtRwPage() {
+  const { openChat } = useLiveChat();
   const { data: dbRW, loading: rwLoading } = useData('items', { type: 'rw' });
 
   const isLoading = rwLoading;
@@ -167,7 +169,7 @@ export default function RtRwPage({ onConnectStaff }) {
 
                   {/* TOMBOL PENGHUBUNG CHAT (Memicu LiveChatWidget) */}
                   <Button
-                    onClick={() => onConnectStaff && onConnectStaff("Info Kontak RT/RW")}
+                    onClick={() => openChat("Info Kontak RT/RW", true)}
                     className="w-full bg-amber-500 hover:bg-amber-600 text-[#0B3D2E] font-bold border-none"
                   >
                     Hubungi Petugas

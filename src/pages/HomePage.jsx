@@ -81,7 +81,7 @@ const HomePage = () => {
           </h1>
 
           <p className="text-lg md:text-xl text-slate-100 max-w-2xl mx-auto leading-relaxed drop-shadow-md font-light">
-            Mewujudkan tata kelola pemerintahan yang Hijau, Maju, dan Berintegritas untuk kesejahteraan masyarakat.
+            Menyediakan akses informasi dan layanan publik yang efisien, transparan, serta inklusif untuk mewujudkan kesejahteraan seluruh masyarakat Lenteng Agung.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
@@ -118,10 +118,10 @@ const HomePage = () => {
                 Profil Wilayah
               </div>
               <h2 className="text-4xl font-bold text-slate-900 leading-tight">
-                Membangun Lingkungan yang Asri & Harmonis
+                Berkomitmen Menghadirkan Pelayanan Publik yang Prima dan Responsif
               </h2>
               <p className="text-muted-foreground text-lg leading-relaxed text-justify">
-                Kelurahan Lenteng Agung terus berinovasi dalam menghadirkan pelayanan publik yang prima. Dengan semangat gotong royong, kami mengintegrasikan teknologi dan kearifan lokal untuk menciptakan lingkungan yang nyaman bagi seluruh warga.
+                Kelurahan Lenteng Agung terus berinovasi dalam mengoptimalkan tata kelola wilayah dan pelayanan kepada warga. Dengan memadukan pemanfaatan teknologi digital dan semangat gotong royong, kami berupaya menciptakan lingkungan yang aman, nyaman, serta berkelanjutan bagi seluruh lapisan masyarakat.
               </p>
             </div>
 
@@ -225,7 +225,7 @@ const HomePage = () => {
                   </CardHeader>
 
                   <CardContent className="pb-4 flex-1">
-                    <p className="text-muted-foreground text-sm line-clamp-3">
+                    <p className="text-muted-foreground text-sm line-clamp-3 text-justify">
                       {item.isi?.replace(/<[^>]*>?/gm, '').substring(0, 100)}...
                     </p>
                   </CardContent>

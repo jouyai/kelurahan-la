@@ -25,6 +25,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { useData } from "../../../hooks/useContent";
+import { useLiveChat } from "../../../context/LiveChatContext";
 
 const getIconComponent = (iconName) => {
   switch (iconName) {
@@ -38,6 +39,7 @@ const getIconComponent = (iconName) => {
 };
 
 export default function KegiatanKesraPage() {
+  const { openChat } = useLiveChat();
   const { data: dbKegiatan, loading } = useData('items', { type: 'kegiatan_kesra' });
 
   const isLoading = loading;
@@ -120,10 +122,10 @@ export default function KegiatanKesraPage() {
             Kesejahteraan Rakyat
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Kegiatan Sosial & Kesehatan
+            Kegiatan Sosial & Kesehatan Masyarakat
           </h1>
-          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Berbagai program untuk meningkatkan kualitas hidup, kesehatan, and kepedulian sosial warga.
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light text-justify md:text-center">
+            Penyelenggaraan berbagai program strategis yang berfokus pada peningkatan kualitas kesehatan, pendidikan, serta kepedulian sosial demi kesejahteraan warga.
           </p>
         </div>
       </div>
@@ -164,7 +166,7 @@ export default function KegiatanKesraPage() {
                       <h3 className="text-lg font-bold text-slate-800 mb-2 group-hover:text-[#0B3D2E] transition-colors">
                         {item.title}
                       </h3>
-                      <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+                      <p className="text-sm text-slate-600 mb-4 leading-relaxed text-left">
                         {item.desc}
                       </p>
 
@@ -213,10 +215,8 @@ export default function KegiatanKesraPage() {
                   <p className="text-xs text-slate-600 mb-4">
                     Cek jadwal penyaluran atau syarat pengajuan bantuan melalui petugas kami.
                   </p>
-                  <Button className="w-full bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 text-white font-bold" asChild>
-                    <Link to="/pengaduan">
-                      Tanya Petugas Kesra
-                    </Link>
+                  <Button className="w-full bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 text-white font-bold" onClick={() => openChat("Info Bansos & Kesra", true)}>
+                    Tanya Petugas Kesra
                   </Button>
                 </div>
               </CardContent>

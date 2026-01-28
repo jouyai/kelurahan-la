@@ -25,8 +25,10 @@ import {
 import { useData } from '../../../hooks/useContent';
 
 import { getServiceTheme } from "../../../lib/serviceUtils";
+import { useLiveChat } from "../../../context/LiveChatContext";
 
-export default function PelayananAdministrasiPage({ onConnectStaff }) {
+export default function PelayananAdministrasiPage() {
+  const { openChat } = useLiveChat();
   const { data: dbLayanan, loading } = useData('items', { type: 'layanan' });
 
   // Filter dynamic services that belong to "Administrasi" group
@@ -117,8 +119,8 @@ export default function PelayananAdministrasiPage({ onConnectStaff }) {
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
             Pelayanan Administrasi Umum
           </h1>
-          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Pusat layanan pengurusan dokumen pertanahan, legalitas hukum, dan administrasi kewilayahan.
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light text-justify md:text-center">
+            Pusat layanan terpadu untuk pengurusan dokumen pertanahan, legalitas hukum, serta administrasi kewilayahan lainnya secara cepat dan transparan.
           </p>
         </div>
       </div>
@@ -158,7 +160,7 @@ export default function PelayananAdministrasiPage({ onConnectStaff }) {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-slate-600 leading-relaxed">
+                      <p className="text-sm text-slate-600 leading-relaxed text-left">
                         {item.description}
                       </p>
                     </CardContent>
@@ -232,11 +234,11 @@ export default function PelayananAdministrasiPage({ onConnectStaff }) {
                   <MessageSquare className="h-6 w-6 text-amber-400" />
                 </div>
                 <h3 className="font-bold text-lg mb-1">Butuh Bantuan?</h3>
-                <p className="text-slate-300 text-sm mb-4">
-                  Bingung dengan persyaratan dokumen? Tanyakan langsung pada petugas kami.
+                <p className="text-slate-300 text-sm mb-4 text-justify md:text-center">
+                  Bingung dengan persyaratan dokumen? Jangan ragu untuk menanyakan langsung pada petugas kami.
                 </p>
                 <Button
-                  onClick={() => onConnectStaff && onConnectStaff("Tanya Persyaratan Administrasi")}
+                  onClick={() => openChat("Layanan Administrasi Umum", true)}
                   className="w-full bg-amber-500 text-[#0B3D2E] hover:bg-amber-400 font-bold"
                 >
                   Chat Petugas Sekarang

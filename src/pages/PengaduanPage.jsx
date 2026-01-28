@@ -31,9 +31,11 @@ import {
   Loader2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLiveChat } from "../context/LiveChatContext";
 
 
 const PengaduanPage = () => {
+  const { openChat } = useLiveChat();
   const contentLoading = false;
   // State Utama
   const [loading, setLoading] = useState(false);
@@ -188,10 +190,10 @@ const PengaduanPage = () => {
             Layanan Warga
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Pusat Pengaduan & Aspirasi
+            Pusat Pengaduan & Aspirasi Warga
           </h1>
-          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Sampaikan keluhan, saran, atau laporan Anda untuk kemajuan Kelurahan Lenteng Agung. Kami siap mendengar and menindaklanjuti.
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light text-justify md:text-center">
+            Suara Anda adalah kontribusi berharga bagi kemajuan wilayah kami. Sampaikan laporan, saran, atau keluhan Anda secara transparan melalui kanal resmi Kelurahan Lenteng Agung demi pelayanan yang lebih baik.
           </p>
         </div>
       </div>
@@ -208,9 +210,9 @@ const PengaduanPage = () => {
 
           <Card className="border-t-4 border-t-[#0B3D2E] shadow-lg">
             <CardHeader>
-              <CardTitle className="text-xl font-bold text-slate-900">Formulir Pengaduan</CardTitle>
-              <CardDescription>
-                Isi data dengan benar agar laporan dapat segera diproses. Privasi Anda terjamin.
+              <CardTitle className="text-xl font-bold text-slate-900">Formulir Pengaduan Digital</CardTitle>
+              <CardDescription className="text-justify">
+                Silakan melengkapi formulir di bawah ini dengan data yang valid. Keamanan identitas and kerahasiaan data pelapor merupakan prioritas utama kami dalam memproses setiap laporan yang masuk.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -281,6 +283,23 @@ const PengaduanPage = () => {
 
         {/* --- KOLOM KANAN: TRACKING & RIWAYAT --- */}
         <div className="space-y-8">
+
+          {/* WIDGET WA FAST RESPONSE */}
+          <Card className="bg-amber-50 border-amber-200">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-amber-800 text-lg">
+                <MessageSquare className="h-5 w-5" /> Butuh Respon Cepat?
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-amber-900/80">
+                Untuk keadaan darurat atau pertanyaan singkat, Anda dapat menghubungi petugas piket kami via WhatsApp.
+              </p>
+              <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold" onClick={() => openChat("Bantuan Cepat / Darurat", true)}>
+                Chat Petugas Sekarang
+              </Button>
+            </CardContent>
+          </Card>
 
           {/* WIDGET CARI TIKET */}
           <Card className="shadow-md bg-[#0B3D2E] text-white border-none">

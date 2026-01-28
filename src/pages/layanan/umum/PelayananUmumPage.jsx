@@ -22,8 +22,10 @@ import {
 import { useData } from '../../../hooks/useContent';
 
 import { getServiceTheme } from "../../../lib/serviceUtils";
+import { useLiveChat } from "../../../context/LiveChatContext";
 
-export default function PelayananUmumPage({ onConnectStaff }) {
+export default function PelayananUmumPage() {
+  const { openChat } = useLiveChat();
   const { data: dbLayanan, loading: servicesLoading } = useData('items', { type: 'layanan' });
 
   const isLoading = servicesLoading;
@@ -203,8 +205,8 @@ export default function PelayananUmumPage({ onConnectStaff }) {
               Jika Anda memiliki pertanyaan atau kendala terkait layanan administrasi, silakan hubungi petugas kami melalui layanan pengaduan.
             </p>
             <div className="flex justify-center gap-4 pt-4">
-              <Button variant="secondary" className="bg-amber-500 text-[#0B3D2E] hover:bg-amber-400 font-bold" asChild>
-                <Link to="/pengaduan">Buat Pengaduan</Link>
+              <Button variant="secondary" className="bg-amber-500 text-[#0B3D2E] hover:bg-amber-400 font-bold" onClick={() => openChat("Layanan Umum", true)}>
+                Chat Petugas Sekarang
               </Button>
             </div>
           </div>

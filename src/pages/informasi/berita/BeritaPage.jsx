@@ -86,10 +86,10 @@ const BeritaPage = () => {
               Arsip Informasi
             </div>
             <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-              Berita & Kabar Wilayah
+              Berita & Kabar Kewilayahan
             </h1>
-            <p className="text-muted-foreground mt-3 text-lg max-w-2xl">
-              Dapatkan informasi terkini seputar kegiatan, pembangunan, dan pengumuman resmi Kelurahan Lenteng Agung.
+            <p className="text-muted-foreground mt-3 text-lg max-w-2xl text-justify md:text-left">
+              Akses informasi terkini mengenai agenda kegiatan, capaian pembangunan, serta pengumuman layanan publik resmi dari Pemerintah Kelurahan Lenteng Agung.
             </p>
           </div>
         </div>
@@ -200,7 +200,7 @@ const BeritaPage = () => {
                 </CardHeader>
 
                 <CardContent className="pb-4 flex-1">
-                  <p className="text-muted-foreground text-sm line-clamp-3">
+                  <p className="text-muted-foreground text-sm line-clamp-3 text-justify">
                     {item.isi?.replace(/<[^>]*>?/gm, '').substring(0, 120)}...
                   </p>
                 </CardContent>

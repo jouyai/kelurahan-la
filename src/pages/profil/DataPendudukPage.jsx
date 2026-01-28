@@ -103,10 +103,10 @@ const DataPendudukPage = () => {
             Transparansi Data
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Statistik Kependudukan
+            Statistik Kependudukan & Data Wilayah
           </h1>
-          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Data demografi terbaru Kelurahan Lenteng Agung sebagai acuan perencanaan pembangunan dan pelayanan publik.
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light text-justify md:text-center">
+            Sajian data demografi terkini Kelurahan Lenteng Agung yang transparan dan akuntabel sebagai basis perencanaan pembangunan serta pelayanan publik yang tepat sasaran.
           </p>
         </div>
       </div>

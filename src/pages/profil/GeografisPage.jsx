@@ -46,10 +46,10 @@ const GeografisPage = () => {
             Profil Wilayah
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Kondisi Geografis
+            Kondisi Geografis & Kewilayahan
           </h1>
-          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Gambaran letak wilayah, batas administrasi, dan peta lingkungan Kelurahan Lenteng Agung.
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light text-justify md:text-center">
+            Gambaran komprehensif mengenai letak strategis, batas-batas administratif, serta peta topografi wilayah Kelurahan Lenteng Agung sebagai acuan tata ruang.
           </p>
         </div>
       </div>
@@ -95,8 +95,8 @@ const GeografisPage = () => {
               </div>
             </div>
             <CardContent className="p-6">
-              <p className="text-slate-600 leading-relaxed">
-                "Kelurahan Lenteng Agung memiliki posisi yang strategis di wilayah Jakarta Selatan, dilintasi oleh jalur kereta api Commuter Line (Jakarta-Bogor) and Sungai Ciliwung yang membelah wilayah menjadi dua bagian. Kontur tanah yang berbukit menjadikan wilayah ini memiliki area resapan air yang cukup baik."
+              <p className="text-slate-600 leading-relaxed text-justify">
+                "Kelurahan Lenteng Agung memiliki posisi yang sangat strategis di jantung Jakarta Selatan. Wilayah ini dibelah oleh aliran Sungai Ciliwung yang ikonik dan dilintasi jalur utama Kereta Rel Listrik (KRL) Jakarta-Bogor, menjadikannya simpul konektivitas penting. Kontur tanah yang berbukit di beberapa bagian memberikan karakteristik unik sekaligus fungsi vital sebagai area resapan air kota."
               </p>
             </CardContent>
           </Card>
@@ -187,11 +187,11 @@ const GeografisPage = () => {
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-6 text-sm text-amber-900/80 leading-relaxed">
-                <p className="whitespace-pre-wrap">
-                  "Secara topografis, Kelurahan Lenteng Agung berada pada ketinggian rata-rata 25-50 meter di atas permukaan laut. Kontur tanah cenderung bergelombang dengan beberapa area cekungan di sekitar bantaran sungai."
+                <p className="whitespace-pre-wrap text-justify">
+                  "Secara topografis, Kelurahan Lenteng Agung berada pada ketinggian rata-rata 25-50 meter di atas permukaan laut. Kontur tanah cenderung bergelombang landai dengan beberapa area lembah di sekitar bantaran Sungai Ciliwung yang berfungsi sebagai daerah tangkapan air alami."
                 </p>
-                <p className="whitespace-pre-wrap">
-                  "Iklim di wilayah ini adalah tropis dengan curah hujan rata-rata 2.000 mm per tahun. Suhu udara berkisar antara 24°C hingga 33°C. Kondisi ini mendukung penghijauan di taman-taman kota and RPTRA yang tersebar di wilayah kelurahan."
+                <p className="whitespace-pre-wrap text-justify">
+                  "Iklim wilayah ini termasuk tropis basah dengan curah hujan rata-rata mencapai 2.000 mm per tahun dan suhu udara berkisar 24°C - 33°C. Kondisi mikroklimat ini sangat mendukung pertumbuhan vegetasi di Ruang Terbuka Hijau (RTH) dan taman-taman kota yang tersebar di seluruh penjuru kelurahan."
                 </p>
               </div>
             </CardContent>

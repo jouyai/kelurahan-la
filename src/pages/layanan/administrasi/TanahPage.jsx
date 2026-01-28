@@ -21,9 +21,13 @@ import {
   Download
 } from 'lucide-react';
 import { useData } from "../../../hooks/useContent";
+import { useLiveChat } from "../../../context/LiveChatContext";
+import { useTemplates, isPublicUrl } from "../../../lib/templateUtils";
 
 export default function TanahPage() {
+  const { openChat } = useLiveChat();
   const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
+  const { resolveTemplateUrl } = useTemplates();
 
   const isLoading = layananLoading;
 
@@ -129,10 +133,10 @@ export default function TanahPage() {
                       {item.template && (
                         <Button variant="outline" className="w-full flex items-center gap-2 border-[#0B3D2E] text-[#0B3D2E] hover:bg-[#0B3D2E] hover:text-white transition-all shadow-sm" asChild>
                           <a
-                            href={item.template.startsWith('http') ? item.template : `/template/${item.template}`}
-                            download={!item.template.startsWith('http') ? item.template : undefined}
-                            target={item.template.startsWith('http') ? "_blank" : undefined}
-                            rel={item.template.startsWith('http') ? "noopener noreferrer" : undefined}
+                            href={resolveTemplateUrl(item.template)}
+                            download={!isPublicUrl(resolveTemplateUrl(item.template)) ? item.template : undefined}
+                            target={isPublicUrl(resolveTemplateUrl(item.template)) ? "_blank" : undefined}
+                            rel={isPublicUrl(resolveTemplateUrl(item.template)) ? "noopener noreferrer" : undefined}
                           >
                             <Download className="h-4 w-4" /> Unduh Template Surat
                           </a>
@@ -213,15 +217,15 @@ export default function TanahPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start gap-3" asChild>
-                  <Link to="/pengaduan">
-                    <Phone className="h-4 w-4 text-[#0B3D2E]" />
-                    Hubungi via Pengaduan
-                  </Link>
+                <Button variant="outline" className="w-full justify-start gap-3" onClick={() => openChat("Layanan Pertanahan", true)}>
+                  <Phone className="h-4 w-4 text-[#0B3D2E]" />
+                  Hubungi Petugas Tanah
                 </Button>
-                <Button className="w-full justify-start gap-3 bg-[#0B3D2E] hover:bg-[#0B3D2E]/90">
-                  <FileCheck className="h-4 w-4" />
-                  Cek Status Berkas
+                <Button className="w-full justify-start gap-3 bg-[#0B3D2E] hover:bg-[#0B3D2E]/90" asChild>
+                  <Link to="/pengaduan">
+                    <FileCheck className="h-4 w-4" />
+                    Cek Status Berkas
+                  </Link>
                 </Button>
               </CardContent>
             </Card>

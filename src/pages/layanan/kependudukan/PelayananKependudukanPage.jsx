@@ -22,8 +22,10 @@ import {
 import { useData } from "../../../hooks/useContent";
 
 import { getServiceTheme } from "../../../lib/serviceUtils";
+import { useLiveChat } from "../../../context/LiveChatContext";
 
-export default function PelayananKependudukanPage({ onConnectStaff }) {
+export default function PelayananKependudukanPage() {
+  const { openChat } = useLiveChat();
   const { data: dbLayanan, loading: servicesLoading } = useData('items', { type: 'layanan' });
 
   const isLoading = servicesLoading;
@@ -213,8 +215,22 @@ export default function PelayananKependudukanPage({ onConnectStaff }) {
                     <li>Surat Pengantar RT & RW.</li>
                     <li>Buku Nikah (untuk perubahan status).</li>
                     <li>Akta Kelahiran (untuk anak).</li>
-                    <li>SKP (untuk pindah datang).</li>
                   </ul>
+                </div>
+
+                {/* Widget Chat */}
+                <div className="bg-[#0B3D2E] text-white rounded-xl p-6 text-center shadow-lg">
+                  <MessageSquare className="h-8 w-8 text-amber-400 mx-auto mb-3" />
+                  <h4 className="font-bold text-lg mb-2">Butuh Bantuan?</h4>
+                  <p className="text-xs text-slate-300 mb-5 leading-relaxed">
+                    Kesulitan mengurus KTP, KK, atau pindah domisili? Konsultasikan langsung dengan petugas kami.
+                  </p>
+                  <Button
+                    className="w-full bg-amber-500 hover:bg-amber-600 text-[#0B3D2E] font-bold h-11"
+                    onClick={() => openChat("Layanan Kependudukan", true)}
+                  >
+                    Chat Petugas Sekarang
+                  </Button>
                 </div>
               </CardContent>
             </Card>

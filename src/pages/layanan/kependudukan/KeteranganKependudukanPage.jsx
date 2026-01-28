@@ -17,10 +17,14 @@ import {
   Info
 } from 'lucide-react';
 import { useData } from "../../../hooks/useContent";
+import { useLiveChat } from "../../../context/LiveChatContext";
+import { useTemplates, isPublicUrl } from "../../../lib/templateUtils";
 
 
 export default function KeteranganKependudukanPage() {
+  const { openChat } = useLiveChat();
   const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
+  const { resolveTemplateUrl } = useTemplates();
 
   const getTemplatePath = (layananName) => {
     const templates = {
@@ -148,10 +152,10 @@ export default function KeteranganKependudukanPage() {
                 {service.template && (
                   <Button variant="outline" className={`w-full flex items-center gap-2 border-slate-200 text-slate-700 hover:bg-[#0B3D2E] hover:text-white transition-all shadow-sm`} asChild>
                     <a
-                      href={service.template.startsWith('http') ? service.template : `/template/${service.template}`}
-                      download={!service.template.startsWith('http') ? service.template : undefined}
-                      target={service.template.startsWith('http') ? "_blank" : undefined}
-                      rel={service.template.startsWith('http') ? "noopener noreferrer" : undefined}
+                      href={resolveTemplateUrl(service.template)}
+                      download={!isPublicUrl(resolveTemplateUrl(service.template)) ? service.template : undefined}
+                      target={isPublicUrl(resolveTemplateUrl(service.template)) ? "_blank" : undefined}
+                      rel={isPublicUrl(resolveTemplateUrl(service.template)) ? "noopener noreferrer" : undefined}
                     >
                       <Download className="h-4 w-4" /> Unduh Template Surat
                     </a>
@@ -161,6 +165,17 @@ export default function KeteranganKependudukanPage() {
             </CardContent>
           </Card>
         ))}
+
+        {/* CALL TO ACTION */}
+        <div className="bg-[#0B3D2E]/5 rounded-2xl p-8 text-center border border-[#0B3D2E]/10">
+          <h2 className="text-lg font-bold text-[#0B3D2E] mb-2">Butuh Surat Keterangan Lain?</h2>
+          <p className="text-slate-600 text-sm mb-6 max-w-lg mx-auto">
+            Jika jenis surat yang Anda butuhkan tidak tercantum di sini (misal: Surat Keterangan Ghaib, dll), silakan tanyakan kepada petugas.
+          </p>
+          <Button className="bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 font-bold" onClick={() => openChat("Keterangan Kependudukan Lainnya", true)}>
+            Hubungi Admin Pelayanan
+          </Button>
+        </div>
 
       </div>
     </div>

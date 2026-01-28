@@ -58,6 +58,9 @@ import DataBencanaPage from './pages/informasi/DataBencanaPage';
 import PengaduanPage from './pages/PengaduanPage';
 import HomeSection from './pages/HomePage';
 
+// CONTEXT
+import { LiveChatProvider } from './context/LiveChatContext';
+
 function App() {
   const location = useLocation();
 
@@ -67,7 +70,7 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <>
+    <LiveChatProvider>
       <Navbar />
       <Routes>
         {/* HOME */}
@@ -134,7 +137,7 @@ function App() {
       </Routes>
       <LiveChatWidget />
       <Footer />
-    </>
+    </LiveChatProvider>
   );
 }
 

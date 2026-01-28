@@ -23,8 +23,10 @@ import {
   Download
 } from 'lucide-react';
 import { useData } from "../../../hooks/useContent";
+import { useLiveChat } from "../../../context/LiveChatContext";
 
 export default function PernyataanHukumWarisanPage() {
+  const { openChat } = useLiveChat();
   const { data: dbLayanan, loading: layananLoading } = useData('items', { type: 'layanan' });
 
   const isLoading = layananLoading;
@@ -210,11 +212,9 @@ export default function PernyataanHukumWarisanPage() {
                   Kelurahan hanya mencatat/mengetahui PM1 jika diperlukan.
                 </p>
                 <Separator className="my-3" />
-                <Button className="w-full justify-start gap-3 bg-[#0B3D2E] hover:bg-[#0B3D2E]/90" asChild>
-                  <Link to="/pengaduan">
-                    <Info className="h-4 w-4" />
-                    Konsultasi Petugas
-                  </Link>
+                <Button className="w-full justify-start gap-3 bg-[#0B3D2E] hover:bg-[#0B3D2E]/90" onClick={() => openChat("Konsultasi Waris", true)}>
+                  <Info className="h-4 w-4" />
+                  Konsultasi Petugas
                 </Button>
               </CardContent>
             </Card>

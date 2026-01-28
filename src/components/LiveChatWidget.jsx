@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { generateAIContext } from "../data/knowledgeBase";
+import { useLiveChat } from "../context/LiveChatContext";
 
 // --- SHADCN UI IMPORTS ---
 import { Button } from "@/components/ui/button";
@@ -23,8 +24,9 @@ import {
 } from 'lucide-react';
 import { useData } from "../hooks/useContent";
 
-// --- KONFIGURASI ---
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+// --- KONFIGURASI AI ---
+// Inisialisasi genAI akan dilakukan di dalam handler untuk memastikan Key terbaru terbaca.
+const GENAI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 // --- HELPER: DYNAMIC GREETING ---
 const getTimeBasedGreeting = () => {
@@ -61,17 +63,12 @@ const Typewriter = ({ text, speed = 15, onComplete }) => {
   );
 };
 
-export default function LiveChatWidget({
-  isOpen, // Note: Jika parent mengatur state, gunakan props ini. Jika mandiri, gunakan local state.
-  setIsOpen, // Opsional jika dikontrol parent
-  startHumanMode = false,
-  onResetHumanMode,
-  chatTopic = ""
-}) {
-  // State Lokal untuk kontrol buka/tutup jika props tidak tersedia
-  const [localIsOpen, setLocalIsOpen] = useState(false);
-  const showWidget = isOpen !== undefined ? isOpen : localIsOpen;
-  const toggleWidget = setIsOpen || setLocalIsOpen;
+export default function LiveChatWidget() {
+  // Get values from context
+  const { isOpen, setIsOpen, isHumanMode: contextHumanMode, setIsHumanMode: setContextHumanMode, resetHumanMode, chatTopic } = useLiveChat();
+
+  const showWidget = isOpen;
+  const toggleWidget = setIsOpen;
 
   const [sessionId, setSessionId] = useState(null);
 
@@ -82,9 +79,15 @@ export default function LiveChatWidget({
 
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
-  const [isHumanMode, setIsHumanMode] = useState(false);
+  const [isHumanMode, setIsHumanMode] = useState(contextHumanMode || false);
   const [isTyping, setIsTyping] = useState(false);
   const [greeting, setGreeting] = useState("Selamat Pagi");
+  const lastExtractedTopicRef = useRef(chatTopic || null);
+
+  // Sync local isHumanMode with context
+  useEffect(() => {
+    setIsHumanMode(contextHumanMode || false);
+  }, [contextHumanMode]);
 
   const messagesEndRef = useRef(null);
 
@@ -92,22 +95,23 @@ export default function LiveChatWidget({
   const { data: dbLayanan } = useData('items', { type: 'layanan' });
   const { data: dbFasilitas } = useData('items', { type: 'fasilitas' });
 
-  // LOGIC AUTO CONNECT STAFF
+  // LOGIC AUTO CONNECT STAFF when contextHumanMode is true
   useEffect(() => {
     const connectStaff = async () => {
-      if (showWidget && startHumanMode) {
+      if (showWidget && contextHumanMode) {
         setIsHumanMode(true);
+        setContextHumanMode(true);
         if (sessionId) {
           await supabase
             .from("chat_sessions")
             .update({ status: "live", last_message_at: new Date() })
             .eq("id", sessionId);
         }
-        if (onResetHumanMode) onResetHumanMode();
+        resetHumanMode();
       }
     };
     connectStaff();
-  }, [showWidget, startHumanMode, sessionId, onResetHumanMode]);
+  }, [showWidget, contextHumanMode, sessionId, setContextHumanMode, resetHumanMode]);
 
   // 1. Cek Sesi Saat Load
   useEffect(() => {
@@ -176,43 +180,147 @@ export default function LiveChatWidget({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, showWidget, isTyping, showIdentityForm]);
 
+  // Inject consultation message when chat is opened with a topic
+  useEffect(() => {
+    const injectConsultationMessage = async () => {
+      if (showWidget && chatTopic && sessionId && !showIdentityForm) {
+        // Check if consultation message already exists for this topic
+        const { data: existingMessages } = await supabase
+          .from("chat_messages")
+          .select("message")
+          .eq("session_id", sessionId)
+          .order("created_at", { ascending: false })
+          .limit(5);
+
+        const hasConsultationMessage = existingMessages?.some(msg =>
+          msg.message.includes(chatTopic) &&
+          (msg.message.includes("Halo, saya ingin bertanya mengenai") ||
+            msg.message.includes("Saya ada pertanyaan lain mengenai"))
+        );
+
+        if (!hasConsultationMessage) {
+          // Update session timestamp
+          await supabase
+            .from("chat_sessions")
+            .update({ last_message_at: new Date() })
+            .eq("id", sessionId);
+
+          // Send consultation message with consistent format
+          // If there are existing messages, use "Saya ada pertanyaan lain", otherwise use "Halo"
+          const consultationMessage = (existingMessages && existingMessages.length > 0)
+            ? `Saya ada pertanyaan lain mengenai layanan : ${chatTopic}`
+            : `Halo, saya ingin bertanya mengenai layanan : ${chatTopic}`;
+
+          await supabase.from("chat_messages").insert([
+            { session_id: sessionId, sender: "user", message: consultationMessage }
+          ]);
+
+          // Update last_message_at
+          await supabase
+            .from("chat_sessions")
+            .update({ last_message_at: new Date() })
+            .eq("id", sessionId);
+        }
+      }
+    };
+
+    injectConsultationMessage();
+  }, [showWidget, chatTopic, sessionId, showIdentityForm]);
+
   // 3. HANDLER: SUBMIT FORM IDENTITAS
   const handleStartChat = async (e) => {
     e.preventDefault();
     if (!userIdentity.name.trim() || !userIdentity.contact.trim()) return;
 
     setIsRegistering(true);
-    const initialStatus = (isHumanMode || startHumanMode) ? "live" : "bot";
+    // Start with bot mode by default, or live if context specifically requested it
+    const initialStatus = contextHumanMode ? "live" : "bot";
 
-    const { data, error } = await supabase
-      .from("chat_sessions")
-      .insert([{
+    try {
+      // Prepare insert data
+      const insertData = {
         user_name: userIdentity.name,
         contact: userIdentity.contact,
         status: initialStatus,
-      }])
-      .select()
-      .single();
+      };
 
-    if (data) {
-      localStorage.setItem("chat_session_id", data.id);
-      setSessionId(data.id);
-      setShowIdentityForm(false);
+      // Hapus penggunaan kolom 'topic' karena tabel di DB mungkin belum ada kolom tersebut.
+      // Topik akan dideteksi dari isi pesan (Message Based) oleh Dashboard/System.
+      // if (chatTopic) {
+      //   insertData.topic = chatTopic;
+      // }
 
-      if (initialStatus === "live") {
-        await supabase.from("chat_messages").insert([
-          { session_id: data.id, sender: "system", message: "Anda terhubung dengan layanan Staff. Silakan sampaikan keperluan Anda." },
-        ]);
+      const { data, error } = await supabase
+        .from("chat_sessions")
+        .insert([insertData])
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error creating chat session:", error);
+        alert("Gagal membuat sesi chat. Silakan coba lagi.");
+        setIsRegistering(false);
+        return;
+      }
+
+      if (data) {
+        localStorage.setItem("chat_session_id", data.id);
+        setSessionId(data.id);
+        setShowIdentityForm(false);
+
+        // Set topic if chatTopic is provided (update after insert to be safe)
         if (chatTopic) {
+          await supabase
+            .from("chat_sessions")
+            .update({ last_message_at: new Date() })
+            .eq("id", data.id);
+        }
+
+        if (initialStatus === "live") {
           await supabase.from("chat_messages").insert([
-            { session_id: data.id, sender: "user", message: `Halo, saya ingin bertanya mengenai ${chatTopic}.` },
+            { session_id: data.id, sender: "system", message: "Anda terhubung dengan layanan Staff. Silakan sampaikan keperluan Anda." },
+          ]);
+        }
+
+        if (chatTopic) {
+          // Kirim pesan konsultasi awal sesuai topik yang dipilih warga
+          await supabase.from("chat_messages").insert([
+            { session_id: data.id, sender: "user", message: `Halo, saya ingin bertanya mengenai layanan : ${chatTopic}` },
           ]);
         }
       }
-    } else {
-      console.error("Gagal membuat sesi:", error);
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert("Terjadi kesalahan. Silakan coba lagi.");
+    } finally {
+      setIsRegistering(false);
     }
-    setIsRegistering(false);
+  };
+
+  // Helper function to extract topic from consultation messages
+  const extractTopicFromMessage = (message) => {
+    // Pattern 1: "Halo, saya ingin bertanya mengenai layanan : [topik]" or "Halo, saya ingin bertanya mengenai [topik]"
+    // Support berbagai variasi: dengan/tanpa koma, dengan/tanpa "layanan :", dengan/tanpa titik
+    const pattern1 = /Halo,?\s+saya\s+ingin\s+bertanya\s+mengenai\s+(?:layanan\s*:\s*)?(.+?)(?:\.|$|,)/i;
+    // Pattern 2: "Saya ada pertanyaan lain mengenai layanan : [topik]" or "Saya ada pertanyaan lain mengenai [topik]"
+    const pattern2 = /Saya\s+ada\s+pertanyaan\s+lain\s+mengenai\s+(?:layanan\s*:\s*)?(.+?)(?:\.|$|,)/i;
+
+    // Normalize message: hapus whitespace berlebih
+    const normalizedMessage = message.trim();
+
+    const match1 = normalizedMessage.match(pattern1);
+    const match2 = normalizedMessage.match(pattern2);
+
+    if (match1 && match1[1]) {
+      const topic = match1[1].trim().replace(/\.$/, ''); // Hapus titik di akhir jika ada
+      return topic || null;
+    }
+    if (match2 && match2[1]) {
+      const topic = match2[1].trim().replace(/\.$/, ''); // Hapus titik di akhir jika ada
+      return topic || null;
+    }
+
+    return null;
   };
 
   // 4. HANDLER: KIRIM PESAN (LOGIC UTAMA)
@@ -223,16 +331,55 @@ export default function LiveChatWidget({
     const userText = inputText;
     setInputText("");
 
+    // Insert user message first
     await supabase.from("chat_messages").insert([{ session_id: sessionId, sender: "user", message: userText }]);
+
+    // Check if this is a consultation message and extract topic
+    const extractedTopic = extractTopicFromMessage(userText);
+
+    // Always update last_message_at
     await supabase.from("chat_sessions").update({ last_message_at: new Date() }).eq("id", sessionId);
+
+    if (extractedTopic) {
+      // Always update last_message_at (and topic if the column is added later, 
+      // but for now we remove it to avoid 400 error)
+      const { error: updateError } = await supabase
+        .from("chat_sessions")
+        .update({ last_message_at: new Date() })
+        .eq("id", sessionId);
+
+      if (updateError) {
+        console.error("Error updating session:", updateError);
+      }
+
+      // If topic is different from last seen, add system message
+      if (lastExtractedTopicRef.current !== extractedTopic) {
+        lastExtractedTopicRef.current = extractedTopic;
+        await supabase.from("chat_messages").insert([
+          {
+            session_id: sessionId,
+            sender: "system",
+            message: `[Sistem] User ingin berkonsultasi mengenai topik baru: ${extractedTopic}`
+          }
+        ]);
+      }
+    }
 
     if (isHumanMode) return;
 
-    // AI Processing
+    // AI Processing - Client Side (Using Knowledge Base)
     setIsTyping(true);
     try {
+      if (!GENAI_API_KEY || GENAI_API_KEY.includes("your_gemini_api_key") || GENAI_API_KEY === "") {
+        console.error("DEBUG: VITE_GEMINI_API_KEY is missing or invalid");
+        throw new Error("API Key Gemini belum diisi dengan benar di file .env");
+      }
+
+      console.log("DEBUG: Initializing Gemini with Key starting with:", GENAI_API_KEY.substring(0, 5));
+      const genAI = new GoogleGenerativeAI(GENAI_API_KEY);
+
       const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
-      const contextData = generateAIContext(dbLayanan, dbFasilitas); // Pass dynamic data here
+      const contextData = generateAIContext(dbLayanan, dbFasilitas);
 
       const prompt = `
         ${contextData}
@@ -246,7 +393,7 @@ export default function LiveChatWidget({
       `;
 
       const result = await model.generateContent(prompt);
-      const aiResponse = result.response.text().trim();
+      const aiResponse = result.response.text();
 
       if (aiResponse.includes("HANDOVER_TO_HUMAN")) {
         setIsHumanMode(true);
@@ -259,8 +406,10 @@ export default function LiveChatWidget({
     } catch (error) {
       console.error("AI Error:", error);
       setIsHumanMode(true);
-      await supabase.from("chat_messages").insert([{ session_id: sessionId, sender: "system", message: "Maaf, sistem sedang sibuk. Menghubungkan ke admin..." }]);
+      await supabase.from("chat_messages").insert([{ session_id: sessionId, sender: "system", message: "Gagal menghubungi asisten AI. Menghubungkan ke petugas..." }]);
       await supabase.from("chat_sessions").update({ status: "live", last_message_at: new Date() }).eq("id", sessionId);
+    } finally {
+      setIsTyping(false);
     }
   };
 

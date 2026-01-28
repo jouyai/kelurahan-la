@@ -6,22 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 // --- ICONS ---
-import { MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
+import { MapPin, Phone, Mail } from 'lucide-react';
 
 const Footer = () => {
   return (
     <footer className="bg-[#0B3D2E] text-white font-sans border-t border-[#0d4635]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          
+
           {/* KOLOM 1: BRAND */}
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <img 
-                src="/logo_kel.png" 
-                alt="Logo" 
-                className="h-14 w-auto" 
+              <img
+                src="/logo_kel.png"
+                alt="Logo"
+                className="h-14 w-auto"
                 onError={(e) => e.target.style.display = 'none'}
               />
               <div>
@@ -32,12 +32,6 @@ const Footer = () => {
             <p className="text-slate-300 text-sm leading-relaxed">
               Website resmi pemerintah Kelurahan Lenteng Agung. Mewujudkan pelayanan publik yang transparan, akuntabel, dan prima menuju masyarakat yang sejahtera.
             </p>
-            <div className="flex gap-2">
-              <SocialButton icon={<Facebook className="w-4 h-4" />} href="#" />
-              <SocialButton icon={<Instagram className="w-4 h-4" />} href="#" />
-              <SocialButton icon={<Twitter className="w-4 h-4" />} href="#" />
-              <SocialButton icon={<Youtube className="w-4 h-4" />} href="#" />
-            </div>
           </div>
 
           {/* KOLOM 2: JELAJAH */}
@@ -100,9 +94,9 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
           <p>© {new Date().getFullYear()} Kelurahan Lenteng Agung. All rights reserved.</p>
           <div className="flex gap-6">
-            <Link to="#" className="hover:text-amber-400 transition-colors">Kebijakan Privasi</Link>
-            <Link to="#" className="hover:text-amber-400 transition-colors">Syarat & Ketentuan</Link>
-            <Link to="#" className="hover:text-amber-400 transition-colors">Peta Situs</Link>
+            {/* Links placeholder clean up */}
+            <span className="cursor-default">Kebijakan Privasi</span>
+            <span className="cursor-default">Syarat & Ketentuan</span>
           </div>
         </div>
       </div>

@@ -18,35 +18,75 @@ import {
   Globe2,
   Download
 } from 'lucide-react';
+import { useLiveChat } from "../../../context/LiveChatContext";
+import { useTemplates, isPublicUrl } from "../../../lib/templateUtils";
 import { useData } from "../../../hooks/useContent";
 
 export default function PekerjaanUsahaPage() {
   const { data: dbLayanan, loading: servicesLoading } = useData('items', { type: 'layanan' });
+  const { resolveTemplateUrl } = useTemplates();
 
   const isLoading = servicesLoading;
 
-  // Filter dynamic services for "Pekerjaan & Usaha"
-  const dynamicServices = dbLayanan.filter(s => s.data?.kategori === "Pekerjaan & Usaha").map(s => ({
-    title: s.title,
-    description: s.description,
-    requirements: s.data?.syarat || [],
-    template: s.data?.template || null,
-    icon: s.data?.icon_name === 'Building2' ? <Building2 className="h-6 w-6 text-[#0B3D2E]" /> :
-      s.data?.icon_name === 'Briefcase' ? <Briefcase className="h-6 w-6 text-amber-600" /> :
-        <Wallet className="h-6 w-6 text-blue-600" />,
-    color: s.data?.icon_name === 'Building2' ? "border-l-[#0B3D2E]" :
-      s.data?.icon_name === 'Briefcase' ? "border-l-amber-500" :
-        "border-l-blue-500",
-    bgColor: s.data?.icon_name === 'Building2' ? "bg-[#0B3D2E]/10" :
-      s.data?.icon_name === 'Briefcase' ? "bg-amber-100" :
-        "bg-blue-100",
-    listBg: s.data?.icon_name === 'Building2' ? "bg-slate-50" :
-      s.data?.icon_name === 'Briefcase' ? "bg-amber-50" :
-        "bg-blue-50",
-    checkColor: s.data?.icon_name === 'Building2' ? "text-green-600" :
-      s.data?.icon_name === 'Briefcase' ? "text-amber-600" :
-        "text-blue-600"
-  }));
+  // 1. Data dari Database
+  const dynamicServices = dbLayanan
+    .filter(s => s.data?.kategori === "Pekerjaan & Usaha" || s.title.includes("SKU") || s.title.includes("Usaha"))
+    .map(s => ({
+      title: s.title,
+      description: s.description,
+      requirements: s.data?.syarat || [],
+      template: s.data?.template || null,
+      icon: s.data?.icon_name === 'Building2' ? <Building2 className="h-6 w-6 text-[#0B3D2E]" /> :
+        s.data?.icon_name === 'Briefcase' ? <Briefcase className="h-6 w-6 text-amber-600" /> :
+          <Wallet className="h-6 w-6 text-blue-600" />,
+      color: "border-l-[#0B3D2E]",
+      bgColor: "bg-[#0B3D2E]/10",
+      listBg: "bg-slate-50",
+      checkColor: "text-green-600"
+    }));
+
+  // 2. Data Fallback (Standar SKU) - Tampil jika DB kosong atau sebagai pelengkap
+  const fallbackServices = [
+    {
+      title: "Surat Keterangan Usaha (SKU) Mikro & Kecil",
+      description: "Untuk warga yang memiliki usaha perorangan dengan modal di bawah 1 Miliar (UMK).",
+      requirements: [
+        "Fotokopi KTP Pemilik Usaha (Harus warga Lenteng Agung).",
+        "Fotokopi Kartu Keluarga (KK).",
+        "Surat Pengantar RT/RW (Mencantumkan jenis usaha & alamat lokasi usaha).",
+        "Foto tempat usaha (Tampak depan dengan pemilik).",
+        "Surat Pernyataan Tidak Keberatan Tetangga (Untuk usaha yang menggunakan rumah tinggal).",
+        "Bukti lunas PBB tahun berjalan."
+      ],
+      template: "Form_Permohonan_SKU_Mikro.pdf",
+      icon: <Briefcase className="h-6 w-6 text-amber-600" />,
+      color: "border-l-amber-500",
+      bgColor: "bg-amber-100",
+      listBg: "bg-amber-50/50",
+      checkColor: "text-amber-600"
+    },
+    {
+      title: "Surat Keterangan Domisili Usaha (Non-Perseorangan)",
+      description: "Untuk badan usaha berbentuk CV, PT, atau Yayasan yang berkedudukan di Lenteng Agung.",
+      requirements: [
+        "Akte Pendirian Perusahaan/Yayasan and SK Kemenkumham.",
+        "KTP Direktur/Penanggung Jawab.",
+        "Surat Perjanjian Sewa Menyewa (Jika lokasi sewa) atau Sertifikat Tanah.",
+        "Surat Pengantar RT/RW setempat.",
+        "Surat Izin Tetangga (Bermaterai) bila berada di lingkungan pemukiman.",
+        "Foto kantor/tempat usaha and koordinat lokasi."
+      ],
+      template: "Form_Domisili_Usaha.pdf",
+      icon: <Building2 className="h-6 w-6 text-[#0B3D2E]" />,
+      color: "border-l-[#0B3D2E]",
+      bgColor: "bg-[#0B3D2E]/10",
+      listBg: "bg-slate-50",
+      checkColor: "text-[#0B3D2E]"
+    }
+  ];
+
+  // Gabungkan data: Jika DB ada, pakai DB, jika tidak pakai Fallback
+  const finalServices = dynamicServices.length > 0 ? dynamicServices : fallbackServices;
 
   if (isLoading) {
     return (
@@ -90,7 +130,7 @@ export default function PekerjaanUsahaPage() {
       {/* --- CONTENT SECTION --- */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-        {servicesList.map((item, index) => (
+        {finalServices.map((item, index) => (
           <Card key={index} className={`border-l-4 shadow-md ${item.color}`}>
             <CardHeader>
               <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
@@ -119,10 +159,10 @@ export default function PekerjaanUsahaPage() {
               {item.template && (
                 <Button variant="outline" className="w-full flex items-center gap-2 border-slate-200 text-slate-700 hover:bg-[#0B3D2E] hover:text-white transition-all shadow-sm" asChild>
                   <a
-                    href={item.template.startsWith('http') ? item.template : `/template/${item.template}`}
-                    download={!item.template.startsWith('http') ? item.template : undefined}
-                    target={item.template.startsWith('http') ? "_blank" : undefined}
-                    rel={item.template.startsWith('http') ? "noopener noreferrer" : undefined}
+                    href={resolveTemplateUrl(item.template)}
+                    download={!isPublicUrl(resolveTemplateUrl(item.template)) ? item.template : undefined}
+                    target={isPublicUrl(resolveTemplateUrl(item.template)) ? "_blank" : undefined}
+                    rel={isPublicUrl(resolveTemplateUrl(item.template)) ? "noopener noreferrer" : undefined}
                   >
                     <Download className="h-4 w-4" /> Unduh Template Surat
                   </a>

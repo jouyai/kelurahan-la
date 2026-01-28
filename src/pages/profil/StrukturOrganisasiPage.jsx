@@ -93,10 +93,10 @@ const StrukturOrganisasiPage = () => {
             Profil Kelurahan
           </Badge>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Struktur Kelurahan
+            Struktur Pemerintahan
           </h1>
-          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light">
-            Mengenal jajaran pimpinan dan staf yang berdedikasi melayani masyarakat Kelurahan Lenteng Agung.
+          <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light text-justify md:text-center">
+            Mengenal lebih dekat jajaran pimpinan dan aparatur sipil negara yang berdedikasi tinggi dalam memberikan pelayanan prima kepada masyarakat Kelurahan Lenteng Agung.
           </p>
         </div>
       </div>
@@ -185,9 +185,9 @@ const StrukturOrganisasiPage = () => {
         <section className="bg-[#0B3D2E] text-white rounded-3xl p-8 md:p-12 relative overflow-hidden">
           <div className="relative z-10 grid lg:grid-cols-2 gap-10 items-center">
             <div className="space-y-6">
-              <h2 className="text-3xl font-bold">Tugas & Fungsi</h2>
-              <p className="text-slate-200 text-lg leading-relaxed">
-                Kelurahan bertugas menyelenggarakan urusan pemerintahan, pemberdayaan masyarakat, dan pemeliharaan ketentraman serta ketertiban umum.
+              <h2 className="text-3xl font-bold">Tugas Pokok & Fungsi</h2>
+              <p className="text-slate-200 text-lg leading-relaxed text-justify">
+                Pemerintah Kelurahan bertugas menyelenggarakan urusan pemerintahan umum, pembangunan, pemberdayaan masyarakat, serta pemeliharaan ketentraman dan ketertiban umum demi terwujudnya pelayanan publik yang optimal.
               </p>
               <Button variant="secondary" className="bg-amber-500 text-[#0B3D2E] hover:bg-amber-400 font-bold" asChild>
                 <Link to="/layanan/umum">

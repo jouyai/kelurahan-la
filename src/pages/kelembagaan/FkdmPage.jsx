@@ -18,10 +18,12 @@ import {
   ShieldCheck,
   ArrowLeft
 } from 'lucide-react';
+import { useLiveChat } from "../../context/LiveChatContext";
 import { useData } from "../../hooks/useContent";
 
 // Dummy Data Anggota FKDM
 export default function FkdmPage() {
+  const { openChat } = useLiveChat();
   const { data: dbFKDM, loading: fkdmLoading } = useData('items', { type: 'fkdm' });
 
   const isLoading = fkdmLoading;
@@ -154,10 +156,12 @@ export default function FkdmPage() {
                   <p className="text-xs text-slate-600 mb-4">
                     Segera laporkan hal mencurigakan atau tanda-tanda bencana kepada kami.
                   </p>
-                  <Button variant="destructive" className="w-full bg-red-600 hover:bg-red-700 font-bold" asChild>
-                    <Link to="/pengaduan">
-                      Lapor Sekarang
-                    </Link>
+                  <Button
+                    variant="destructive"
+                    className="w-full bg-red-600 hover:bg-red-700 font-bold"
+                    onClick={() => openChat("Laporan Keamanan (FKDM)", true)}
+                  >
+                    Lapor Sekarang
                   </Button>
                 </div>
               </CardContent>

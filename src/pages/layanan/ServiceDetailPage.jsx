@@ -19,11 +19,15 @@ import {
 } from 'lucide-react';
 
 import { getServiceTheme } from "../../lib/serviceUtils";
+import { useLiveChat } from "../../context/LiveChatContext";
+import { useTemplates, isPublicUrl } from "../../lib/templateUtils";
 
 export default function ServiceDetailPage() {
+    const { openChat } = useLiveChat();
     const { id } = useParams();
     const [service, setService] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { resolveTemplateUrl } = useTemplates();
 
     useEffect(() => {
         const fetchService = async () => {
@@ -126,7 +130,7 @@ export default function ServiceDetailPage() {
                     <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
                         {service.title}
                     </h1>
-                    <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light leading-relaxed">
+                    <p className="text-slate-200 text-lg max-w-2xl mx-auto font-light leading-relaxed text-justify md:text-center">
                         {service.description}
                     </p>
                 </div>
@@ -165,7 +169,7 @@ export default function ServiceDetailPage() {
                                         {requirements.map((req, idx) => (
                                             <li key={idx} className="flex items-start gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors group">
                                                 <CheckCircle2 className="h-6 w-6 text-green-600 shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-                                                <span className="text-slate-700 leading-relaxed font-medium">{req}</span>
+                                                <span className="text-slate-700 leading-relaxed font-medium text-justify">{req}</span>
                                             </li>
                                         ))}
                                     </ul>
@@ -180,10 +184,10 @@ export default function ServiceDetailPage() {
                                     <div className="mt-8 border-t border-slate-100 pt-6">
                                         <Button className="w-full bg-amber-500 hover:bg-amber-600 text-[#0B3D2E] font-bold flex items-center gap-2 h-12 rounded-xl shadow-lg transition-all" asChild>
                                             <a
-                                                href={templateFile.startsWith('http') ? templateFile : `/template/${templateFile}`}
-                                                download={!templateFile.startsWith('http') ? templateFile : undefined}
-                                                target={templateFile.startsWith('http') ? "_blank" : undefined}
-                                                rel={templateFile.startsWith('http') ? "noopener noreferrer" : undefined}
+                                                href={resolveTemplateUrl(templateFile)}
+                                                download={!isPublicUrl(resolveTemplateUrl(templateFile)) ? templateFile : undefined}
+                                                target={isPublicUrl(resolveTemplateUrl(templateFile)) ? "_blank" : undefined}
+                                                rel={isPublicUrl(resolveTemplateUrl(templateFile)) ? "noopener noreferrer" : undefined}
                                             >
                                                 <Download className="h-5 w-5" /> Unduh Template Surat Resmi
                                             </a>
@@ -203,7 +207,7 @@ export default function ServiceDetailPage() {
                             </div>
                             <div>
                                 <h4 className="font-bold text-blue-900">Estimasi Waktu Pelayanan</h4>
-                                <p className="text-blue-800/80 text-sm mt-1 leading-relaxed">
+                                <p className="text-blue-800/80 text-sm mt-1 leading-relaxed text-justify">
                                     Proses verifikasi berkas biasanya memakan waktu 1-3 hari kerja setelah dokumen dinyatakan lengkap oleh petugas.
                                 </p>
                             </div>
@@ -241,13 +245,16 @@ export default function ServiceDetailPage() {
                                     <MessageSquare className="w-8 h-8 text-[#0B3D2E]" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-2">Butuh Bantuan?</h3>
-                                <p className="text-slate-300 text-sm mb-6 leading-relaxed">
-                                    Jika Anda memiliki pertanyaan mengenai persyaratan ini, silakan hubungi petugas kami melalui Live Chat.
+                                <p className="text-slate-300 text-sm mb-6 leading-relaxed text-center">
+                                    Jika Anda memiliki pertanyaan mengenai persyaratan atau prosedur pelayanan ini, silakan hubungi petugas kami melalui layanan Live Chat.
                                 </p>
-                                <Button className="w-full bg-white text-[#0B3D2E] hover:bg-slate-100 font-bold h-12 rounded-xl group" asChild>
-                                    <Link to="/pengaduan" className="flex items-center justify-center gap-2">
+                                <Button
+                                    onClick={() => openChat(service.title, true)}
+                                    className="w-full bg-white text-[#0B3D2E] hover:bg-slate-100 font-bold h-12 rounded-xl group"
+                                >
+                                    <div className="flex items-center justify-center gap-2">
                                         Mulai Konsultasi
-                                    </Link>
+                                    </div>
                                 </Button>
                             </CardContent>
                         </Card>

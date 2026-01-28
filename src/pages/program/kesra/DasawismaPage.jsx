@@ -19,6 +19,7 @@ import {
   CheckCircle2,
   Loader2
 } from 'lucide-react';
+import { useLiveChat } from "../../../context/LiveChatContext";
 import { useData } from "../../../hooks/useContent";
 
 const getIconComponent = (iconName) => {
@@ -32,6 +33,7 @@ const getIconComponent = (iconName) => {
 };
 
 export default function DasawismaPage() {
+  const { openChat } = useLiveChat();
   const { data: dbActivities, loading } = useData('items', { type: 'kegiatan_dasawisma' });
 
   const isLoading = loading;
@@ -198,10 +200,11 @@ export default function DasawismaPage() {
                   <p className="text-xs text-slate-600 mb-4">
                     Mari berkontribusi untuk lingkungan sekitar dengan menjadi kader Dasawisma.
                   </p>
-                  <Button className="w-full bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 text-white font-bold" asChild>
-                    <Link to="/pengaduan">
-                      Hubungi PKK Kelurahan
-                    </Link>
+                  <Button
+                    className="w-full bg-[#0B3D2E] hover:bg-[#0B3D2E]/90 text-white font-bold"
+                    onClick={() => openChat("Info Dasawisma / PKK", true)}
+                  >
+                    Hubungi PKK Kelurahan
                   </Button>
                 </div>
               </CardContent>

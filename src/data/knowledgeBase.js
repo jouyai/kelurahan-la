@@ -263,6 +263,18 @@ export const DATA_LAYANAN = [
     ],
   },
 
+  {
+    id: "nikah-3",
+    kategori: "Pernikahan",
+    layanan: "Informasi Buku Nikah (Hilang/Rusak/Baru)",
+    syarat: [
+      "Buku Nikah diterbitkan oleh KUA (Kantor Urusan Agama) setempat, BUKAN Kelurahan.",
+      "Kelurahan hanya melayani Surat Pengantar Nikah (N1, N2, N4).",
+      "Jika Buku Nikah hilang, silakan lapor ke Polsek lalu ke KUA penerbit.",
+      "Jika Buku Nikah rusak, bawa fisik buku yang rusak ke KUA penerbit.",
+    ],
+  },
+
   // =========================================
   // 7. KATEGORI: WNA (ASING)
   // =========================================
@@ -291,7 +303,8 @@ export const generateAIContext = (dbLayanan = [], dbFasilitas = []) => {
     ? dbLayanan.map(item => ({
       layanan: item.title,
       kategori: item.data?.kategori || "Umum",
-      syarat: item.data?.syarat || []
+      syarat: item.data?.syarat || [],
+      template: item.data?.template || null
     }))
     : DATA_LAYANAN;
 
@@ -301,6 +314,9 @@ export const generateAIContext = (dbLayanan = [], dbFasilitas = []) => {
     (item.syarat || []).forEach((s) => {
       knowledgeText += `   - ${s}\n`;
     });
+    if (item.template) {
+      knowledgeText += `   TEMPLATE: Tersedia (${item.template})\n`;
+    }
   });
 
   // 2. DATA FASILITAS
