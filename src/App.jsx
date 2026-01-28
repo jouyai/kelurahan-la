@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate, useParams } from 'react-router-dom';
 
 // COMPONENTS
 import Navbar from './components/Navbar';
@@ -60,6 +60,12 @@ import HomeSection from './pages/HomePage';
 
 // CONTEXT
 import { LiveChatProvider } from './context/LiveChatContext';
+
+// REDIRECT COMPONENT
+const BeritaRedirect = () => {
+  const { id } = useParams();
+  return <Navigate to={`/berita/${id}`} replace />;
+};
 
 function App() {
   const location = useLocation();
@@ -125,7 +131,8 @@ function App() {
         {/* INFORMASI */}
         <Route path="/berita" element={<BeritaPage />} />
         <Route path="/berita/kesehatan" element={<BeritaKesehatanPage />} />
-        <Route path="/berita/detail/:id" element={<BeritaDetailPage />} />
+        <Route path="/berita/:id" element={<BeritaDetailPage />} />
+        <Route path="/berita/detail/:id" element={<BeritaRedirect />} />
         <Route path="/informasi/fasilitas" element={<FasilitasPage />} />
         <Route path="/informasi/pendidikan" element={<PendidikanPage />} />
         <Route path="/informasi/organisasi" element={<OrganisasiPage />} />

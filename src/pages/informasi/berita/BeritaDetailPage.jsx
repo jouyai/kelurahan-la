@@ -90,7 +90,7 @@ const BeritaDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pb-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 font-sans pb-12 px-4 sm:px-6 lg:px-8 pt-24">
 
       {/* --- BREADCRUMB & BACK --- */}
       <div className="max-w-6xl mx-auto mb-6">
@@ -109,10 +109,10 @@ const BeritaDetailPage = () => {
           {/* Hero Image */}
           <div className="w-full h-[300px] sm:h-[400px] relative bg-slate-200">
             <img
-              src={berita.gambar_url || 'https://via.placeholder.com/800x400?text=Berita+Kelurahan'}
+              src={berita.gambar_url || berita.image_url || 'https://placehold.co/800x400?text=Berita+Kelurahan'}
               alt={berita.judul}
               className="w-full h-full object-cover"
-              onError={(e) => e.target.src = 'https://via.placeholder.com/800x400?text=No+Image'}
+              onError={(e) => e.target.src = 'https://placehold.co/800x400?text=No+Image'}
             />
             <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/60 to-transparent"></div>
           </div>
@@ -172,32 +172,32 @@ const BeritaDetailPage = () => {
 
 
         {/* === SIDEBAR WIDGET (KOLOM KANAN) === */}
-        <div className="space-y-8">
+        <div className="space-y-8 lg:sticky lg:top-24 h-fit">
 
           {/* Widget 1: Berita Terbaru */}
-          <Card className="border-slate-200 shadow-sm sticky top-28">
-            <CardHeader className="pb-3 border-b border-slate-100">
+          <Card className="border-slate-200 shadow-sm overflow-hidden">
+            <CardHeader className="pb-3 border-b border-slate-100 bg-slate-50/50">
               <CardTitle className="text-lg font-bold text-[#0B3D2E] flex items-center gap-2">
                 <Clock className="h-5 w-5" /> Berita Terbaru
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-4 space-y-4">
-              {beritaTerbaru.length > 0 ? (
-                beritaTerbaru.map((item) => (
-                  <Link key={item.id} to={`/berita/${item.id}`} className="group block">
-                    <h4 className="text-sm font-semibold text-slate-800 group-hover:text-amber-600 transition-colors line-clamp-2 leading-snug">
-                      {item.judul}
-                    </h4>
-                    <span className="text-xs text-slate-400 mt-1 block">
-                      {new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </span>
-                    {/* Garis pemisah tipis antar item (kecuali item terakhir) */}
-                    <div className="h-px bg-slate-100 mt-3 group-last:hidden"></div>
-                  </Link>
-                ))
-              ) : (
-                <p className="text-sm text-slate-500">Tidak ada berita lain.</p>
-              )}
+            <CardContent className="pt-4 p-0">
+              <div className="max-h-[400px] overflow-y-auto px-6 pb-4 custom-scrollbar">
+                {beritaTerbaru.length > 0 ? (
+                  beritaTerbaru.map((item) => (
+                    <Link key={item.id} to={`/berita/${item.id}`} className="group block py-4 border-b border-slate-100 last:border-0">
+                      <h4 className="text-sm font-semibold text-slate-800 group-hover:text-amber-600 transition-colors line-clamp-2 leading-snug">
+                        {item.judul}
+                      </h4>
+                      <span className="text-xs text-slate-400 mt-1 block">
+                        {new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </span>
+                    </Link>
+                  ))
+                ) : (
+                  <p className="text-sm text-slate-500 py-4">Tidak ada berita lain.</p>
+                )}
+              </div>
             </CardContent>
           </Card>
 

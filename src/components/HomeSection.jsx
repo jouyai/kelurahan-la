@@ -27,7 +27,7 @@ export default function HomeSection() {
         );
 
         const results = await Promise.all(promises);
-        
+
         // Filter hasil yang tidak null (jika ada kategori yang belum punya berita)
         const dataBersih = results
           .map(res => res.data)
@@ -54,7 +54,7 @@ export default function HomeSection() {
   return (
     <section className="bg-[#F5F7FA] py-12 md:py-16">
       <div className="mx-auto flex max-w-6xl flex-col gap-14 px-4 md:px-0">
-        
+
         {/* === BAGIAN 1: TENTANG KELURAHAN === */}
         <div className="grid gap-8 md:grid-cols-[1.4fr_minmax(0,1fr)] md:items-start">
           <div>
@@ -79,8 +79,8 @@ export default function HomeSection() {
                 alt="Kelurahan Lenteng Agung"
                 className="h-full w-full object-cover"
                 onError={(e) => {
-                    e.target.onerror = null; 
-                    e.target.src = "https://via.placeholder.com/400x300?text=Kantor+Kelurahan"; // Fallback image
+                  e.target.onerror = null;
+                  e.target.src = "https://placehold.co/400x300?text=Kantor+Kelurahan"; // Fallback image
                 }}
               />
             </div>
@@ -104,7 +104,7 @@ export default function HomeSection() {
 
           {/* GRID BERITA */}
           {loading ? (
-             // --- LOADING SKELETON ---
+            // --- LOADING SKELETON ---
             <div className="grid gap-6 md:grid-cols-3">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="h-80 rounded-3xl bg-gray-200 animate-pulse border border-gray-300"></div>
@@ -113,25 +113,25 @@ export default function HomeSection() {
           ) : highlightBerita.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-3">
               {highlightBerita.map((item) => (
-                <Link 
-                  to={`/berita/detail/${item.id}`} // LINK KE HALAMAN DETAIL
+                <Link
+                  to={`/berita/${item.id}`} // LINK KE HALAMAN DETAIL
                   key={item.id}
                   className="group flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 >
                   {/* Image Wrapper */}
                   <div className="relative h-44 w-full bg-gray-100">
-                    {item.image_url ? (
+                    {(item.gambar_url || item.image_url) ? (
                       <img
-                        src={item.image_url}
+                        src={item.gambar_url || item.image_url}
                         alt={item.judul}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
-                       <div className="h-full w-full flex items-center justify-center text-gray-400 text-xs">
-                         Tidak ada gambar
-                       </div>
+                      <div className="h-full w-full flex items-center justify-center text-gray-400 text-xs">
+                        Tidak ada gambar
+                      </div>
                     )}
-                    
+
                     {/* Badge Kategori */}
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0A7A45] to-transparent px-4 py-3 pt-8">
                       <span className="inline-block rounded-md bg-white/20 backdrop-blur-md border border-white/30 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
@@ -143,21 +143,21 @@ export default function HomeSection() {
                   {/* Content */}
                   <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
                     <p className="mb-2 text-[11px] text-gray-500 flex items-center gap-1">
-                       📅 {formatDate(item.created_at)}
+                      📅 {formatDate(item.created_at)}
                     </p>
-                    
+
                     <h3 className="mb-2 text-sm font-bold text-gray-900 line-clamp-2 leading-snug group-hover:text-[#0A7A45] transition-colors">
                       {item.judul}
                     </h3>
-                    
+
                     <p className="text-xs text-gray-600 leading-relaxed line-clamp-3 mb-4">
-                      {item.isi}
+                      {item.isi?.replace(/<[^>]*>?/gm, '').substring(0, 100)}...
                     </p>
 
                     <div className="mt-auto">
-                        <span className="text-xs font-semibold text-[#0A7A45] group-hover:underline">
-                            Baca Selengkapnya →
-                        </span>
+                      <span className="text-xs font-semibold text-[#0A7A45] group-hover:underline">
+                        Baca Selengkapnya →
+                      </span>
                     </div>
                   </div>
                 </Link>
@@ -165,7 +165,7 @@ export default function HomeSection() {
             </div>
           ) : (
             <div className="text-center py-10 bg-white rounded-3xl border border-dashed border-gray-300">
-                <p className="text-gray-500">Belum ada berita yang diterbitkan.</p>
+              <p className="text-gray-500">Belum ada berita yang diterbitkan.</p>
             </div>
           )}
         </div>

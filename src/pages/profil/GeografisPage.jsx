@@ -82,7 +82,7 @@ const GeografisPage = () => {
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 onError={(e) => {
                   // Fallback jika gambar belum diload sempurna
-                  e.target.src = "https://via.placeholder.com/1200x600?text=Peta+Wilayah+Lenteng+Agung";
+                  e.target.src = "https://placehold.co/1200x600?text=Peta+Wilayah+Lenteng+Agung";
                 }}
               />
               <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">

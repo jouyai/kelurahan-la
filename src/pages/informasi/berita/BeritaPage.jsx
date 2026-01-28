@@ -75,7 +75,7 @@ const BeritaPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pb-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 font-sans pb-12 px-4 sm:px-6 lg:px-8 pt-24">
 
       {/* --- HEADER SECTION --- */}
       <div className="max-w-7xl mx-auto mb-10">
@@ -174,10 +174,10 @@ const BeritaPage = () => {
                 {/* Image Section */}
                 <div className="h-60 overflow-hidden relative bg-slate-200">
                   <img
-                    src={item.gambar_url || 'https://via.placeholder.com/600x400?text=Berita+Kelurahan'}
+                    src={item.gambar_url || item.image_url || 'https://placehold.co/600x400?text=Berita+Kelurahan'}
                     alt={item.judul}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                    onError={(e) => e.target.src = 'https://via.placeholder.com/600x400?text=No+Image'}
+                    onError={(e) => e.target.src = 'https://placehold.co/600x400?text=No+Image'}
                   />
                   <div className="absolute top-4 left-4">
                     <Badge className="bg-[#0B3D2E] text-white shadow-lg border-none px-3 py-1 hover:bg-[#0B3D2E]/90">
