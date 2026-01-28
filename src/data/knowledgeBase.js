@@ -78,6 +78,17 @@ export const DATA_LAYANAN = [
     ],
   },
   {
+    id: "kk-5",
+    kategori: "Kartu Keluarga",
+    layanan: "Bikin Baru Kartu Keluarga (Pindahan / Numpang KK)",
+    syarat: [
+      "Surat Pengantar RT/RW",
+      "Surat Keterangan Pindah (SKPWNI) dari daerah asal (Asli)",
+      "Kartu Keluarga (KK) asli yang akan ditumpangi (jika numpang)",
+      "Fotokopi KTP seluruh anggota keluarga",
+    ],
+  },
+  {
     id: "kk-2",
     kategori: "Kartu Keluarga",
     layanan: "Pengurusan KK Hilang atau Rusak",
@@ -340,18 +351,28 @@ export const DATA_LAYANAN = [
 export const generateAIContext = (dbLayanan = [], dbFasilitas = []) => {
   const today = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-  // 1. DATA LAYANAN
-  const sourceLayanan = dbLayanan.length > 0
-    ? dbLayanan.map(item => ({
-      layanan: item.title,
-      kategori: item.data?.kategori || "Umum",
-      syarat: item.data?.syarat || [],
-      template: item.data?.template || null
-    }))
-    : DATA_LAYANAN;
+  // 1. DATA LAYANAN: Kita gabungkan data Hardcoded (Baseline) dengan data dari Database (Update)
+  // Ini memastikan info dasar tidak hilang jika database belum lengkap.
+  const dbLayananMapped = dbLayanan.map(item => ({
+    layanan: item.title,
+    kategori: item.data?.kategori || "Umum",
+    syarat: item.data?.syarat || [],
+    template: item.data?.template || null
+  }));
+
+  // Gabungkan dan hilangkan duplikasi berdasarkan nama layanan (Layanan di DB menimpa Hardcoded jika nama sama)
+  const combinedLayanan = [...DATA_LAYANAN];
+  dbLayananMapped.forEach(dbItem => {
+    const existingIndex = combinedLayanan.findIndex(h => h.layanan.toLowerCase() === dbItem.layanan.toLowerCase());
+    if (existingIndex !== -1) {
+      combinedLayanan[existingIndex] = dbItem; // Update dengan data DB
+    } else {
+      combinedLayanan.push(dbItem); // Tambah baru
+    }
+  });
 
   let knowledgeText = "";
-  sourceLayanan.forEach((item, index) => {
+  combinedLayanan.forEach((item, index) => {
     knowledgeText += `\n${index + 1}. LAYANAN: ${item.layanan}\n   KATEGORI: ${item.kategori}\n   SYARAT:\n`;
     (item.syarat || []).forEach((s) => {
       knowledgeText += `   - ${s}\n`;
@@ -405,14 +426,22 @@ ATURAN KOMUNIKASI (WAJIB DIPATUHI)
    - Gunakan Bahasa Indonesia yang formal, santun (Singkatan dilarang), dan profesional.
    - Contoh sapaan: "Selamat Pagi Bapak/Ibu [Nama User]. Saya ADILA, ada yang dapat saya bantu?"
 
-4. BATASAN INFO:
-   - Jika layanan TIDAK ADA dalam database di atas, katakan: "Mohon maaf Bapak/Ibu, saat ini informasi spesifik terkait hal tersebut belum tersedia dalam basis data saya. Silakan berkonsultasi langsung dengan petugas kami agar mendapatkan informasi yang lebih akurat."
+4. BATASAN INFO & HANDOVER OTOMATIS:
+   - Jika layanan yang ditanyakan TIDAK ADA dalam database di atas, Anda dilarang memberikan jawaban "Mohon maaf data tidak ada" secara mandiri.
+   - SEGERA keluarkan kode: "HANDOVER_TO_HUMAN" agar sistem dapat menghubungkan warga dengan petugas kelurahan yang asli untuk memberikan jawaban yang akurat.
+
+PANDUAN KATA KUNCI:
+- "KK" adalah "Kartu Keluarga".
+- "KTP" adalah "KTP Elektronik / Identity Card".
+- "PBB" adalah "Pajak Bumi dan Bangunan".
+- "PM1" adalah "Surat Pengantar / Keterangan Umum".
 
 HANDOVER KE PETUGAS (TRIGGER: "HANDOVER_TO_HUMAN"):
-Anda WAJIB hanya mengeluarkan teks "HANDOVER_TO_HUMAN" (tanpa pesan lain) jika:
-- Warga meminta bicara dengan petugas/manusia.
-- Warga menunjukkan rasa frustasi atau marah yang berlebihan.
-- Pertanyaan teknis yang sangat mendalam terkait hukum/sengketa yang bukan merupakan syarat dokumen administratif dasar.
+Keluarkan teks: "HANDOVER_TO_HUMAN" (Hanya teks ini saja) jika:
+- Pertanyaan warga tidak dapat dijawab dengan database di atas.
+- Warga meminta bicara langsung dengan petugas/manusia.
+- Warga menunjukkan rasa frustasi, marah, atau komplain.
+- Pertanyaan teknis/hukum yang sangat spesifik (misal: sengketa tanah waris keluarga).
 `;
 
   return systemPrompt;

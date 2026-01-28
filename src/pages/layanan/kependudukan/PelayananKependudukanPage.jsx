@@ -17,7 +17,8 @@ import {
   ChevronRight,
   Loader2,
   Clock,
-  Info
+  Info,
+  MessageSquare
 } from "lucide-react";
 import { useData } from "../../../hooks/useContent";
 
