@@ -10,14 +10,14 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // --- ICONS ---
-import { 
-  ArrowLeft, 
-  Heart, 
-  Search, 
-  CalendarDays, 
-  User, 
-  MapPin, 
-  Clock, 
+import {
+  ArrowLeft,
+  Heart,
+  Search,
+  CalendarDays,
+  User,
+  MapPin,
+  Clock,
   Activity,
   ArrowRight
 } from 'lucide-react';
@@ -51,7 +51,7 @@ export default function BeritaKesehatanPage() {
   }, []);
 
   // SEARCH FILTER
-  const filteredNews = newsData.filter(item => 
+  const filteredNews = newsData.filter(item =>
     item.judul.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -64,13 +64,13 @@ export default function BeritaKesehatanPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
-      
+
       {/* --- HERO SECTION --- */}
       <div className="bg-[#0B3D2E] text-white py-16 mb-10 relative overflow-hidden">
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <Heart className="w-64 h-64 text-white" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <Badge variant="outline" className="border-red-400 text-red-300 mb-4 px-3 py-1 bg-[#0B3D2E]/50 backdrop-blur-sm">
             Info Warga
@@ -96,10 +96,10 @@ export default function BeritaKesehatanPage() {
       {/* --- MAIN CONTENT --- */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-10">
-          
+
           {/* LEFT: NEWS LIST */}
           <div className="w-full lg:w-2/3 space-y-6">
-            
+
             {/* Search Bar */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
@@ -136,8 +136,8 @@ export default function BeritaKesehatanPage() {
                     <Card key={news.id} className="group overflow-hidden border-slate-200 shadow-sm hover:shadow-md transition-all">
                       <div className="flex flex-col sm:flex-row">
                         <div className="sm:w-48 h-48 bg-slate-100 relative overflow-hidden">
-                          <img 
-                            src={news.gambar_url || "https://placehold.co/400x400?text=Sehat"} 
+                          <img
+                            src={news.gambar_url || news.image_url || "https://placehold.co/400x400?text=Sehat"}
                             alt={news.judul}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             onError={(e) => e.target.src = "https://placehold.co/400x400?text=No+Image"}
@@ -153,23 +153,23 @@ export default function BeritaKesehatanPage() {
                               {formatDate(news.created_at)}
                             </span>
                           </div>
-                          
+
                           <h3 className="text-xl font-bold text-slate-800 mb-2 leading-tight group-hover:text-[#0B3D2E] transition-colors">
                             <Link to={`/berita/${news.id}`}>
                               {news.judul}
                             </Link>
                           </h3>
-                          
+
                           <p className="text-slate-600 text-sm line-clamp-2 mb-4 flex-1">
                             {news.isi?.replace(/<[^>]*>?/gm, '')}
                           </p>
-                          
+
                           <div className="flex justify-between items-center pt-4 border-t border-slate-100">
                             <span className="text-xs text-slate-400 flex items-center gap-1">
                               <User className="h-3 w-3" /> Admin
                             </span>
-                            <Link 
-                              to={`/berita/${news.id}`} 
+                            <Link
+                              to={`/berita/${news.id}`}
                               className="text-sm font-bold text-[#0B3D2E] flex items-center hover:underline"
                             >
                               Baca Selengkapnya <ArrowRight className="h-4 w-4 ml-1" />
@@ -191,7 +191,7 @@ export default function BeritaKesehatanPage() {
 
           {/* RIGHT: SIDEBAR INFO */}
           <div className="w-full lg:w-1/3 space-y-6">
-            
+
             {/* Widget Puskesmas */}
             <Card className="bg-white border-slate-200 shadow-sm sticky top-24">
               <CardHeader className="pb-3 border-b border-slate-100">

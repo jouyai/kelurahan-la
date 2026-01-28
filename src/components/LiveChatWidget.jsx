@@ -378,7 +378,6 @@ export default function LiveChatWidget() {
       console.log("DEBUG: Initializing Gemini with Key starting with:", GENAI_API_KEY.substring(0, 5));
       const genAI = new GoogleGenerativeAI(GENAI_API_KEY);
       const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
-      // const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const contextData = generateAIContext(dbLayanan, dbFasilitas);
 
       const prompt = `

@@ -198,7 +198,7 @@ const HomePage = () => {
                   {/* Image */}
                   <div className="h-60 overflow-hidden relative bg-slate-200">
                     <img
-                      src={item.gambar_url}
+                      src={item.gambar_url || item.image_url || 'https://placehold.co/600x400?text=Berita+Kelurahan'}
                       alt={item.judul}
                       className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                       onError={(e) => e.target.src = 'https://placehold.co/600x400?text=No+Image'}
