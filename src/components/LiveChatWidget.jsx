@@ -377,8 +377,8 @@ export default function LiveChatWidget() {
 
       console.log("DEBUG: Initializing Gemini with Key starting with:", GENAI_API_KEY.substring(0, 5));
       const genAI = new GoogleGenerativeAI(GENAI_API_KEY);
-
       const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+      // const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const contextData = generateAIContext(dbLayanan, dbFasilitas);
 
       const prompt = `
@@ -404,8 +404,16 @@ export default function LiveChatWidget() {
       }
     } catch (error) {
       console.error("AI Error:", error);
+
+      let errorMsg = "Gagal menghubungi asisten AI. Menghubungkan ke petugas...";
+
+      // Handle Specific Rate Limit / Quota Error
+      if (error.message?.includes("429") || error.message?.includes("quota")) {
+        errorMsg = "Mohon maaf, sistem AI sedang sibuk (kuota penuh). Saya akan hubungkan Anda langsung ke Petugas Kelurahan kami. Mohon tunggu...";
+      }
+
       setIsHumanMode(true);
-      await supabase.from("chat_messages").insert([{ session_id: sessionId, sender: "system", message: "Gagal menghubungi asisten AI. Menghubungkan ke petugas..." }]);
+      await supabase.from("chat_messages").insert([{ session_id: sessionId, sender: "system", message: errorMsg }]);
       await supabase.from("chat_sessions").update({ status: "live", last_message_at: new Date() }).eq("id", sessionId);
     } finally {
       setIsTyping(false);
