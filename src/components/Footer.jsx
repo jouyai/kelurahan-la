@@ -42,7 +42,7 @@ const Footer = () => {
               <li><FooterLink to="/profil/sejarah">Sejarah Wilayah</FooterLink></li>
               <li><FooterLink to="/profil/struktur">Perangkat Kelurahan</FooterLink></li>
               <li><FooterLink to="/layanan/umum">Layanan Online</FooterLink></li>
-              <li><FooterLink to="/informasi/berita">Kabar Berita</FooterLink></li>
+              <li><FooterLink to="/berita">Kabar Berita</FooterLink></li>
               <li><FooterLink to="/pengaduan">Pengaduan Warga</FooterLink></li>
             </ul>
           </div>

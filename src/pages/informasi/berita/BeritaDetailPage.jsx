@@ -83,7 +83,7 @@ const BeritaDetailPage = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
         <h2 className="text-2xl font-bold text-slate-800">Berita tidak ditemukan</h2>
         <Button variant="link" asChild className="mt-4 text-[#0B3D2E]">
-          <Link to="/informasi/berita"><ArrowLeft className="mr-2 h-4 w-4" /> Kembali ke Daftar Berita</Link>
+          <Link to="/berita"><ArrowLeft className="mr-2 h-4 w-4" /> Kembali ke Daftar Berita</Link>
         </Button>
       </div>
     );
@@ -95,7 +95,7 @@ const BeritaDetailPage = () => {
       {/* --- BREADCRUMB & BACK --- */}
       <div className="max-w-6xl mx-auto mb-6">
         <Button variant="ghost" asChild className="pl-0 text-slate-500 hover:text-[#0B3D2E] hover:bg-transparent">
-          <Link to="/informasi/berita" className="flex items-center gap-2">
+          <Link to="/berita" className="flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" /> Kembali ke Daftar Berita
           </Link>
         </Button>
